@@ -7,6 +7,7 @@ import {
   LabSpecialization,
 } from '../../types';
 import { sound } from '../../sound';
+import { formatRarityMultiplier, getRarityForProgress } from '../../utils/raritySystem';
 
 interface ResearchLibraryViewProps {
   technologies: OGameTechnology[];
@@ -53,6 +54,57 @@ const LAB_SPECIALIZATIONS: {
   { id: 'ai', name: 'Autonomous AI Complex', bonus: '+20% AI & Neural Network Speed', categories: ['ai', 'computing'] },
   { id: 'dimensional', name: 'Dimensional Rift Core', bonus: '+25% Dimensional & Endgame Research Speed', categories: ['dimensional', 'megastructure'] },
 ];
+
+const BRANCH_LABELS: Record<OGameTechnology['branch'], string> = {
+  economics: 'Realm Stewardship',
+  science: 'Arcane Sciences',
+  military: 'Warcraft Doctrine',
+  advanced_science: 'Elder Sciences',
+  advanced_fleet: 'Skyfaring Command',
+  endgame: 'Crownfall Mysteries',
+  megastructures: 'Worldworks',
+};
+
+const CATEGORY_LABELS: Record<OGameTechCategory, string> = {
+  energy: 'Leyline Energy',
+  mining: 'Deepdelve Mining',
+  materials: 'Foundations & Materials',
+  computing: 'Runescript Logic',
+  physics: 'Natural Philosophy',
+  propulsion: 'Windroad Propulsion',
+  weapons: 'Arms & Siegecraft',
+  shields: 'Wards & Barriers',
+  armor: 'Mail & Plating',
+  espionage: 'Veiled Intelligence',
+  colonization: 'New Holds',
+  fleet: 'Warband Command',
+  military: 'Muster Doctrine',
+  economy: 'Crown Economy',
+  diplomacy: 'Treaties & Envoys',
+  biology: 'Living Craft',
+  ai: 'Bound Guardians',
+  quantum: 'Probability Runes',
+  dimensional: 'Threshold Lore',
+  megastructure: 'Great Works',
+};
+
+function getResearchProfile(tech: OGameTechnology) {
+  const typeLabels = [...new Set(tech.effects.map((effect) => effect.type.replaceAll('_', ' ')))];
+  const subtypeLabels = [...new Set(tech.effects.map((effect) => effect.label))];
+  return {
+    categoryName: CATEGORY_LABELS[tech.category],
+    className: BRANCH_LABELS[tech.branch],
+    subclassName: CATEGORY_LABELS[tech.category],
+    typeName: typeLabels.length > 0 ? typeLabels.join(' · ') : 'Foundational study',
+    subtypeName: subtypeLabels.length > 0 ? subtypeLabels.join(' · ') : 'No secondary effects recorded',
+    stats: [
+      `Level ${tech.level} / ${tech.maxLevel}`,
+      `Base time ${tech.baseTimeSeconds}s`,
+      `Cost growth ×${tech.costMultiplier.toFixed(2)}`,
+    ],
+    subStats: tech.effects.map((effect) => `+${effect.valuePerLevel}${effect.unit} ${effect.label}`),
+  };
+}
 
 export const ResearchLibraryView: React.FC<ResearchLibraryViewProps> = ({
   technologies,
@@ -122,7 +174,7 @@ export const ResearchLibraryView: React.FC<ResearchLibraryViewProps> = ({
   const isResearching = (techId: string) => researchQueue.some((q) => q.techId === techId);
 
   return (
-    <div className="space-y-6">
+    <div id="research-library-view" className="research-library-view space-y-6">
       {/* Top Banner with Spec Layout Title */}
       <div className="border border-[#111111] bg-white p-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -134,9 +186,14 @@ export const ResearchLibraryView: React.FC<ResearchLibraryViewProps> = ({
               </span>
             </div>
             <p className="text-xs text-[#666666] mt-1">
-              Universal realm-wide repository of theoretical, military, and industrial science.
-              Configure laboratory focus and commit resources to upgrade realm-wide capabilities.
+              A 90-class archive of elder study, warcraft, craft, and world-shaping lore.
+              Configure a scriptorium focus and commit resources to advance the realm.
             </p>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-mono uppercase tracking-wider text-[#666666]">
+              <span>90-class taxonomy</span>
+              <span>{technologies.length} records catalogued</span>
+              <span>{researchQueue.length} studies in progress</span>
+            </div>
           </div>
 
           {/* Laboratory Specialization Indicator */}
@@ -301,6 +358,8 @@ export const ResearchLibraryView: React.FC<ResearchLibraryViewProps> = ({
               const affordable = canAfford(tech);
               const researching = isResearching(tech.id);
               const isSelected = activeTech.id === tech.id;
+              const researchProfile = getResearchProfile(tech);
+              const rarity = getRarityForProgress(tech.level, tech.maxLevel);
 
               return (
                 <div
@@ -317,8 +376,11 @@ export const ResearchLibraryView: React.FC<ResearchLibraryViewProps> = ({
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-[10px] font-mono text-[#666666] uppercase">
-                        {tech.category}
+                      <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono uppercase">
+                        <span className="border px-1.5 py-0.5 font-bold" style={{ color: rarity.color, backgroundColor: rarity.background, borderColor: rarity.border }}>
+                          {rarity.shortLabel} · {rarity.name}
+                        </span>
+                        <span className="text-[#666666]">{researchProfile.categoryName} · {researchProfile.className}</span>
                       </div>
                       <h4 className="text-sm font-bold text-[#111111]">{tech.name}</h4>
                     </div>
@@ -333,6 +395,12 @@ export const ResearchLibraryView: React.FC<ResearchLibraryViewProps> = ({
                   <p className="text-xs text-[#555555] line-clamp-1 mt-1">
                     {tech.description}
                   </p>
+
+                  <div className="mt-2 grid grid-cols-2 gap-x-2 text-[10px] leading-relaxed text-[#666666]">
+                    <span><strong>Subclass:</strong> {researchProfile.subclassName}</span>
+                    <span><strong>Type:</strong> {researchProfile.typeName}</span>
+                    <span><strong>Subtype:</strong> {researchProfile.subtypeName}</span>
+                  </div>
 
                   <div className="flex items-center justify-between text-[11px] font-mono mt-2 pt-2 border-t border-[#f1f5f9]">
                     <span className="text-[#666666]">
@@ -386,6 +454,23 @@ export const ResearchLibraryView: React.FC<ResearchLibraryViewProps> = ({
                   </span>
                 </div>
               </div>
+
+              {(() => {
+                const researchProfile = getResearchProfile(activeTech);
+                return (
+                  <div className="mt-3 grid grid-cols-2 gap-2 border-y border-[#e2e8f0] py-3 text-[10px]">
+                    <div><span className="block uppercase text-[#666666]">Category</span><strong>{researchProfile.categoryName}</strong></div>
+                    <div><span className="block uppercase text-[#666666]">Class</span><strong>{researchProfile.className}</strong></div>
+                    <div><span className="block uppercase text-[#666666]">Subclass</span><strong>{researchProfile.subclassName}</strong></div>
+                    <div><span className="block uppercase text-[#666666]">Type</span><strong>{researchProfile.typeName}</strong></div>
+                    <div><span className="block uppercase text-[#666666]">Subtype</span><strong>{researchProfile.subtypeName}</strong></div>
+                    <div className="col-span-2"><span className="block uppercase text-[#666666]">Rarity</span><strong style={{ color: getRarityForProgress(activeTech.level, activeTech.maxLevel).color }}>{getRarityForProgress(activeTech.level, activeTech.maxLevel).name} · {formatRarityMultiplier(getRarityForProgress(activeTech.level, activeTech.maxLevel).statMultiplier)}</strong></div>
+                    <div className="col-span-2"><span className="block uppercase text-[#666666]">Primary stats</span><span>{researchProfile.stats.join(' · ')}</span></div>
+                    <div className="col-span-2"><span className="block uppercase text-[#666666]">Operating sub-stats</span><span>{researchProfile.subStats.join(' · ') || 'No secondary effects recorded'}</span></div>
+                    <div className="col-span-2"><span className="block uppercase text-[#666666]">Details</span><span className="font-sans leading-relaxed">{activeTech.description}</span></div>
+                  </div>
+                );
+              })()}
 
               {/* Prerequisites Section */}
               <div>

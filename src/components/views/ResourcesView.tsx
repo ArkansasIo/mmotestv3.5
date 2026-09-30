@@ -130,7 +130,7 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
       icon: '💎',
       currentAmount: resources.crystal || 0,
       level: localStorageState.crystalVaultLevel,
-      unit: 'Crystal',
+      unit: 'Moonstone',
       color: 'bg-cyan-600',
     },
     {
@@ -139,16 +139,16 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
       icon: '🧪',
       currentAmount: resources.deuterium || 0,
       level: localStorageState.deuteriumTankLevel,
-      unit: 'Deut',
+      unit: 'Aether',
       color: 'bg-indigo-600',
     },
     {
       type: 'energy',
-      name: 'Supercapacitor Battery Banks',
+      name: 'Leyline Hearthstones',
       icon: '⚡',
       currentAmount: resources.energy || 0,
       level: localStorageState.energyCapacitorLevel,
-      unit: 'MW',
+      unit: 'Hearthfire',
       color: 'bg-amber-500',
     },
     {
@@ -171,11 +171,11 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
     },
     {
       type: 'darkMatter',
-      name: 'Arcane Dust Tachyon Stasis',
+      name: 'Elder Relic Dust Vaults',
       icon: '🔮',
       currentAmount: resources.darkMatter || 0,
       level: localStorageState.darkMatterStasisLevel,
-      unit: 'DM',
+      unit: 'Relic Dust',
       color: 'bg-purple-600',
     },
   ];
@@ -194,7 +194,7 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
       sound.play('warning');
       setFeedback({
         type: 'error',
-        text: `Insufficient resources to upgrade ${type} storage! Required: ${cost.metal.toLocaleString()} Metal, ${cost.crystal.toLocaleString()} Crystal, ${cost.deuterium.toLocaleString()} Deut, ${cost.naquadah.toLocaleString()} NQ.`,
+        text: `Insufficient resources to improve ${type} stores. Required: ${cost.metal.toLocaleString()} Iron, ${cost.crystal.toLocaleString()} Moonstone, ${cost.deuterium.toLocaleString()} Aether, ${cost.naquadah.toLocaleString()} Crowns.`,
       });
       return;
     }
@@ -364,8 +364,8 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
                     <div className="grid grid-cols-2 gap-1 text-[11px] font-mono text-[#555555]">
                       <span>Iron: {cost.metal.toLocaleString()}</span>
                       <span>Moonstone: {cost.crystal.toLocaleString()}</span>
-                      <span>Deut: {cost.deuterium.toLocaleString()}</span>
-                      <span>CR: {cost.naquadah.toLocaleString()}</span>
+                      <span>Aether: {cost.deuterium.toLocaleString()}</span>
+                      <span>Crowns: {cost.naquadah.toLocaleString()}</span>
                     </div>
                     <button
                       type="button"
@@ -406,7 +406,7 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
         </div>
       )}
 
-      {/* TAB 2: NAQUADAH BANKING & VAULT */}
+      {/* TAB 2: CROWN TREASURY & VAULT */}
       {activeTab === 'bank' && (
         <div className="space-y-6">
           {/* Vault Status Card */}

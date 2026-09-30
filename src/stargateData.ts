@@ -2,7 +2,7 @@ export interface StargateAddress {
   id: string;
   name: string;
   designation: string;
-  galaxy: 'Milky Way' | 'Pegasus' | 'Ida' | 'Universe';
+  galaxy: string;
   chevrons: string[]; // 7, 8, or 9 symbols
   pointOfOrigin: string;
   status: 'offline' | 'dialing' | 'connected' | 'locked' | 'incoming';
@@ -14,7 +14,16 @@ export interface StargateAddress {
     | 'Military Stronghold'
     | 'Nanite Citadel'
     | 'Destiny Seed Vessel'
-    | 'Superweapon Sanctuary';
+    | 'Superweapon Sanctuary'
+    | 'Homehold Bastion'
+    | 'Living Grove Sanctuary'
+    | 'Sealed Shrine'
+    | 'Warded Archive'
+    | 'Marcher Keep'
+    | 'Deepdelve Hall'
+    | 'Fen Refuge'
+    | 'Waystone Shrine'
+    | 'Market Stronghold';
   powerReqMw: number;
   distanceLy: number;
   description: string;
@@ -24,7 +33,7 @@ export interface StargateAddress {
     radiation: 'Negligible' | 'Low' | 'Moderate' | 'High' | 'Deadly';
     gravity: string;
     lifeSigns: string;
-    threatRating: 'None' | "Goa'uld Jaffa Patrols" | 'Wraith Drone Swarm' | 'Replicator Nanites' | 'Ancient Automated Drones';
+    threatRating: string;
     resourcesAvailable: string;
   };
   lootEstimates: {
@@ -47,11 +56,7 @@ export interface SGTeamUnit {
   id: string;
   code: string;
   name: string;
-  specialization:
-    | 'Archaeology & Ancient Tech'
-    | 'Heavy Marine Assault'
-    | 'Naquadah Mining & Engineering'
-    | 'Covert Infiltration & Sabotage';
+  specialization: string;
   leader: string;
   successBonus: string;
   turnCost: number;
@@ -88,7 +93,7 @@ export interface JumpGateRelay {
 export interface AncientControlCrystal {
   id: string;
   name: string;
-  rarity: 'Ancient Rare' | 'Lantean Relic' | 'Zero Point Core';
+  rarity: string;
   effect: string;
   installed: boolean;
   socket: 'dhd_core' | 'jump_capacitor' | 'shield_harmonics';
@@ -142,7 +147,7 @@ export const STARGATE_GLYPHS: StargateGlyph[] = [
 // -------------------------------------------------------------
 // Expanded Stargate Addresses Across 4 Galaxies
 // -------------------------------------------------------------
-export const STARGATE_NETWORK: StargateAddress[] = [
+const PRECURSOR_STARGATE_ADDRESSES: StargateAddress[] = [
   {
     id: 'sg_earth',
     name: "Earth / SGC Alpha Site (Tau'ri)",
@@ -492,52 +497,146 @@ export const STARGATE_NETWORK: StargateAddress[] = [
   },
 ];
 
+const ELDORIA_WAYSTONE_LORE: Record<string, Pick<StargateAddress,
+  'name' | 'designation' | 'galaxy' | 'classification' | 'description' | 'loreDetails' | 'malpTelemetry'
+>> = {
+  sg_earth: {
+    name: 'Eastridge Gatehouse', designation: 'Crownroad Waystone · Eastridge Marches', galaxy: 'Eastridge Marches',
+    classification: 'Homehold Bastion',
+    description: 'A guarded standing stone beside the royal road, kept lit for envoys, travelers, and the border watch.',
+    loreDetails: 'The gatehouse is held by the Crownroad Wardens. Its marks lead to the oldest safe roads in Valewyn.',
+    malpTelemetry: { atmosphere: 'Cool river air', radiation: 'Negligible', gravity: 'Steady ground', lifeSigns: 'Friendly wardens and market folk', threatRating: 'None', resourcesAvailable: 'Iron, Moonstone, Crown stores' },
+  },
+  sg_atlantis: {
+    name: 'Moonwell Hall', designation: 'Elder Waystone · Silverwood Reach', galaxy: 'Silverwood Reach',
+    classification: 'Living Grove Sanctuary',
+    description: 'A pale stone arch stands above a spring beneath the elder trees. Its roots shelter healers and map-keepers.',
+    loreDetails: 'The Greenveil Kin tend this crossing. The waystone answers only when the traveler names a road they truly know.',
+    malpTelemetry: { atmosphere: 'Silverwood rain and cedar', radiation: 'Negligible', gravity: 'Steady ground', lifeSigns: 'Greenveil wardens and grove keepers', threatRating: 'None', resourcesAvailable: 'Moonstone, healing herbs, clear Aether' },
+  },
+  sg_dakara: {
+    name: 'Nine Bells Oathbarrow', designation: 'Deepdelve Waystone · Nine Bells Hall', galaxy: 'Deepdelve Holds',
+    classification: 'Sealed Shrine',
+    description: 'A rune-marked door rests beneath nine bronze bells in a hall closed since the first crown-war.',
+    loreDetails: 'The Grotto Clans keep the outer passage. Each bell answers a different vow; the innermost door remains sealed.',
+    malpTelemetry: { atmosphere: 'Cold mountain air', radiation: 'Low', gravity: 'Steady ground', lifeSigns: 'Delvers at the outer watch', threatRating: 'Stoneward guardians', resourcesAvailable: 'Oath-iron, old maps, barrow relics' },
+  },
+  sg_chulak: {
+    name: 'Red Banner Ford', designation: 'Ashen March Waystone · Cinder March', galaxy: 'Cinder March',
+    classification: 'Marcher Keep',
+    description: 'A black-stone ford guarded by a red-bannered shieldwall where two old roads meet.',
+    loreDetails: 'The Ashen Dominion and Free Clans dispute its tolls, but both have sworn to keep the ford open during flood season.',
+    malpTelemetry: { atmosphere: 'Warm ash winds', radiation: 'Low', gravity: 'Steady ground', lifeSigns: 'Mixed clan sentries', threatRating: 'Contested border patrols', resourcesAvailable: 'Iron, charcoal, forgeglass' },
+  },
+  sg_tollana: {
+    name: 'Glasswright Enclave', designation: 'Elderstone Waystone · The Mirrorvault', galaxy: 'Elderstone Frontier',
+    classification: 'Warded Archive',
+    description: 'A quiet archive carved into clear stone, where rune-scribes study a sealed mirror door.',
+    loreDetails: 'The Glassroot Assembly lends wardwrights to guard the archive. No relic leaves without a copy of its finding entered in the ledger.',
+    malpTelemetry: { atmosphere: 'Dry, cool archive air', radiation: 'Negligible', gravity: 'Steady ground', lifeSigns: 'Scribes and construct wardens', threatRating: 'Mirrorvault sentinels', resourcesAvailable: 'Clear quartz, rune plates, old lore' },
+  },
+  sg_delmak: {
+    name: 'Amberdeep Exchange', designation: 'Amber Road Waystone · Merchant Houses', galaxy: 'Amber Road',
+    classification: 'Market Stronghold',
+    description: 'A busy caravan yard surrounds a waystone whose marks are copied into every guild safe-conduct.',
+    loreDetails: 'The Amber Road Syndics maintain the crossing. Their factors negotiate access before any company passes through.',
+    malpTelemetry: { atmosphere: 'Dusty market air', radiation: 'Negligible', gravity: 'Steady ground', lifeSigns: 'Caravan crews and guild factors', threatRating: 'Paid road guards', resourcesAvailable: 'Crowns, food stores, trade goods' },
+  },
+  sg_tartarus: {
+    name: 'Cinderfold Deep Hold', designation: 'Ashen Waystone · Beneath the Red Ridge', galaxy: 'Cinder March',
+    classification: 'Deepdelve Hall',
+    description: 'A basalt hall descends into a warm ravine where dragon-glass glows behind iron grates.',
+    loreDetails: 'The forges are tended by oath-sworn smiths. The lower passage is closed whenever the mountain begins to sing.',
+    malpTelemetry: { atmosphere: 'Hot forge air', radiation: 'Moderate', gravity: 'Steady ground', lifeSigns: 'Smiths and shielded forge crews', threatRating: 'Ash drakes in lower tunnels', resourcesAvailable: 'Oath-iron, dragon-glass, Aether salts' },
+  },
+  sg_asuras: {
+    name: 'Glassroot Hall', designation: 'Runewright Waystone · Ironroot Clans', galaxy: 'Deepdelve Holds',
+    classification: 'Warded Archive',
+    description: 'A broad stone chamber built around a cracked rune pillar and the oldest workshop of the Assembly.',
+    loreDetails: 'The hall is shared by Ironroot smiths and named golems. Both keep a place at the bench for a new apprentice.',
+    malpTelemetry: { atmosphere: 'Cool stone and forge smoke', radiation: 'Low', gravity: 'Steady ground', lifeSigns: 'Smiths, scribes, and golem apprentices', threatRating: 'Dormant rune guardians', resourcesAvailable: 'Iron, moonstone, rune patterns' },
+  },
+  sg_wraith_hive: {
+    name: 'Hollowfen Pools', designation: 'Fenway Stone · Whispering Fen', galaxy: 'Whispering Fen',
+    classification: 'Fen Refuge',
+    description: 'Blue lanterns drift above a maze of reeds, marking a narrow path to a half-sunken waystone.',
+    loreDetails: 'The Hollowfen Broods gather here during the dry turn. Visitors must leave weapons peace-bound at the reed gate.',
+    malpTelemetry: { atmosphere: 'Wet reedland mist', radiation: 'Moderate', gravity: 'Soft marsh ground', lifeSigns: 'Fen families and reed scouts', threatRating: 'Hollowfen warbands', resourcesAvailable: 'Medicinal reeds, Aether pools, peat' },
+  },
+  sg_othala: {
+    name: 'Frostfang Hearth', designation: 'Northroad Waystone · Frostfang Holds', galaxy: 'Frostfang Holds',
+    classification: 'Marcher Keep',
+    description: 'A high watch keep shelters a blue waystone from snow, wind, and the long northern dark.',
+    loreDetails: 'The Frostfang Wayfarers share its fires with every traveler. Their map room is rebuilt after each hard winter.',
+    malpTelemetry: { atmosphere: 'Bitter clear mountain air', radiation: 'Low', gravity: 'Steady ground', lifeSigns: 'Wayfarers and watch-keepers', threatRating: 'Whiteout and rime beasts', resourcesAvailable: 'Iron, fur, winter herbs' },
+  },
+  sg_destiny: {
+    name: 'The Endless Barrow Road', designation: 'Old Oathway · Beyond the Shattered Barrows', galaxy: 'Shattered Barrows',
+    classification: 'Waystone Shrine',
+    description: 'A mile of standing stones disappears into a gray moor. Each bears a different name scratched out by weather.',
+    loreDetails: 'The Lantern Cartographers mark the road but do not claim to know where it ends. A returning traveler must carry a new story.',
+    malpTelemetry: { atmosphere: 'Thin moorland fog', radiation: 'High', gravity: 'Uneven barrow ground', lifeSigns: 'Uncertain lights beyond the cairns', threatRating: 'The Unsworn Host', resourcesAvailable: 'Elder relics, dawnshards, lost charters' },
+  },
+  sg_novus: {
+    name: 'New Crownwall', designation: 'Reeve’s Waystone · Crownwall Cities', galaxy: 'Crownwall Cities',
+    classification: 'Homehold Bastion',
+    description: 'A newly raised gatehouse joins rebuilt bridges, public wells, and a growing guild market.',
+    loreDetails: 'The Crownwall Compact settled this crossing after the Emberfall. Every household may add a mark to the town’s shared map.',
+    malpTelemetry: { atmosphere: 'Clear river-valley air', radiation: 'Negligible', gravity: 'Steady ground', lifeSigns: 'Builders, reeves, and market families', threatRating: 'None', resourcesAvailable: 'Crowns, timber, clean water' },
+  },
+};
+
+export const STARGATE_NETWORK: StargateAddress[] = PRECURSOR_STARGATE_ADDRESSES.map((address) => ({
+  ...address,
+  ...ELDORIA_WAYSTONE_LORE[address.id],
+}));
+
 // -------------------------------------------------------------
-// SG Expeditionary Teams
+// Waystone expedition orders
 // -------------------------------------------------------------
 export const SG_TEAMS: SGTeamUnit[] = [
   {
     id: 'team-sg1',
-    code: 'SG-1',
-    name: 'Flagship Tactical & Archaeological Unit',
-    specialization: 'Archaeology & Ancient Tech',
-    leader: 'Col. Samantha Carter & Dr. Daniel Jackson',
-    successBonus: '+45% Rare Artifact Drop & +25% Crystal Yield',
+    code: 'CW-1',
+    name: 'Crownroad Lantern Wardens',
+    specialization: 'Waystone Survey & Relic Lore',
+    leader: 'Warden Aria Vale & Scribe Rowan',
+    successBonus: '+45% Elder Relic Finds & +25% Moonstone Yield',
     turnCost: 1,
-    perkDescription: 'Expert knowledge of Ancient dialect, Goa\'uld technology, and Asgard physics guarantees deciphering of locked ruins and zero trap detonation.',
+    perkDescription: 'They read old road-marks, copy rune inscriptions, and spot a warded threshold before the company crosses it.',
     missionsCount: 142,
   },
   {
     id: 'team-sg3',
-    code: 'SG-3',
-    name: 'US Marine Heavy Combat Corps',
-    specialization: 'Heavy Marine Assault',
-    leader: 'Major Castleman',
-    successBonus: '+60% Combat Win Rate against Hostile Garrisons & +40% Naquadah Seized',
+    code: 'BV-3',
+    name: 'Blacksteel Vanguard',
+    specialization: 'Shieldwall & Siege Assault',
+    leader: 'High Marshal Darius Blackthorn',
+    successBonus: '+60% Victory Chance against Hostile Garrisons & +40% Crowns Recovered',
     turnCost: 1,
-    perkDescription: 'Equipped with heavy machine guns, C-4 shaped charges, and portable railgun turrets to neutralize enemy Jaffa and Wraith swarms.',
+    perkDescription: 'Veteran shield-bearers, pike captains, and engine crews can break a gate without abandoning the wounded.',
     missionsCount: 98,
   },
   {
     id: 'team-sg11',
-    code: 'SG-11',
-    name: 'Planetary Engineering & Extraction Corps',
-    specialization: 'Naquadah Mining & Engineering',
-    leader: 'Dr. David Edwards',
-    successBonus: '+100% Raw Naquadah & Mineral Extraction Yield',
+    code: 'ID-11',
+    name: 'Ironroot Delvers',
+    specialization: 'Ore Survey & Forge Engineering',
+    leader: 'Thane Brokk Ironroot',
+    successBonus: '+100% Iron & Specialty Vein Yield',
     turnCost: 1,
-    perkDescription: 'Deploys sonic excavators and heavy transport MALP sleds directly through the event horizon to harvest rich veins of ore.',
+    perkDescription: 'Delvers brace unstable shafts, test deep seams, and bring the recovered ore home in guarded carts.',
     missionsCount: 76,
   },
   {
     id: 'team-sg22',
-    code: 'SG-22',
-    name: 'Covert SpecOps & Infiltration Recon',
-    specialization: 'Covert Infiltration & Sabotage',
-    leader: 'Lt. Col. Reynolds',
+    code: 'GP-22',
+    name: 'Gloamveil Pathfinders',
+    specialization: 'Scoutcraft & Counter-Signs',
+    leader: 'Warden Elira Shade',
     successBonus: '100% Safe Evacuation Rate & Zero Casualties Guarantee',
     turnCost: 1,
-    perkDescription: 'Utilizes Sodan stealth cloaking devices and miniature sensor bugs to slip past hostile forcefields without detection.',
+    perkDescription: 'Pathfinders read tracks, hide lanterns, and guide a company past sentries without drawing steel.',
     missionsCount: 64,
   },
 ];
@@ -646,39 +745,39 @@ export const INITIAL_JUMP_GATE_RELAYS: JumpGateRelay[] = [
 export const ANCIENT_CRYSTALS: AncientControlCrystal[] = [
   {
     id: 'cryst-dhd-master',
-    name: 'Master DHD Polaron Interface Crystal',
-    rarity: 'Lantean Relic',
-    effect: 'Fast-tracks chevron locking by 60% and reduces Naquadah dialing cost to zero.',
+    name: 'First-Road Caller Stone',
+    rarity: 'Elder Relic',
+    effect: 'Sets road-marks 60% faster and removes the Crown offering for a known path.',
     installed: true,
     socket: 'dhd_core',
-    boostValue: '-60% Dial Time',
+    boostValue: '-60% Marking Time',
   },
   {
     id: 'cryst-zpm-fragment',
-    name: 'Potentia Zero Point Capacitor Shard',
-    rarity: 'Zero Point Core',
-    effect: 'Unlocks 8th & 9th Chevron intergalactic dialing to Pegasus, Ida, and Destiny.',
+    name: 'Emberheart Aether Shard',
+    rarity: 'Dawnshard',
+    effect: 'Opens the longest old roads between the far marches and distant great realms.',
     installed: true,
     socket: 'dhd_core',
-    boostValue: '+9th Chevron Unlocked',
+    boostValue: '+Far Roads Unlocked',
   },
   {
     id: 'cryst-tachyon-flux',
-    name: 'Tachyon Flux Compression Prism',
-    rarity: 'Ancient Rare',
-    effect: 'Cuts Subspace Jump Gate capacitor cooldown in half across all orbital relays.',
+    name: 'Leyroad Resonance Prism',
+    rarity: 'Elder Relic',
+    effect: 'Cuts the reawakening time of paired waystones in half across the realm.',
     installed: true,
     socket: 'jump_capacitor',
-    boostValue: '-50% Jump Cooldown',
+    boostValue: '-50% Reawakening Time',
   },
   {
     id: 'cryst-harmonics',
-    name: 'Trinium Harmonic Phase Inverter',
-    rarity: 'Ancient Rare',
-    effect: 'Reinforces the Stargate mechanical iris against particle beam weapon attacks.',
+    name: 'Oathward Glass Seal',
+    rarity: 'Elder Relic',
+    effect: 'Strengthens a waystone’s oathward against hostile engines and spellfire.',
     installed: false,
     socket: 'shield_harmonics',
-    boostValue: '+100% Iris Absorption',
+    boostValue: '+100% Oathward Strength',
   },
 ];
 
@@ -687,7 +786,7 @@ export const ANCIENT_CRYSTALS: AncientControlCrystal[] = [
 // -------------------------------------------------------------
 export const INITIAL_SUPERGATE: SupergateSingularity = {
   id: 'supergate-ori-prime',
-  name: 'Kallana Ori Supergate [Singularity Anchor]',
+  name: 'Crownstone of First Light',
   segmentsAssembled: 90,
   microSingularityMass: 1.4, // solar masses
   status: 'singularity_active',

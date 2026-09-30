@@ -1,0 +1,239 @@
+/* Shared light dossier treatment for Nemesis and rival-warlord systems. */
+.rival-system {
+  --rival-ink: #26313a;
+  --rival-muted: #687681;
+  --rival-line: #d9e0e4;
+  --rival-soft: #f4f7f8;
+  --rival-panel: #ffffff;
+  --rival-red: #b42318;
+  --rival-amber: #a15c00;
+  --rival-green: #27734a;
+  color: var(--rival-ink) !important;
+}
+
+.rival-system > * {
+  border-radius: 0 !important;
+}
+
+.rival-system button,
+.rival-system article,
+.rival-system section,
+.rival-system [role='status'] {
+  border-radius: 2px !important;
+}
+
+/* Shared page rhythm and readable white canvas. */
+.rival-system .bg-slate-900,
+.rival-system .bg-slate-950,
+.rival-system .bg-\[\#202a22\],
+.rival-system .bg-\[\#242b23\],
+.rival-system .bg-\[\#24231f\],
+.rival-system .bg-\[\#232c23\],
+.rival-system .bg-\[\#232923\],
+.rival-system .bg-\[\#242a23\],
+.rival-system .bg-\[\#1d251f\],
+.rival-system .bg-\[\#1a211b\],
+.rival-system .bg-\[\#171e18\],
+.rival-system .bg-\[\#1c241e\] {
+  background-color: var(--rival-panel) !important;
+}
+
+.rival-system .border-slate-800,
+.rival-system .border-slate-700,
+.rival-system .border-\[\#465240\],
+.rival-system .border-\[\#786342\],
+.rival-system .border-\[\#57443a\],
+.rival-system .border-\[\#60744e\],
+.rival-system .border-\[\#65705a\],
+.rival-system .border-\[\#746040\],
+.rival-system .border-\[\#414a40\],
+.rival-system .border-white\/10 {
+  border-color: var(--rival-line) !important;
+}
+
+.rival-system .text-white,
+.rival-system .text-\[\#fff8e8\],
+.rival-system .text-\[\#fff4e3\],
+.rival-system .text-\[\#fff7e6\],
+.rival-system .text-\[\#fff5df\],
+.rival-system .text-\[\#faf4e3\],
+.rival-system .text-\[\#eee4cc\] {
+  color: var(--rival-ink) !important;
+}
+
+.rival-system .text-slate-300,
+.rival-system .text-slate-400,
+.rival-system .text-slate-500,
+.rival-system .text-\[\#d2d0c3\],
+.rival-system .text-\[\#c8c6b8\],
+.rival-system .text-\[\#d0c9bb\],
+.rival-system .text-\[\#c9c8bb\],
+.rival-system .text-\[\#aaa99d\] {
+  color: var(--rival-muted) !important;
+}
+
+.rival-system .bg-red-600,
+.rival-system .bg-red-500,
+.rival-system .bg-\[\#683f35\],
+.rival-system .bg-\[\#826038\] {
+  background-color: var(--rival-red) !important;
+}
+
+.rival-system .bg-amber-600,
+.rival-system .bg-\[\#33372d\] {
+  background-color: var(--rival-amber) !important;
+}
+
+.rival-system .text-red-400,
+.rival-system .text-red-200,
+.rival-system .text-\[\#c5ad7d\],
+.rival-system .text-\[\#c6a870\],
+.rival-system .text-\[\#d0ac70\] {
+  color: var(--rival-red) !important;
+}
+
+.rival-system .text-amber-400,
+.rival-system .text-amber-300,
+.rival-system .text-\[\#e6c88f\],
+.rival-system .text-\[\#d6c89e\],
+.rival-system .text-\[\#efddae\] {
+  color: var(--rival-amber) !important;
+}
+
+.rival-system .shadow-2xl,
+.rival-system .shadow-xl,
+.rival-system .shadow-lg {
+  box-shadow: 0 8px 24px rgba(38, 49, 58, 0.08) !important;
+}
+
+/* Nemesis: turn the hierarchy into a clean command dossier. */
+.nemesis-system-view {
+  background: #f7f9fa;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  border: 1px solid var(--rival-line);
+}
+
+.nemesis-system-view > :first-child {
+  background: linear-gradient(110deg, #ffffff 0%, #f2f5f6 70%, #fff7f5 100%) !important;
+  border: 1px solid var(--rival-line) !important;
+  border-left: 4px solid var(--rival-red) !important;
+  box-shadow: none !important;
+}
+
+.nemesis-system-view > :nth-child(2) {
+  background: #ffffff;
+  border: 1px solid var(--rival-line);
+  padding: 0.5rem;
+}
+
+.nemesis-system-view > :nth-child(2) button {
+  background: transparent !important;
+  color: var(--rival-muted) !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.nemesis-system-view > :nth-child(2) button:hover,
+.nemesis-system-view > :nth-child(2) button[class*='bg-red-600'] {
+  background: #fff4f2 !important;
+  color: var(--rival-red) !important;
+  border-bottom-color: var(--rival-red) !important;
+}
+
+.nemesis-system-view .bg-red-950\/60,
+.nemesis-system-view .bg-amber-950\/60,
+.nemesis-system-view .bg-blue-950\/60,
+.nemesis-system-view .bg-emerald-950\/60,
+.nemesis-system-view .bg-red-950\/40,
+.nemesis-system-view .bg-emerald-950\/40,
+.nemesis-system-view .bg-slate-950\/70,
+.nemesis-system-view .bg-slate-950\/90 {
+  background-color: #fff8f6 !important;
+}
+
+.nemesis-system-view [class*='lg:col-span-5'] > div {
+  border-top: 3px solid var(--rival-red) !important;
+  position: sticky;
+  top: 1rem;
+}
+
+.nemesis-system-view .grid.grid-cols-1.lg\:grid-cols-12 {
+  align-items: start;
+}
+
+/* Warlord raids: make the selected encounter the visual anchor. */
+.warlord-raid-system {
+  background: #f7f9fa;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  border: 1px solid var(--rival-line);
+}
+
+.warlord-raid-system > header {
+  background: linear-gradient(105deg, #ffffff 0%, #f7f9fa 72%, #fff8ef 100%) !important;
+  border: 1px solid var(--rival-line) !important;
+  border-top: 4px solid var(--rival-amber) !important;
+}
+
+.warlord-raid-system > header h1 {
+  color: var(--rival-ink) !important;
+  letter-spacing: -0.02em;
+}
+
+.warlord-raid-system > header p {
+  color: var(--rival-muted) !important;
+}
+
+.warlord-raid-system > header + div {
+  background: #ffffff;
+  border: 1px solid var(--rival-line);
+  padding: 0.5rem;
+}
+
+.warlord-raid-system > header + div button {
+  background: transparent !important;
+  color: var(--rival-muted) !important;
+  border-color: transparent !important;
+}
+
+.warlord-raid-system > header + div button[aria-selected='true'] {
+  background: #fff6e8 !important;
+  color: var(--rival-amber) !important;
+  border-color: #e6bd7c !important;
+}
+
+.warlord-raid-system article,
+.warlord-raid-system section[aria-live='polite'] {
+  box-shadow: 0 5px 18px rgba(38, 49, 58, 0.05);
+}
+
+.warlord-raid-system article h2,
+.warlord-raid-system section h2 {
+  color: var(--rival-ink) !important;
+}
+
+.warlord-raid-system article p,
+.warlord-raid-system section p {
+  color: var(--rival-muted) !important;
+}
+
+.warlord-raid-system .bg-emerald-950\/40 {
+  background-color: #edf8f0 !important;
+  border-color: #a9d7b7 !important;
+}
+
+.warlord-raid-system .bg-\[\#30392e\] {
+  background-color: #edf1ee !important;
+}
+
+@media (max-width: 767px) {
+  .rival-system {
+    padding: 0.75rem;
+  }
+
+  .nemesis-system-view > :first-child,
+  .warlord-raid-system > header {
+    padding: 1rem !important;
+  }
+}

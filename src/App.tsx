@@ -107,6 +107,8 @@ import {
 
 // Views
 import { DashboardView } from './components/views/DashboardView';
+import { StrategicControlConsoleView } from './components/views/StrategicControlConsoleView';
+import { RealmDossierView } from './components/views/RealmDossierView';
 import { ResourcesView } from './components/views/ResourcesView';
 import { IncomeView } from './components/views/IncomeView';
 import { MilitaryScoresView } from './components/views/MilitaryScoresView';
@@ -3491,6 +3493,25 @@ export default function App() {
                 naturalIncome={naturalIncome}
                 bankCapacity={bankCapacity}
                 planets={planets}
+              />
+            )}
+
+            {activeRoute === 'strategic-console' && (
+              <StrategicControlConsoleView
+                profile={profile}
+                resources={resources}
+                onUpdateResources={(updates) => setResources((previous) => ({ ...previous, ...updates }))}
+                onProcessTurn={handleProcessTurn}
+                onNavigate={setActiveRoute}
+              />
+            )}
+
+            {activeRoute === 'realm-dossier' && (
+              <RealmDossierView
+                profile={profile}
+                resources={resources}
+                planets={planets}
+                onNavigate={setActiveRoute}
               />
             )}
 

@@ -241,7 +241,7 @@ assert(practiceRollMode('normal', ['steady'], 'wisdom', 'check') === 'advantage'
 assert(practiceRollMode('advantage', ['slowed'], 'dexterity', 'check') === 'normal', 'Advantage and Slowed disadvantage cancel correctly');
 assert(practiceRollMode('normal', ['slowed'], 'dexterity', 'save') === 'disadvantage', 'Slowed applies disadvantage to Dexterity saves');
 const pathFeatureResult = usePracticePathFeature(DEFAULT_ADVENTURER_SHEET);
-assert(pathFeatureResult?.sheet.conditions.includes('guarded') && pathFeatureResult.sheet.pathFeatureUsed, 'A calling path readies its once-per-rest Guarded feature');
+assert(Boolean(pathFeatureResult?.sheet.conditions.includes('guarded') && pathFeatureResult.sheet.pathFeatureUsed), 'A calling path readies its once-per-rest Guarded feature');
 assert(usePracticePathFeature(pathFeatureResult!.sheet) === null, 'A path feature cannot be reused before resting');
 assert(describePracticePathFeature('bastion', 1).includes('+2 Guard') && describePracticePathFeature('stormblade', 1).includes('advantage'), 'Path feature text describes its implemented practice effect');
 assert(MONSTER_BESTIARY.length === 90, 'Fantasy bestiary contains exactly 90 enemy monsters');
@@ -261,24 +261,24 @@ assert(PLANETARY_CLASSES_A_TO_Z.length >= 20, `Stellar Planetary Encyclopedia co
 assert(INITIAL_BATTLE_PASS_TIERS.length >= 18, `Store & Battle Pass contains ${INITIAL_BATTLE_PASS_TIERS.length} reward tiers`);
 assert(INITIAL_EVE_BLUEPRINTS.length >= 4, `EVE Blueprint system contains ${INITIAL_EVE_BLUEPRINTS.length} blueprint items`);
 assert(OGAME_SERVERS.length >= 3, `MMORPG OGame servers loaded with ${OGAME_SERVERS.length} realms`);
-assert(STARGATE_NPC_RACES.length >= 18, `Stargate NPC Civilizations registry loaded with ${STARGATE_NPC_RACES.length} canonical alien races`);
+assert(STARGATE_NPC_RACES.length === 24, `Eldoria peoples registry loaded with ${STARGATE_NPC_RACES.length} original dossiers`);
 assert(
-  STARGATE_NPC_RACES.every((r) => r.id && r.name && r.homeworld && r.factionLeader && r.tacticalTraits.length > 0),
-  `All ${STARGATE_NPC_RACES.length} Stargate NPC races have complete dossiers, tactical traits, and faction leaders`
+  STARGATE_NPC_RACES.every((r) => r.id && r.name && r.homeworld && r.factionLeader && r.flagshipClass && r.tacticalTraits.length > 0 && r.loreDescription),
+  `All ${STARGATE_NPC_RACES.length} Eldoria peoples have complete homes, leaders, standards, tactics, and lore`
 );
 assert(
-  STARGATE_NPC_RACES.some((r) => r.canonicalSeries === 'Stargate SG-1') &&
-  STARGATE_NPC_RACES.some((r) => r.canonicalSeries === 'Stargate Atlantis') &&
-  STARGATE_NPC_RACES.some((r) => r.canonicalSeries === 'Stargate Universe'),
-  'Canonical representation across SG-1, Atlantis, and Universe verified'
+  STARGATE_NPC_RACES.some((r) => r.canonicalSeries === 'Crownroad Annals') &&
+  STARGATE_NPC_RACES.some((r) => r.canonicalSeries === 'Deepdelve Tablets') &&
+  STARGATE_NPC_RACES.some((r) => r.canonicalSeries === 'Cinder March Chronicles'),
+  'The peoples catalog spans Crownroad, Deepdelve, and Cinder March chronicles'
 );
 assert(
   CONVERT_NPC_RACES_TO_TARGET_REALMS().length === STARGATE_NPC_RACES.length,
-  `All ${STARGATE_NPC_RACES.length} Stargate NPC races convert cleanly into active tactical Target Realms`
+  `All ${STARGATE_NPC_RACES.length} Eldoria peoples convert cleanly into active tactical Target Realms`
 );
 assert(
   TARGET_REALMS.length >= 23,
-  `Target realms successfully integrated with all 18 Stargate NPC factions (Total: ${TARGET_REALMS.length} targets)`
+  `Target realms successfully integrate the Eldoria peoples catalog (Total: ${TARGET_REALMS.length} targets)`
 );
 
 // =========================================================================
@@ -507,18 +507,18 @@ assert(updatedOriginBattleships + updatedDestBattleships === originRelay.station
 assert(true, 'Zero Deuterium fuel consumed during subspace jump gate transit');
 
 // SG Team Mission Execution
-const sg1 = SG_TEAMS.find(t => t.code === 'SG-1')!;
-assert(sg1.turnCost === 1, 'SG-1 team dispatch costs exactly 1 Attack Turn');
+const sg1 = SG_TEAMS.find(t => t.id === 'team-sg1')!;
+assert(sg1.turnCost === 1, 'Crownroad Lantern Warden dispatch costs exactly 1 March Order');
 const lootCrystalSG1 = Math.floor(atlantisGate.lootEstimates.crystal * 1.5);
 assert(lootCrystalSG1 > 0, `SG-1 specialty bonus boosts crystal extraction yield (+${lootCrystalSG1.toLocaleString()} Crystal)`);
 
 // Supergate Singularity Test
-assert(INITIAL_SUPERGATE.segmentsAssembled === 90, 'Ori Supergate has all 90 segments assembled');
+assert(INITIAL_SUPERGATE.segmentsAssembled === 90, 'Crownstone of First Light has all 90 stones assembled');
 assert(INITIAL_SUPERGATE.microSingularityMass > 0, 'Micro-black hole micro-singularity mass verified');
 
 // Ancient Crystal Sockets
 const dhdCrystal = ANCIENT_CRYSTALS[0];
-assert(dhdCrystal.installed === true, `Master DHD crystal installed into socket (${dhdCrystal.boostValue})`);
+assert(dhdCrystal.installed === true, `First-Road Caller Stone is bound (${dhdCrystal.boostValue})`);
 
 // =========================================================================
 // TEST SUITE 9: HYPERSPACE & MOTHERSHIPS

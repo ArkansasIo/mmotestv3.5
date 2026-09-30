@@ -64,7 +64,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
     return matchesSearch && matchesGalaxy && matchesThreat && matchesSeries;
   });
 
-  const galaxies = ['ALL', 'Milky Way', 'Pegasus', 'Ori Galaxy', 'Destiny Cosmic Void'];
+  const galaxies = ['ALL', ...Array.from(new Set(STARGATE_NPC_RACES.map((race) => race.galaxy)))];
   const threatLevels = [
     'ALL',
     'Harmless / Pacifist',
@@ -72,17 +72,17 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
     'High / Aggressive',
     'Extinction Level / Cataclysmic',
   ];
-  const seriesList = ['ALL', 'Stargate SG-1', 'Stargate Atlantis', 'Stargate Universe'];
+  const seriesList = ['ALL', ...Array.from(new Set(STARGATE_NPC_RACES.map((race) => race.canonicalSeries)))];
 
   const handleSimulateScan = (race: StargateNpcRace) => {
     sound.play('ping');
     setSimulatingCombatId(race.id);
-    setActionFeedback(`Subspace sensor array pinging ${race.homeworld}... Calculating defense frequency.`);
+    setActionFeedback(`Lantern scouts are surveying ${race.homeworld} and charting its ward lines.`);
     setTimeout(() => {
       setSimulatingCombatId(null);
       sound.play('confirm');
       setActionFeedback(
-        `Sensor reconnaissance confirmed! ${race.name} flagship: ${race.flagshipClass} (Tech Tier ${race.combatStats.technologicalTier}/10). Estimated Fleet Strength: ${race.fleetStrength.toLocaleString()} Power Units.`
+        `Survey complete: ${race.name} marches under ${race.flagshipClass} (Craft Tier ${race.combatStats.technologicalTier}/10), with an estimated warband strength of ${race.fleetStrength.toLocaleString()}.`
       );
     }, 1200);
   };
@@ -92,19 +92,34 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
     if (race.diplomaticStatus === 'Hostile' || race.threatLevel === 'Extinction Level / Cataclysmic') {
       sound.play('warning');
       setActionFeedback(
-        `DIPLOMATIC ALERT: ${race.name} rejected transmission! Faction leader ${race.factionLeader} maintains active hostilities against the Tau'ri coalition.`
+        `The envoy was turned away. ${race.factionLeader} keeps ${race.name} sworn against your crown for now.`
       );
     } else if (race.diplomaticStatus === 'Ascended / Beyond Contact') {
       sound.play('ping');
       setActionFeedback(
-        `ASCENSION SHIELD: ${race.name} exist on a higher plane of consciousness and do not intervene directly in mortal affairs.`
+        `${race.name} keep to an elder vow and will not enter the quarrels of younger crowns.`
       );
     } else {
       sound.play('success');
       setActionFeedback(
-        `Diplomatic envoy dispatched to ${race.homeworld}! SGC envoys opened formal non-aggression protocols with ${race.factionLeader}.`
+        `A Crownroad envoy has set out for ${race.homeworld} to seek terms with ${race.factionLeader}.`
       );
     }
+  };
+
+  const getThreatLabel = (threat: string) => {
+    if (threat === 'Harmless / Pacifist') return 'Peaceful';
+    if (threat === 'Moderate / Cautious') return 'Wary';
+    if (threat === 'High / Aggressive') return 'Hostile';
+    if (threat === 'Extinction Level / Cataclysmic') return 'Apex Threat';
+    return threat;
+  };
+
+  const getDiplomaticLabel = (status: string) => {
+    if (status === 'Alliance Partner') return 'Oathbound Ally';
+    if (status === 'Rogue / Marauder') return 'Unbound';
+    if (status === 'Ascended / Beyond Contact') return 'Elder Seclusion';
+    return status;
   };
 
   const getThreatBadgeClass = (threat: string) => {
@@ -137,23 +152,21 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
 
   return (
     <div id="stargate-npc-races-view" className="space-y-6">
-      {/* 1. TOP HEADER & SGC BANNER */}
+      {/* 1. PEOPLES OF THE AGE OF EMBERS */}
       <div className="border border-[#dedede] bg-white p-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-xl">🌌</span>
               <h1 className="text-xl font-black text-[#111111] uppercase tracking-wider">
-                Waystone Command: 18 Sovereign Alien NPC Races
+                Peoples & Powers of Eldoria
               </h1>
               <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest bg-blue-50 text-blue-700 border border-blue-200">
-                SGC Level-4 Dossier
+                March Ledger
               </span>
             </div>
             <p className="text-xs text-[#666666] max-w-3xl">
-              Official catalog of 18 canonical non-player civilizations from <strong className="text-neutral-800">Waystone SG-1</strong>,{' '}
-              <strong className="text-neutral-800">Waystone Atlantis</strong>, and <strong className="text-neutral-800">Waystone Realm</strong>.
-              Review diplomatic postures, waystone coordinate sequences, technological tiers, and holding homeworlds.
+              Twenty-four neighboring peoples and powers, each with its own homeland, leader, warband traditions, and reasons to make peace or draw steel.
             </p>
           </div>
 
@@ -192,20 +205,20 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
         {/* METRICS ROW */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-[#eeeeee]">
           <div className="bg-neutral-50 border border-neutral-200 p-3">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 block">Total Alien Races</span>
-            <span className="text-lg font-black text-neutral-900">18 Canon Races</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 block">Peoples & Powers</span>
+            <span className="text-lg font-black text-neutral-900">{STARGATE_NPC_RACES.length} Dossiers</span>
           </div>
           <div className="bg-neutral-50 border border-neutral-200 p-3">
             <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 block">Cataclysmic Threats</span>
             <span className="text-lg font-black text-red-600">4 Apex Threats</span>
           </div>
           <div className="bg-neutral-50 border border-neutral-200 p-3">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 block">Realms Cataloged</span>
-            <span className="text-lg font-black text-blue-600">4 Deep Realms</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 block">Regions Cataloged</span>
+            <span className="text-lg font-black text-blue-600">{galaxies.length - 1} Regions</span>
           </div>
           <div className="bg-neutral-50 border border-neutral-200 p-3">
             <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 block">Max Tech Tier (Tier 10)</span>
-            <span className="text-lg font-black text-amber-600">Ori & Ancients</span>
+            <span className="text-lg font-black text-amber-600">Synod & First Hearth Keepers</span>
           </div>
         </div>
 
@@ -232,7 +245,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
             <input
               type="text"
-              placeholder="Search by race, leader (e.g. Todd, Bra'tac), homeworld, flagship, or series..."
+              placeholder="Search people, leader, homeland, warband, or chronicle..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 border border-neutral-300 text-xs bg-white focus:outline-none focus:border-blue-500 text-neutral-900"
@@ -254,7 +267,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
             >
               {galaxies.map((g) => (
                 <option key={g} value={g}>
-                  {g === 'ALL' ? 'All Galaxies' : g}
+                  {g === 'ALL' ? 'All Regions' : g}
                 </option>
               ))}
             </select>
@@ -278,7 +291,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
             </select>
 
             <div className="flex items-center gap-1.5 text-xs text-neutral-600 font-semibold ml-2">
-              <span>Series:</span>
+              <span>Chronicle:</span>
             </div>
             <select
               value={selectedSeries}
@@ -290,7 +303,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
             >
               {seriesList.map((s) => (
                 <option key={s} value={s}>
-                  {s === 'ALL' ? 'All TV Series' : s}
+                  {s === 'ALL' ? 'All Chronicles' : s}
                 </option>
               ))}
             </select>
@@ -299,7 +312,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
 
         <div className="text-[11px] text-neutral-500 flex items-center justify-between">
           <span>
-            Showing <strong className="text-neutral-800">{filteredRaces.length}</strong> of 18 Waystone Alien Civilizations
+            Showing <strong className="text-neutral-800">{filteredRaces.length}</strong> of {STARGATE_NPC_RACES.length} Eldorian dossiers
           </span>
           {(selectedGalaxy !== 'ALL' || selectedThreat !== 'ALL' || selectedSeries !== 'ALL' || searchQuery) && (
             <button
@@ -319,7 +332,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
         </div>
       </div>
 
-      {/* 3. 18 RACES CARDS GRID */}
+      {/* 3. PEOPLES & POWERS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredRaces.map((race) => {
           const isSimulating = simulatingCombatId === race.id;
@@ -359,31 +372,31 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
                       race.threatLevel
                     )}`}
                   >
-                    {race.threatLevel}
+                    {getThreatLabel(race.threatLevel)}
                   </span>
                   <span
                     className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${getDiplomaticBadgeClass(
                       race.diplomaticStatus
                     )}`}
                   >
-                    {race.diplomaticStatus}
+                    {getDiplomaticLabel(race.diplomaticStatus)}
                   </span>
                 </div>
               </div>
 
               {/* Card Body & Specs */}
               <div className="p-4 space-y-3 text-xs flex-1">
-                {/* Homeworld & Stargate Coordinate */}
+                {/* Homeland & Waystone Mark */}
                 <div className="space-y-1 bg-neutral-50 p-2.5 border border-neutral-200">
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-neutral-500 font-semibold flex items-center gap-1">
-                      <Compass size={11} /> Homeworld:
+                      <Compass size={11} /> Homeland:
                     </span>
                     <span className="font-bold text-neutral-800">{race.homeworld}</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-neutral-500 font-semibold flex items-center gap-1">
-                      <RadioTower size={11} /> Gate Address:
+                      <RadioTower size={11} /> Waystone Mark:
                     </span>
                     <span className="font-mono font-bold text-blue-700 tracking-wider text-[10px]">
                       {race.stargateAddress}
@@ -400,7 +413,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
                     </span>
                   </div>
                   <div>
-                    <span className="text-neutral-500 block text-[10px] uppercase font-bold">Technological Tier</span>
+                    <span className="text-neutral-500 block text-[10px] uppercase font-bold">Craft Tier</span>
                     <span className="font-bold text-amber-700">
                       Tier {race.combatStats.technologicalTier} / 10
                     </span>
@@ -408,7 +421,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
                 </div>
 
                 <div>
-                  <span className="text-neutral-500 block text-[10px] uppercase font-bold">Flagship Class</span>
+                  <span className="text-neutral-500 block text-[10px] uppercase font-bold">Warband Standard</span>
                   <span className="font-medium text-neutral-800 text-[11px] block truncate" title={race.flagshipClass}>
                     {race.flagshipClass}
                   </span>
@@ -493,7 +506,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
                     {selectedRace.name}
                   </h2>
                   <p className="text-xs text-neutral-600 font-medium">
-                    {selectedRace.designationOrTitle} • Canonical {selectedRace.canonicalSeries}
+                    {selectedRace.designationOrTitle} • {selectedRace.canonicalSeries}
                   </p>
                 </div>
               </div>
@@ -515,36 +528,36 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
                   <span className="font-bold text-neutral-900">{selectedRace.galaxy}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-500 font-semibold block text-[10px] uppercase">Classification</span>
+                  <span className="text-neutral-500 font-semibold block text-[10px] uppercase">People</span>
                   <span className="font-bold text-neutral-900">{selectedRace.classification}</span>
                 </div>
                 <div>
                   <span className="text-neutral-500 font-semibold block text-[10px] uppercase">Threat Level</span>
-                  <span className="font-bold text-red-600">{selectedRace.threatLevel}</span>
+                  <span className="font-bold text-red-600">{getThreatLabel(selectedRace.threatLevel)}</span>
                 </div>
                 <div>
                   <span className="text-neutral-500 font-semibold block text-[10px] uppercase">Diplomacy</span>
-                  <span className="font-bold text-blue-700">{selectedRace.diplomaticStatus}</span>
+                  <span className="font-bold text-blue-700">{getDiplomaticLabel(selectedRace.diplomaticStatus)}</span>
                 </div>
               </div>
 
               {/* Full Lore Description */}
               <div className="space-y-1.5">
                 <h4 className="font-bold text-neutral-900 uppercase text-[11px] tracking-wider">
-                  SGC Intelligence Background
+                  Chronicle
                 </h4>
                 <p className="text-neutral-700 leading-relaxed bg-neutral-50/50 p-3 border border-neutral-200">
                   {selectedRace.loreDescription}
                 </p>
                 <p className="text-[11px] text-neutral-500 italic">
-                  Debut Reference: {selectedRace.firstAppearanceEpisode}
+                  First Recorded: {selectedRace.firstAppearanceEpisode}
                 </p>
               </div>
 
               {/* Coordinates & Gate Address */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="border border-neutral-200 p-3 space-y-1">
-                  <span className="text-neutral-500 text-[10px] uppercase font-bold">Homeworld / Sector</span>
+                  <span className="text-neutral-500 text-[10px] uppercase font-bold">Homeland / Holding</span>
                   <p className="font-bold text-neutral-900">{selectedRace.homeworld}</p>
                 </div>
                 <div className="border border-neutral-200 p-3 space-y-1">
@@ -558,17 +571,17 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
               {/* Flagship & Tactical Traits */}
               <div className="border border-neutral-200 p-3 space-y-2">
                 <h4 className="font-bold text-neutral-900 uppercase text-[11px] tracking-wider">
-                  Military Warband Specifications & Traits
+                  Warband Traditions & Traits
                 </h4>
                 <p className="font-semibold text-neutral-800">
-                  Primary Flagship: <span className="font-normal text-neutral-600">{selectedRace.flagshipClass}</span>
+                  Warband Standard: <span className="font-normal text-neutral-600">{selectedRace.flagshipClass}</span>
                 </p>
                 <p className="font-semibold text-neutral-800">
-                  Estimated Warband Strength: <span className="font-mono text-blue-700">{selectedRace.fleetStrength.toLocaleString()}</span>
+                  Muster Strength: <span className="font-mono text-blue-700">{selectedRace.fleetStrength.toLocaleString()}</span>
                 </p>
 
                 <div className="pt-2 space-y-1.5">
-                  <span className="text-[10px] uppercase font-bold text-neutral-500 block">Identified Tactical Doctrines:</span>
+                  <span className="text-[10px] uppercase font-bold text-neutral-500 block">Known Tactics:</span>
                   <ul className="list-disc list-inside space-y-1 text-neutral-700">
                     {selectedRace.tacticalTraits.map((trait, idx) => (
                       <li key={idx} className="leading-snug">{trait}</li>
@@ -591,13 +604,13 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
                     </span>
                   </div>
                   <div className="bg-white p-2 border border-amber-200">
-                    <span className="text-[10px] text-neutral-500 block">Iron / Trinium</span>
+                    <span className="text-[10px] text-neutral-500 block">Iron</span>
                     <span className="font-bold font-mono text-neutral-800">
                       +{selectedRace.resourceLoot.metalOrTrinium.toLocaleString()}
                     </span>
                   </div>
                   <div className="bg-white p-2 border border-amber-200">
-                    <span className="text-[10px] text-neutral-500 block">Control Moonstones</span>
+                    <span className="text-[10px] text-neutral-500 block">Moonstone</span>
                     <span className="font-bold font-mono text-blue-700">
                       +{selectedRace.resourceLoot.crystal.toLocaleString()}
                     </span>
@@ -632,7 +645,7 @@ export const StargateNpcRacesView: React.FC<StargateNpcRacesViewProps> = ({
                   className="px-4 py-2 border border-red-600 bg-red-600 hover:bg-red-700 text-white font-bold uppercase tracking-wider text-xs flex items-center gap-1.5 shadow-sm"
                 >
                   <Swords size={14} />
-                  <span>Assault via SGC Targets</span>
+                  <span>Challenge at the War Council</span>
                 </button>
               )}
             </div>

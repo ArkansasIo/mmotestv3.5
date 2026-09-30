@@ -87,6 +87,8 @@ export const OGAME_NAV_SECTIONS: OGameNavSection[] = [
     defaultRoute: 'dashboard',
     items: [
       { id: 'dashboard', label: 'Realm Overview' },
+      { id: 'strategic-console', label: 'Strategic Control Console' },
+      { id: 'realm-dossier', label: 'Character & Empire Dossier' },
       { id: 'turn-system', label: 'Season Cycle (6 Turns/Min)' },
       { id: 'civilization', label: 'Folk & Settlements' },
       { id: 'government-system', label: '🏛️ 9 Crowns & Councils' },

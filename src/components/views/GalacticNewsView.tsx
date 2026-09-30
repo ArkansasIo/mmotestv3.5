@@ -20,34 +20,34 @@ export const GalacticNewsView: React.FC = () => {
       id: 'news_1',
       timestamp: '10 mins ago',
       category: 'War Alert',
-      title: 'CRISIS ALERT: Starborn Elves Battlefleet Engages Gear Wight Swarm in Othala Hub',
-      content: 'Supreme Commander Thor has initiated emergency subspace jamming around Othala Prime as automated Replicator blockades threaten the core neutronium foundry. All nearby vessels are urged to divert warp vectors.',
-      author: 'Holonet Interstellar Press Service',
+      title: 'CRISIS ALERT: Blackglass Oathguard Hold the Cinderfold Gate',
+      content: 'Marshal Vaeric has called the Ashen clans to reinforce the eastern pass after a band of oathglass mimics copied the watchword. Crownroad Wardens are escorting families to safety.',
+      author: 'Crownroad Gazette · Cinder March Desk',
       isUrgent: true,
     },
     {
       id: 'news_2',
       timestamp: '35 mins ago',
       category: 'Economy',
-      title: 'MARKET TREND: Aether Prices Surge +42% Following Mega-Gate Activation',
-      content: 'The completion of the Dakara Supergate jump array has triggered massive demand for refined deuterium propellant. Commodity brokers report record trading volumes on the Galactic Exchange.',
-      author: 'Galactic Financial Times',
+      title: 'MARKET WATCH: Aether Prices Rise After the Amber Road Reopens',
+      content: 'A clear road between Amberdeep and the Sunward Coast has brought more caravans to market. Factors expect prices to settle after the next First Market.',
+      author: 'Amber Road Ledger',
     },
     {
       id: 'news_3',
       timestamp: '1 hour ago',
       category: 'Science',
-      title: 'BREAKTHROUGH: Science Nexus Team Achieves Tachyon Singularity Stability',
-      content: 'Researchers at the Grand Science Nexus have successfully harmonized Type-IV tachyon fields, opening the gateway to zero-point energy amplification and instantaneous galaxy-wide scanning arrays.',
-      author: 'Imperial Science Directorate',
+      title: 'BREAKTHROUGH: Glassroot Scribes Restore a Broken Waystone',
+      content: 'Rune-binders from the Ironroot Clans and Glassroot Assembly have joined a split road-mark without claiming the crossing for either hold. The first courier reached Moonwell Hall before dusk.',
+      author: 'Arcanist Scriptorium',
     },
     {
       id: 'news_4',
       timestamp: '3 hours ago',
       category: 'Exploration',
-      title: 'DISCOVERY: Ancient Precursor Dreadnought Discovered in Nebula Sector 404',
-      content: 'Deep space expedition fleet Echo-7 has retrieved intact hull fragments from an abandoned precursor starship. Reverse-engineering teams have begun cataloging the unknown module blueprints.',
-      author: 'Deep Space Recon Corps',
+      title: 'DISCOVERY: Delvers Find a Sealed Hall Beneath Elderstone',
+      content: 'A Deepdelve company uncovered an intact oathbarrow beneath the northern cairns. Its door bears nine names and a warning that the waystone within must not be moved.',
+      author: 'Lantern Cartographers',
     },
   ]);
 
@@ -60,11 +60,11 @@ export const GalacticNewsView: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-xs font-mono text-[#777777] uppercase tracking-wider mb-1">
             <Radio className="w-4 h-4 text-[#111111]" />
-            <span>FEATURE 49 · REALM-WIDE NEWS & HOLONET BROADCAST NETWORK</span>
+            <span>FEATURE 49 · LETTERS FROM THE MARCHES</span>
           </div>
-          <h1 className="text-2xl font-bold text-[#111111] tracking-tight">Realm-wide Holonet News Feed</h1>
+          <h1 className="text-2xl font-bold text-[#111111] tracking-tight">The Crownroad Gazette</h1>
           <p className="text-xs text-[#555555] mt-1">
-            Live sub-wilds broadcast feed transmitting realm-wide war reports, commodity market fluctuations, and scientific breakthroughs.
+            Dispatches on border troubles, market bargains, discoveries, and the difficult work of keeping old roads open.
           </p>
         </div>
 

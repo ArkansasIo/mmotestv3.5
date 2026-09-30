@@ -61,11 +61,11 @@ interface SolarSystemBody {
 
 const BIOME_DESCRIPTIONS: Record<string, { desc: string; temp: string; color: string; bonuses: string }> = {
   Terrestrial: { desc: 'Temperate world with robust atmospheric pressure and fertile crust.', temp: '+15°C', color: 'bg-emerald-500/10 text-emerald-700 border-emerald-300', bonuses: '+15% Metal Yield, Balanced Orbits' },
-  Desert: { desc: 'Arid mineral-rich crust with high abundance of heavy silicates.', temp: '+65°C', color: 'bg-amber-500/10 text-amber-700 border-amber-300', bonuses: '+30% Crystal Yield, Solar Intensity Boost' },
-  Ice: { desc: 'Frozen glacial sphere containing massive underground deuterium reserves.', temp: '-140°C', color: 'bg-cyan-500/10 text-cyan-700 border-cyan-300', bonuses: '+45% Deuterium Synthesis, Low Heat Dissipation' },
+  Desert: { desc: 'Arid mineral-rich ground where wind-carved stone hides deep moonstone seams.', temp: '+65°C', color: 'bg-amber-500/10 text-amber-700 border-amber-300', bonuses: '+30% Moonstone Yield, Dawnlight Harvest' },
+  Ice: { desc: 'A frozen glacier realm with clear springs and deep stores of alchemical Aether.', temp: '-140°C', color: 'bg-cyan-500/10 text-cyan-700 border-cyan-300', bonuses: '+45% Aether Harvest, Low Hearthfire Loss' },
   Volcanic: { desc: 'Extreme magmatic mantle ideal for heavy armor and metallurgy works.', temp: '+320°C', color: 'bg-rose-500/10 text-rose-700 border-rose-300', bonuses: '+50% Metal Extraction, Volley Power +10%' },
-  Ocean: { desc: 'Deep liquid hydrosphere with high deuterium concentrations.', temp: '+22°C', color: 'bg-blue-500/10 text-blue-700 border-blue-300', bonuses: '+40% Deuterium Yield, Shield Harmonic Purity' },
-  'Gas Giant': { desc: 'Massive atmospheric leviathan with pressurized plasma clouds.', temp: '-50°C', color: 'bg-purple-500/10 text-purple-700 border-purple-300', bonuses: '+100% Energy Generation from Solar Collectors' },
+  Ocean: { desc: 'Deep water country with clear Aether springs and pearl-rich shoals.', temp: '+22°C', color: 'bg-blue-500/10 text-blue-700 border-blue-300', bonuses: '+40% Aether Harvest, Stronger Keep Wards' },
+  'Gas Giant': { desc: 'A vast cloud-wreathed realm where storm winds feed highland hearths.', temp: '-50°C', color: 'bg-purple-500/10 text-purple-700 border-purple-300', bonuses: '+100% Hearthfire from Dawnmirrors' },
   Jungle: { desc: 'Dense tropical canopy teeming with biological biomass and rapid resource recycling.', temp: '+30°C', color: 'bg-green-500/10 text-green-700 border-green-300', bonuses: '+20% Population Growth, Biomass Refinement' },
   'Tomb World': { desc: 'Ancient irradiated wasteland containing dormant precursor artifacts.', temp: '-10°C', color: 'bg-zinc-500/10 text-zinc-700 border-zinc-300', bonuses: '+35% Tech Research Speed, Salvage Yields' },
   Metallic: { desc: 'Solid iron-nickel core planetoid with high structural density.', temp: '+80°C', color: 'bg-orange-500/10 text-orange-700 border-orange-300', bonuses: '+60% Metal Output, Hull Armor Durability +15%' },
@@ -153,7 +153,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
   // Inter-Universal Dimensional Travel handler
   const handleUniversalJump = (targetUniverseId: number) => {
     if (targetUniverseId === currentUniverseId) {
-      setFeedback({ type: 'info', text: `Already stationed in ${activeUniverse.name}.` });
+      setFeedback({ type: 'info', text: `Your host is already in ${activeUniverse.name}.` });
       return;
     }
 
@@ -165,7 +165,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
       sound.play('warning');
       setFeedback({
         type: 'error',
-        text: `Insufficient Deuterium! Dimensional Supergate jump to Universe ${targetUniverseId} requires ${deutCost.toLocaleString()} Deuterium (You have: ${resources.deuterium.toLocaleString()}).`,
+        text: `Insufficient Aether. The waystone road to Great Realm ${targetUniverseId} requires ${deutCost.toLocaleString()} Aether (you have ${resources.deuterium.toLocaleString()}).`,
       });
       return;
     }
@@ -174,7 +174,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
       sound.play('warning');
       setFeedback({
         type: 'error',
-        text: `Insufficient Dimensional Warp Turns! Travel requires ${turnsCost} Turns (You have: ${resources.attackTurns}).`,
+        text: `Your march orders are exhausted. This journey requires ${turnsCost} orders (you have ${resources.attackTurns}).`,
       });
       return;
     }
@@ -198,7 +198,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
       sound.play('success');
       setFeedback({
         type: 'success',
-        text: `🚀 DIMENSIONAL SUPERGATE TRANSIT COMPLETE: Welcome to ${targetUniv.name}! Cosmic Modifier [${targetUniv.cosmicModifier.label}] is now active across all 90 galaxies.`,
+        text: `The waystone road opens to ${targetUniv.name}. Its blessing, ${targetUniv.cosmicModifier.label}, now guides your host across all 90 marches.`,
       });
     }, 800);
   };
@@ -211,7 +211,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
     setSelectedSystem(1);
     setFeedback({
       type: 'success',
-      text: `Hyperspace drive locked. Arrived at Galaxy ${targetGalaxyId}: ${galaxiesInUniverse[targetGalaxyId - 1]?.name || ''}.`,
+      text: `The waystone answers. Your host reaches March ${targetGalaxyId}: ${galaxiesInUniverse[targetGalaxyId - 1]?.name || ''}.`,
     });
   };
 
@@ -223,10 +223,10 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
       return;
     }
 
-    const res = onColonizePlanet(coord, body.biome, `Colony U${currentUniverseId}-G${currentGalaxyId}-S${selectedSystem}-P${body.position}`);
+    const res = onColonizePlanet(coord, body.biome, `Holding ${currentUniverseId}-${currentGalaxyId}-${selectedSystem}-${body.position}`);
     if (res.success) {
       sound.play('success');
-      setFeedback({ type: 'success', text: `Successfully established planetary colony at [${body.stargateCoordinate}]!` });
+      setFeedback({ type: 'success', text: `A new holding has been founded at [${body.stargateCoordinate}].` });
     } else {
       sound.play('warning');
       setFeedback({ type: 'error', text: res.message });
@@ -248,7 +248,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase">
-                MULTIVERSE CONQUEST ARCHITECTURE · 30 REALMS × 90 REALMS
+                THE AGE OF EMBERS · THIRTY GREAT REALMS
               </span>
               <span className="px-2 py-0.5 bg-[#111111] text-white text-[10px] font-mono font-bold">
                 {activeUniverse.dimensionCode}
@@ -272,7 +272,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
               className="px-4 py-2.5 bg-[#111111] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333333] transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
             >
               <Radio size={14} className="text-cyan-400 animate-pulse" />
-              <span>Inter-Universal Supergate (30 Realms)</span>
+              <span>Waystones Across 30 Realms</span>
             </button>
             <button
               type="button"
@@ -283,27 +283,27 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
               className="px-3.5 py-2.5 border border-[#111111] text-[#111111] text-xs font-bold uppercase tracking-wider hover:bg-[#fafafa] transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <Crosshair size={14} />
-              <span>1-999,999 Conquest</span>
+              <span>Wide-March Atlas</span>
             </button>
           </div>
         </div>
 
-        {/* Active Universe Cosmic Stat Multiplier Ribbon */}
+        {/* Active realm's laws and strengths */}
         <div className="mt-4 pt-4 border-t border-[#eeeeee] grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
           <div className="p-2.5 bg-[#fafafa] border border-[#dedede]">
-            <span className="text-[10px] font-bold text-[#777777] uppercase block">Cosmic Law / Modifier</span>
+            <span className="text-[10px] font-bold text-[#777777] uppercase block">Realm Law</span>
             <span className="font-bold text-emerald-800 text-xs block mt-0.5">
               {activeUniverse.cosmicModifier.label}
             </span>
           </div>
           <div className="p-2.5 bg-[#fafafa] border border-[#dedede]">
-            <span className="text-[10px] font-bold text-[#777777] uppercase block">Resonance Frequency</span>
+            <span className="text-[10px] font-bold text-[#777777] uppercase block">Leyline Pulse</span>
             <span className="font-bold font-mono text-[#111111] text-xs block mt-0.5">
               {activeUniverse.dimensionalFrequency}
             </span>
           </div>
           <div className="p-2.5 bg-[#fafafa] border border-[#dedede]">
-            <span className="text-[10px] font-bold text-[#777777] uppercase block">Dominant Hegemony</span>
+            <span className="text-[10px] font-bold text-[#777777] uppercase block">Dominant Crown</span>
             <span className="font-bold text-[#111111] text-xs block mt-0.5 truncate">
               {activeUniverse.dominantFaction}
             </span>
@@ -311,7 +311,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
           <div className="p-2.5 bg-[#fafafa] border border-[#dedede]">
             <span className="text-[10px] font-bold text-[#777777] uppercase block">Realm Scope</span>
             <span className="font-bold text-[#111111] text-xs block mt-0.5 font-mono">
-              90 Realms · 89,910 Star Systems
+              90 Marches · 89,910 Holdings
             </span>
           </div>
         </div>
@@ -349,7 +349,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
           }`}
         >
           <Globe size={14} />
-          <span>Star System & 15 Orbits</span>
+          <span>Holding Cluster & 15 Sites</span>
         </button>
         <button
           type="button"
@@ -379,14 +379,14 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
           }`}
         >
           <Radio size={14} />
-          <span>30 Realms Supergate</span>
+          <span>Waystones Across 30 Realms</span>
         </button>
       </div>
 
-      {/* TAB 1: ACTIVE SYSTEM & 15 ORBITAL POSITIONS */}
+      {/* TAB 1: ACTIVE HOLDING CLUSTER & 15 SITES */}
       {activeTab === 'system' && (
         <div className="space-y-6">
-          {/* Astrometry Jump Selector (Galaxies 1-90 & Systems 1-999) */}
+          {/* March and holding-cluster selector */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 bg-[#fafafa] border border-[#dedede] p-6">
             <div className="md:col-span-6 flex flex-col gap-2">
               <div className="flex items-center justify-between">
@@ -435,7 +435,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
 
             <div className="md:col-span-6 flex flex-col gap-2">
               <label className="text-xs font-bold text-[#111111] uppercase tracking-wider">
-                Solar System (1 - 999)
+                Holding Cluster (1 - 999)
               </label>
               <div className="flex items-center gap-2">
                 <input
@@ -453,7 +453,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                     setSelectedSystem((s) => (s > 1 ? s - 1 : 999));
                   }}
                   className="px-3 py-2 bg-white border border-[#dedede] text-[#111111] text-xs font-bold hover:border-[#111111] cursor-pointer"
-                  title="Previous System"
+                  title="Previous Holding Cluster"
                 >
                   ← Prev
                 </button>
@@ -465,7 +465,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                   }}
                   className="px-3 py-2 bg-[#111111] text-white text-xs font-bold uppercase hover:bg-[#333333] transition-colors cursor-pointer flex items-center gap-1"
                 >
-                  <span>Next System →</span>
+                  <span>Next Holding Cluster →</span>
                 </button>
                 <button
                   type="button"
@@ -474,31 +474,31 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                     setSelectedSystem(Math.floor(Math.random() * 999) + 1);
                   }}
                   className="px-3 py-2 bg-white border border-[#dedede] text-[#111111] text-xs font-bold hover:border-[#111111] cursor-pointer"
-                  title="Random System"
+                  title="Random Holding Cluster"
                 >
                   🎲 Random
                 </button>
               </div>
               <div className="text-[10px] text-[#777777] font-mono">
-                Active Coordinate: [U{currentUniverseId}:G{currentGalaxyId}:S{selectedSystem}:1-15]
+                Route Mark: Great Realm {currentUniverseId} · March {currentGalaxyId} · Holding Cluster {selectedSystem}
               </div>
             </div>
           </div>
 
-          {/* System Orbits Table (Positions 1 - 15) */}
+          {/* Holding sites */}
           <div className="border border-[#dedede] bg-white overflow-hidden">
             <div className="px-6 py-4 bg-[#fafafa] border-b border-[#dedede] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div>
                 <span className="text-[10px] font-bold text-[#777777] uppercase tracking-wider">
-                  Solar System Holding Body Orbits (15 Borderland Slots)
+                  Holding Sites (15 Available Plots)
                 </span>
                 <h3 className="text-base font-bold text-[#111111]">
-                  Realm {currentUniverseId} · Realm {currentGalaxyId} · System {selectedSystem}
+                  Great Realm {currentUniverseId} · March {currentGalaxyId} · Holding Cluster {selectedSystem}
                 </h3>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono px-3 py-1 bg-[#111111] text-white font-bold">
-                  15 Holding Orbits Online
+                  15 Sites Charted
                 </span>
               </div>
             </div>
@@ -514,7 +514,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                   >
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 border border-[#111111] flex flex-col items-center justify-center font-mono font-bold bg-white shrink-0">
-                        <span className="text-[9px] text-[#777777]">SLOT</span>
+                        <span className="text-[9px] text-[#777777]">SITE</span>
                         <span className="text-sm text-[#111111]">#{body.position}</span>
                       </div>
                       <div>
@@ -528,7 +528,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                           </span>
                           {body.hasMoon && (
                             <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-mono font-bold">
-                              🌙 Orbiting Moon
+                              🌙 Outer Ward
                             </span>
                           )}
                         </div>
@@ -537,8 +537,8 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                         </p>
                         <div className="flex items-center gap-4 mt-2 text-[11px] font-mono text-[#555555] flex-wrap">
                           <span>Temp: <strong className="text-[#111111]">{body.temperature}</strong></span>
-                          <span>Diameter: <strong className="text-[#111111]">{body.sizeKm.toLocaleString()} km</strong></span>
-                          <span>Max Fields: <strong className="text-[#111111]">{body.fields}</strong></span>
+                          <span>Span: <strong className="text-[#111111]">{body.sizeKm.toLocaleString()} km</strong></span>
+                          <span>Plots: <strong className="text-[#111111]">{body.fields}</strong></span>
                         </div>
                         <div className="text-[11px] font-mono text-emerald-700 mt-1 font-semibold">
                           Bonus: {biomeInfo.bonuses}
@@ -554,7 +554,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                           onNavigate('planetary-invasion');
                         }}
                         className="px-3 py-1.5 border border-[#111111] bg-white text-[#111111] text-xs font-bold hover:bg-[#111111] hover:text-white transition-colors cursor-pointer flex items-center gap-1"
-                        title="Open in 1-999,999 Holding Conquest"
+                        title="Open in the Wide-March Atlas"
                       >
                         <Crosshair size={12} />
                         <span>Conquest Hub</span>
@@ -574,7 +574,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                             }}
                             className="px-2.5 py-1.5 border border-[#dedede] bg-white text-[#111111] text-xs font-bold hover:border-[#111111] cursor-pointer"
                           >
-                            Spy
+                            Scout
                           </button>
                           <button
                             type="button"
@@ -584,7 +584,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                             }}
                             className="px-3 py-1.5 bg-[#111111] text-white text-xs font-bold hover:bg-[#333333] cursor-pointer"
                           >
-                            Attack ({body.owner})
+                            Challenge ({body.owner})
                           </button>
                         </div>
                       ) : (
@@ -594,7 +594,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                           className="px-3.5 py-1.5 bg-[#111111] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333333] transition-colors cursor-pointer flex items-center gap-1.5"
                         >
                           <Rocket size={12} />
-                          <span>Colonize (10k Deut / 15k Cryst)</span>
+                          <span>Found Holding (10k Aether / 15k Moonstone)</span>
                         </button>
                       )}
                     </div>
@@ -606,19 +606,19 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
         </div>
       )}
 
-      {/* TAB 2: ALL 90 GALAXIES IN ACTIVE UNIVERSE */}
+      {/* TAB 2: ALL MARCHES IN THE GREAT REALM */}
       {activeTab === 'galaxies' && (
         <div className="space-y-6">
           <div className="bg-[#fafafa] border border-[#dedede] p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <span className="text-[10px] font-bold text-[#777777] uppercase tracking-wider">
-                90 REALMS ROSTER · {activeUniverse.name}
+                MARCH ROSTER · {activeUniverse.name}
               </span>
               <h3 className="text-xl font-bold text-[#111111]">
-                Realm-wide Spiral Arms & Star Clusters (1 to 90)
+                The Marches and Their Holding Clusters
               </h3>
               <p className="text-xs text-[#666666] mt-1">
-                Each realm spans 999 Star Systems and 14,985 Holding Orbits. Select any realm to engage leyroad warp engines.
+                Each march contains 999 holding clusters and 14,985 sites. Choose a road-mark to travel between them.
               </p>
             </div>
 
@@ -671,7 +671,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
 
                   <div className={`mt-3 space-y-1 text-xs font-mono ${isCurrent ? 'text-neutral-300' : 'text-[#666666]'}`}>
                     <div className="flex justify-between">
-                      <span>Stellar Density:</span>
+                      <span>Leyline Density:</span>
                       <strong>{g.stellarDensity}</strong>
                     </div>
                     <div className="flex justify-between">
@@ -685,7 +685,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-dashed border-current/20 flex items-center justify-between">
-                    <span className="text-[10px] font-mono">999 Systems</span>
+                    <span className="text-[10px] font-mono">999 Clusters</span>
                     {isCurrent ? (
                       <span className="text-xs font-bold text-emerald-400 font-mono flex items-center gap-1">
                         <CheckCircle2 size={12} /> Active Location
@@ -699,7 +699,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                         }}
                         className="px-3 py-1.5 bg-[#111111] text-white text-xs font-bold uppercase hover:bg-[#333333] transition-colors cursor-pointer flex items-center gap-1"
                       >
-                        <span>Warp Warband →</span>
+                        <span>Travel by Leyroad →</span>
                       </button>
                     )}
                   </div>
@@ -710,23 +710,23 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
         </div>
       )}
 
-      {/* TAB 3: 30 MULTIVERSE UNIVERSES & INTER-UNIVERSAL SUPERGATE TRAVEL */}
+      {/* TAB 3: THE THIRTY GREAT REALMS */}
       {activeTab === 'supergate' && (
         <div className="space-y-6">
           <div className="border border-[#dedede] bg-white p-6">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase">
-                INTER-UNIVERSAL SUPERGATE TRANSIT CONSOLE
+                CROSS-REALM WAYSTONE TABLE
               </span>
               <span className="px-2 py-0.5 bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-mono font-bold">
                 30 Realms Linked
               </span>
             </div>
             <h3 className="text-2xl font-bold text-[#111111]">
-              Multiverse Dimensional Jump Gate
+              The Old Roads Between Realms
             </h3>
             <p className="text-sm text-[#666666] mt-1 max-w-3xl leading-relaxed">
-              Travel freely across all 30 distinct Realms in the Multiverse. Each Realm governs <strong>90 unique Realms</strong> with distinct physical cosmic laws, resource extraction multipliers, and ruling factions.
+              Travel among thirty great realms. Each holds <strong>90 named marches</strong>, shaped by their own laws, harvests, and ruling crowns.
             </p>
 
             <div className="mt-4 p-4 bg-[#fafafa] border border-[#dedede] flex flex-wrap items-center justify-between gap-4">
@@ -735,7 +735,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                   U{currentUniverseId}
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold text-[#777777] uppercase block">Current Anchored Reality</span>
+                  <span className="text-[10px] font-bold text-[#777777] uppercase block">Current Great Realm</span>
                   <span className="font-bold text-sm text-[#111111]">{activeUniverse.name}</span>
                 </div>
               </div>
@@ -752,7 +752,7 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
             </div>
           </div>
 
-          {/* 30 Universes Catalog */}
+          {/* Thirty Great Realms */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {MULTIVERSE_UNIVERSES.map((univ) => {
               const isCurrent = univ.id === currentUniverseId;
@@ -782,10 +782,10 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                       {univ.tagline}
                     </p>
 
-                    {/* Cosmic Modifier Banner */}
+                    {/* Realm blessing */}
                     <div className="mt-3 p-2.5 bg-emerald-50 border border-emerald-200 text-xs">
                       <span className="text-[10px] font-bold text-emerald-800 uppercase block">
-                        Cosmic Law Modifier:
+                        Realm's Boon:
                       </span>
                       <strong className="text-emerald-900 font-semibold text-xs block mt-0.5">
                         {univ.cosmicModifier.label}
@@ -797,11 +797,11 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
 
                     <div className="mt-3 space-y-1 text-xs font-mono text-[#555555]">
                       <div className="flex justify-between">
-                        <span>Total Realms:</span>
-                        <strong className="text-[#111111]">90 Realms</strong>
+                        <span>Marches:</span>
+                        <strong className="text-[#111111]">90 Marches</strong>
                       </div>
                       <div className="flex justify-between">
-                        <span>Ruling Hegemony:</span>
+                        <span>Ruling Crown:</span>
                         <strong className="text-[#111111] truncate max-w-[170px]">{univ.dominantFaction}</strong>
                       </div>
                     </div>
@@ -810,14 +810,14 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                   <div className="mt-5 pt-4 border-t border-[#dedede] flex items-center justify-between">
                     <div className="text-[11px] font-mono text-[#777777]">
                       <span>Cost: </span>
-                      <strong className="text-cyan-700">{univ.travelDeuteriumCost.toLocaleString()} Deut</strong>
+                      <strong className="text-cyan-700">{univ.travelDeuteriumCost.toLocaleString()} Aether</strong>
                       <span> + </span>
                       <strong className="text-[#111111]">{univ.travelTurnsCost} Turns</strong>
                     </div>
 
                     {isCurrent ? (
                       <span className="px-3 py-1.5 bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold font-mono flex items-center gap-1">
-                        <CheckCircle2 size={12} /> Active Reality
+                        <CheckCircle2 size={12} /> Current Realm
                       </span>
                     ) : (
                       <button

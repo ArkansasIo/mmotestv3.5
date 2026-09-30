@@ -6,7 +6,7 @@
 
 import { StargateNpcRace, TargetRealm } from './types';
 
-export const STARGATE_NPC_RACES: StargateNpcRace[] = [
+const PRECURSOR_CIVILIZATIONS: StargateNpcRace[] = [
   // 1. THE ORI & PRIORS
   {
     id: 'npc_ori_priors',
@@ -967,6 +967,209 @@ export const STARGATE_NPC_RACES: StargateNpcRace[] = [
     sigilColor: '#eab308',
   },
 ];
+
+const ELDORIA_PEOPLE_LORE: Record<string, Pick<StargateNpcRace,
+  'name' | 'designationOrTitle' | 'canonicalSeries' | 'galaxy' | 'homeworld' | 'stargateAddress' |
+  'classification' | 'factionLeader' | 'flagshipClass' | 'tacticalTraits' | 'loreDescription' | 'firstAppearanceEpisode'
+>> = {
+  npc_ori_priors: {
+    name: 'Dawnfire Synod', designationOrTitle: 'Votaries of the Seven Bells', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Sunward Coast', homeworld: 'Bellspire Sanctuary', stargateAddress: 'Bellspire · Ember Stair · Dawn Gate',
+    classification: 'Oathbound temple houses', factionLeader: 'High Cantor Sereth Vale', flagshipClass: 'Radiant Banner Host',
+    tacticalTraits: ['Dawnsong wards steady allied ranks', 'Sunlance bearers break siege lines', 'Hospitallers shelter travelers', 'Oaths are witnessed before every campaign'],
+    loreDescription: 'The Synod keeps the Seven Shrines of Dawn. Its bells call healers, wardens, and sworn champions to defend a road before it is lost.',
+    firstAppearanceEpisode: 'First recorded in the Truce of Nine Banners annals',
+  },
+  npc_wraith_hive: {
+    name: 'Hollowfen Broods', designationOrTitle: 'Keepers of the Reedveil Pools', canonicalSeries: 'Lantern Cartographers’ Journals',
+    galaxy: 'Whispering Fen', homeworld: 'Mireheart, beneath the blue lanterns', stargateAddress: 'Mireheart · Reed Maze · Drowned Bell',
+    classification: 'Fenborn kin-gathering', factionLeader: 'Matriarch Sorn of the Still Pool', flagshipClass: 'The Blackwater Host',
+    tacticalTraits: ['Mist hides their marching strength', 'Brood-wardens recover swiftly in their home fen', 'Night outriders divide careless columns', 'Parley begins with an offered bowl of clean water'],
+    loreDescription: 'The Hollowfen Broods wake when the pools recede. They guard old wells and resent any crown that treats the fen as empty land.',
+    firstAppearanceEpisode: 'First noted after the Emberfall dimmed the eastern waystones',
+  },
+  npc_asuran_replicators: {
+    name: 'Glassroot Assembly', designationOrTitle: 'The Rune-Wrought Commons', canonicalSeries: 'Deepdelve Tablets',
+    galaxy: 'Elderstone Frontier', homeworld: 'Glassroot Hall beneath the cairns', stargateAddress: 'Glassroot · Elder Cairn · Sevenfold Door',
+    classification: 'Runebound construct fellowship', factionLeader: 'First Artificer Oruun', flagshipClass: 'The Walking Hall',
+    tacticalTraits: ['Golem ranks rebuild from gathered stone', 'Wardwrights learn an enemy’s pattern', 'Glass sentinels guard sealed archives', 'The Assembly refuses commands without a freely given oath'],
+    loreDescription: 'The Glassroot Assembly began as a guild of rune-bound helpers. Its members gained names, laws, and the right to refuse their makers.',
+    firstAppearanceEpisode: 'First described in a recovered Ironroot workshop ledger',
+  },
+  npc_ancients_lanteans: {
+    name: 'First Hearth Keepers', designationOrTitle: 'The Elders of the Old Road', canonicalSeries: 'Deepdelve Tablets',
+    galaxy: 'Elderstone Frontier', homeworld: 'The First Hearth Barrow', stargateAddress: 'First Hearth · Oldroot · Dawn Door',
+    classification: 'Elder rune-keeping orders', factionLeader: 'The Quiet Council', flagshipClass: 'Oldroot Sanctuary Barge',
+    tacticalTraits: ['Elder wards resist most hostile spellcraft', 'Wayfinders remember roads lost to the Emberfall', 'Keepers share knowledge only under witness', 'They will not undo death or compel loyalty'],
+    loreDescription: 'The First Hearth Keepers charted the oldest roads and left waystones for later peoples. Their quiet halls open only to those who bring a question and a promise.',
+    firstAppearanceEpisode: 'First named in the oldest surviving Crownroad map',
+  },
+  npc_the_nox: {
+    name: 'Greenveil Kin', designationOrTitle: 'Stewards of the Living Groves', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Silverwood Reach', homeworld: 'The Veiled Spring', stargateAddress: 'Veiled Spring · Moonroot · Green Door',
+    classification: 'Sylvan grove-keepers', factionLeader: 'Warden Lethiel of the Quiet Bough', flagshipClass: 'The Walking Canopy',
+    tacticalTraits: ['Living hedges hide allied travelers', 'Healers restore the wounded after a retreat', 'Scouts can vanish among old trees', 'The Kin refuse to carry arms into a peace moot'],
+    loreDescription: 'The Greenveil Kin keep their groves open to the lost and closed to the greedy. Their wardcraft turns a forest path aside without harming the traveler.',
+    firstAppearanceEpisode: 'First recorded by a Lantern Cartographer in the Silverwood Reach',
+  },
+  npc_furlings: {
+    name: 'Hearthwild Tenders', designationOrTitle: 'Keepers of the Welcome Lantern', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Mycelial Weald', homeworld: 'Lanternhollow Vale', stargateAddress: 'Lanternhollow · Three Acorns · Warm Door',
+    classification: 'Smallfolk sanctuary builders', factionLeader: 'Elder Pella Underbough', flagshipClass: 'The Burrowstead Caravan',
+    tacticalTraits: ['Hidden paths protect refugees', 'Stores and gardens weather long sieges', 'Their inns offer shelter to any traveler', 'Weapons are surrendered at the threshold'],
+    loreDescription: 'The Hearthwild Tenders build warm halls beneath old roots. They prize good food, honest maps, and a guest-right no crown may revoke.',
+    firstAppearanceEpisode: 'First marked in a First Market safe-conduct book',
+  },
+  npc_free_jaffa: {
+    name: 'Stormroad Free Clans', designationOrTitle: 'The Oath-Sworn Pass Wardens', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Eastridge Marches', homeworld: 'Banner Rise above the north pass', stargateAddress: 'Banner Rise · Stormroad · Northwatch',
+    classification: 'Free marcher clans', factionLeader: 'Thane Korran Ashmantle', flagshipClass: 'The Passwarden Shieldhost',
+    tacticalTraits: ['Shieldwalls hold narrow crossings', 'Riders carry warnings between hill keeps', 'Each clan keeps its own law', 'A sworn guest is protected until dawn'],
+    loreDescription: 'The Free Clans unite when a pass is threatened, then return their banners to separate halls. Their oldest law forbids a chief from claiming another clan’s spring.',
+    firstAppearanceEpisode: 'First gathered beneath the Truce of Nine Banners',
+  },
+  npc_tokra_resistance: {
+    name: 'Rootbound Covenant', designationOrTitle: 'The Many-Rooted Council', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Mycelial Weald', homeworld: 'The Underroot Moot', stargateAddress: 'Underroot · Mycelial Seat · Greenwell',
+    classification: 'Symbiotic oath-kin', factionLeader: 'Elder Eryn and Thorn-of-the-West', flagshipClass: 'The Joined Rootguard',
+    tacticalTraits: ['Paired companions share memories and watch', 'Herbalists know rare cures', 'Messengers pass unseen through root paths', 'No bond is made without consent from both lives'],
+    loreDescription: 'The Rootbound Covenant is formed by willing companions who share memory, labor, and risk. Its council debates as a chorus but leaves each voice free.',
+    firstAppearanceEpisode: 'First recorded in the Mycelium Court’s harvest rolls',
+  },
+  npc_kull_warriors: {
+    name: 'Blackglass Oathguard', designationOrTitle: 'The Ashen Crown’s Unyielding Guard', canonicalSeries: 'Cinder March Chronicles',
+    galaxy: 'Cinder March', homeworld: 'Blackglass Bastion', stargateAddress: 'Blackglass · Red Forge · Cinder Gate',
+    classification: 'Oath-armored champions', factionLeader: 'Marshal Vaeric Blackglass', flagshipClass: 'The Ashen Standard Host',
+    tacticalTraits: ['Blackglass harness turns aside arrows', 'Veterans hold formation under fear', 'Forge-priests repair armor between battles', 'A broken oath strips a champion of rank'],
+    loreDescription: 'The Oathguard are selected from the Ashen clans to protect the war-crown. They are feared for their discipline and judged by the promises they keep.',
+    firstAppearanceEpisode: 'First recorded during the Cinder March muster',
+  },
+  npc_lucian_alliance: {
+    name: 'Amber Road Syndics', designationOrTitle: 'The Charter-Bound Factors', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Amber Road', homeworld: 'Amberdeep Exchange', stargateAddress: 'Amberdeep · East Toll · Caravan Rest',
+    classification: 'Merchant-house compact', factionLeader: 'Factor Maelin Goldmere', flagshipClass: 'The Giltroad Caravan Host',
+    tacticalTraits: ['Caravans carry deep stores', 'Factors secure safe-conduct before marching', 'Paid outriders protect market roads', 'Debts are witnessed in public ledgers'],
+    loreDescription: 'The Syndics join merchant houses that disagree on nearly everything except open roads and fair weights. Their contracts can prevent a war or prolong one.',
+    firstAppearanceEpisode: 'First chartered at the reopening of the Amber Road',
+  },
+  npc_aschen_confederation: {
+    name: 'Crownwall Compact', designationOrTitle: 'The Charter Cities of the Eastern Bridges', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Valewyn Crownlands', homeworld: 'Crownwall Hall', stargateAddress: 'Crownwall · River Span · East Gate',
+    classification: 'Chartered city confederacy', factionLeader: 'First Reeve Ansel Rook', flagshipClass: 'The Bridgewarden Companies',
+    tacticalTraits: ['Engineers raise bridges and fieldworks quickly', 'Town guards answer to elected reeves', 'Guild stores sustain besieged neighbors', 'No war tax passes without a public vote'],
+    loreDescription: 'The Compact binds walled cities through shared bridges, guild law, and mutual defense. Its reeves fear that emergency powers may outlive the emergency.',
+    firstAppearanceEpisode: 'First recorded in the Crownwall charter rolls',
+  },
+  npc_serrakin_hebridan: {
+    name: 'Sapphire Coast Mariners', designationOrTitle: 'The Tideglass Guilds', canonicalSeries: 'Lantern Cartographers’ Journals',
+    galaxy: 'Sapphire Coast', homeworld: 'Tideglass Harbor', stargateAddress: 'Tideglass · Pearl Shoal · Blue Bell',
+    classification: 'Coastal mariner guilds', factionLeader: 'Admiral Nerys Tidewright', flagshipClass: 'The Sapphire Oarhost',
+    tacticalTraits: ['Fast galleys guard sea-lanes', 'Pearl divers recover relics from drowned halls', 'Tidewardens read storms days ahead', 'Harbor law grants refuge to shipwrecked foes'],
+    loreDescription: 'The Mariners join island ports, pearl divers, and sea-wardens. Their captains compete fiercely but keep an ancient rescue oath at every harbor.',
+    firstAppearanceEpisode: 'First charted by the Lantern Cartographers of the Sunward Coast',
+  },
+  npc_nakai_blue_aliens: {
+    name: 'Tideveil Exiles', designationOrTitle: 'The Displaced Court Beneath the Waves', canonicalSeries: 'Lantern Cartographers’ Journals',
+    galaxy: 'Sunken Kingdom', homeworld: 'The Veiled Pearl Halls', stargateAddress: 'Veiled Halls · Salt Bell · Drowned Arch',
+    classification: 'Tide-borne court', factionLeader: 'Queen Ysra of the Low Tide', flagshipClass: 'The Pearlward Flotilla',
+    tacticalTraits: ['Tide-wards protect flooded strongholds', 'Divers travel beneath guarded causeways', 'Mist cloaks retreating companies', 'Envoys seek restoration of their drowned halls'],
+    loreDescription: 'The Tideveil Court lost its upper halls when the Emberfall broke the coast wards. Its people seek dry refuge without surrendering their claim to the sea.',
+    firstAppearanceEpisode: 'First recorded after the Sunken Kingdom’s second flood',
+  },
+  npc_ursini_nomads: {
+    name: 'Frostfang Wayfarers', designationOrTitle: 'The Winter-Road Caravans', canonicalSeries: 'Lantern Cartographers’ Journals',
+    galaxy: 'Frostfang Holds', homeworld: 'Bluehorn Watch', stargateAddress: 'Bluehorn · White Pass · Hearthstone',
+    classification: 'Northern wayfaring clans', factionLeader: 'Matron Svala Northglass', flagshipClass: 'The Whitecloak Waytrain',
+    tacticalTraits: ['Winter scouts find safe passes', 'Healers travel with every caravan', 'Shieldbearers shelter the slowest wagon', 'Hospitality is repaid before the thaw'],
+    loreDescription: 'The Wayfarers carry seed, songs, and news between northern keeps. They measure a ruler by whether the ruler opens the storehouses in a hard winter.',
+    firstAppearanceEpisode: 'First entered in the Frostfang winter ledgers',
+  },
+  npc_berserker_drones: {
+    name: 'Ironbound Remnants', designationOrTitle: 'The Unfinished Forge Host', canonicalSeries: 'Deepdelve Tablets',
+    galaxy: 'Deepdelve Holds', homeworld: 'The Sealed Gearhall', stargateAddress: 'Gearhall · Faultline Door · Oath-Iron Seat',
+    classification: 'Runebound machine remnants', factionLeader: 'The Last Forge-Speaker', flagshipClass: 'The Hammering Hall',
+    tacticalTraits: ['Construct ranks ignore fatigue', 'Forge crews reclaim broken arms', 'Old command-runes can awaken dormant halls', 'The Remnants struggle to distinguish orders from oaths'],
+    loreDescription: 'The Ironbound are the last works of a sealed Deepdelve forge. Some seek a maker; others ask only to be left free of the command-runes.',
+    firstAppearanceEpisode: 'First uncovered beneath a sealed Ironroot hold',
+  },
+  npc_the_gadmeer: {
+    name: 'Mosswater Concord', designationOrTitle: 'The Wetland Scribes', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Mycelial Weald', homeworld: 'Mosswater Archive', stargateAddress: 'Mosswater · Reed Library · Rainwell',
+    classification: 'Marshland scholar compact', factionLeader: 'Archivist Toma Reedwise', flagshipClass: 'The Rainward Refuge',
+    tacticalTraits: ['Scribes preserve water and seed records', 'Marsh guides find safe causeways', 'Alchemists restore fouled wells', 'The Concord negotiates before drawing a boundary'],
+    loreDescription: 'The Concord protects wetland archives and the waters downstream. It keeps records of every bargain affecting a river, including those made by dead rulers.',
+    firstAppearanceEpisode: 'First named in the Mycelial Weald water accords',
+  },
+  npc_salish_spirits: {
+    name: 'First Grove Spirits', designationOrTitle: 'The Voices Beneath the Elder Boughs', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Silverwood Reach', homeworld: 'The Elder Bough Circle', stargateAddress: 'Elder Bough · Moonwell · Quiet Glade',
+    classification: 'Elder grove presences', factionLeader: 'The Voice at Root and Rain', flagshipClass: 'The Living Hedge',
+    tacticalTraits: ['Living roots turn aside an invading column', 'Old groves conceal wounded travelers', 'Their warnings precede a leyline storm', 'They will not be bargained for as property'],
+    loreDescription: 'The First Grove Spirits remember the forests before the crowns. They speak rarely, and never mistake a gift for permission to take more.',
+    firstAppearanceEpisode: 'First recorded in the Silverwood spring songs',
+  },
+  npc_the_unas: {
+    name: 'Grotto Clans', designationOrTitle: 'The Stone-Singers Below', canonicalSeries: 'Deepdelve Tablets',
+    galaxy: 'Deepdelve Holds', homeworld: 'Underhall of Nine Bells', stargateAddress: 'Nine Bells · Deep Spring · Flint Door',
+    classification: 'Cavern-dwelling clans', factionLeader: 'Thane Orm Stonewake', flagshipClass: 'The Deepdelve Shieldhost',
+    tacticalTraits: ['Stone-singers read stress in a tunnel wall', 'Clans fight fiercely in narrow halls', 'Delvers know hidden watercourses', 'A guest-mark guarantees safe passage underground'],
+    loreDescription: 'The Grotto Clans dwell beneath the mountain roots. Their songs map tunnels more faithfully than ink, but outsiders must earn the right to hear them.',
+    firstAppearanceEpisode: 'First entered in the Deepdelve route ledgers',
+  },
+  npc_genii_confederacy: {
+    name: 'Ashen March Confederacy', designationOrTitle: 'The Fortified Hill Cantons', canonicalSeries: 'Cinder March Chronicles',
+    galaxy: 'Cinder March', homeworld: 'Red Banner Hold', stargateAddress: 'Red Banner · Charcoal Road · Ashenford',
+    classification: 'Hill-canton confederacy', factionLeader: 'Speaker-Marshal Varka Flint', flagshipClass: 'The Cinder Pikehost',
+    tacticalTraits: ['Hidden stores sustain long sieges', 'Crossbow companies defend steep roads', 'Smiths repair captured engines', 'Each canton must consent before a common levy'],
+    loreDescription: 'The Confederacy values preparation over spectacle. Its cantons distrust the Ashen war-crown but unite when a neighbor’s keep is threatened.',
+    firstAppearanceEpisode: 'First recorded in the Cinder March truce rolls',
+  },
+  npc_urgo_entities: {
+    name: 'Lantern Wisps', designationOrTitle: 'The Laughing Lights of the Fen', canonicalSeries: 'Lantern Cartographers’ Journals',
+    galaxy: 'Whispering Fen', homeworld: 'The Blue-Lantern Pools', stargateAddress: 'Blue Pools · Reed Maze · Hush Stone',
+    classification: 'Gloam-born trickster lights', factionLeader: 'The Many-Lit Moot', flagshipClass: 'The Drifting Lantern Host',
+    tacticalTraits: ['False lights mislead an unwary pursuer', 'Wisps reveal hidden paths to invited guests', 'Their songs disrupt orderly marching', 'They vanish when threatened with a net'],
+    loreDescription: 'The Lantern Wisps are not a crown or a people in the ordinary sense. Cartographers trade riddles with them and leave a little honey at each marked pool.',
+    firstAppearanceEpisode: 'First noted in a Lantern Cartographer’s margin',
+  },
+  npc_humanform_replicators: {
+    name: 'Oathglass Mimics', designationOrTitle: 'The Faces in the Shattered Mirror', canonicalSeries: 'Deepdelve Tablets',
+    galaxy: 'Elderstone Frontier', homeworld: 'The Mirrorvault', stargateAddress: 'Mirrorvault · Glass Cairn · Hidden Face',
+    classification: 'Shape-taking rune constructs', factionLeader: 'The Unnamed Reflection', flagshipClass: 'The Borrowed Banner Host',
+    tacticalTraits: ['Mimics copy a witnessed formation', 'Mirror scouts infiltrate a court', 'Broken glass reveals their true form', 'They cannot repeat an oath they do not understand'],
+    loreDescription: 'Oathglass Mimics were found in a sealed mirrorvault. They can borrow a face and manner but struggle to understand the loyalties they imitate.',
+    firstAppearanceEpisode: 'First described in the Elderstone mirrorvault report',
+  },
+  npc_trust_rogue_nid: {
+    name: 'Gloamveil Ciphers', designationOrTitle: 'The Quiet Hand of the March', canonicalSeries: 'Crownroad Annals',
+    galaxy: 'Gloamveil Reach', homeworld: 'The Lanternless Mile', stargateAddress: 'Lanternless Mile · Black Pine · Gloam Gate',
+    classification: 'Disputed intelligence houses', factionLeader: 'The Unseen Reeve', flagshipClass: 'The Moonless Riders',
+    tacticalTraits: ['Ciphers seed false orders', 'Scouts discover weakly guarded roads', 'Safehouses protect messengers', 'Their loyalty is to a charter, not a crown'],
+    loreDescription: 'The Ciphers trade secrets among rival courts. Some keep the roads safe; others sell a ruler the story that ruler most wants to hear.',
+    firstAppearanceEpisode: 'First named in a recovered Gloamveil courier ledger',
+  },
+  npc_adria_ori_crusade: {
+    name: 'Emberfall Votaries', designationOrTitle: 'The Crusade of the Hollow Flame', canonicalSeries: 'Cinder March Chronicles',
+    galaxy: 'Emberfall Crucible', homeworld: 'The Cindered Nave', stargateAddress: 'Cindered Nave · Broken Bell · Hollow Stair',
+    classification: 'Fanatical ash-crown order', factionLeader: 'Prelate Vaust of the Hollow Flame', flagshipClass: 'The Unsworn Pyrehost',
+    tacticalTraits: ['Fire banners rally desperate companies', 'Votaries refuse retreat while their shrine stands', 'Ash-mages burn stores as a last defense', 'Their doctrine permits no dissent'],
+    loreDescription: 'The Votaries claim the Emberfall was a divine command. Their sermons gather the dispossessed, but their flame leaves little room for a neighbor’s freedom.',
+    firstAppearanceEpisode: 'First recorded after the Hollow Flame sermon at Emberfall',
+  },
+  npc_system_lord_council: {
+    name: 'Council of Broken Banners', designationOrTitle: 'The Old Lords of the Ashen March', canonicalSeries: 'Cinder March Chronicles',
+    galaxy: 'Cinder March', homeworld: 'The Sealed Oathbarrow', stargateAddress: 'Oathbarrow · Ashenford · Nine Banners',
+    classification: 'Feudal war-crown council', factionLeader: 'The Nine-Banner Council', flagshipClass: 'The Gilded Siege Host',
+    tacticalTraits: ['House banners summon separate levies', 'Old keeps hold deep armories', 'Rival lords sabotage one another’s supply roads', 'The Council can unite only against a greater threat'],
+    loreDescription: 'The Council ruled the Ashen March through tribute and fear until the Truce of Nine Banners checked its reach. Its lords still seek to make every broken waystone a private toll.',
+    firstAppearanceEpisode: 'First recorded at the signing of the Truce of Nine Banners',
+  },
+};
+
+export const STARGATE_NPC_RACES: StargateNpcRace[] = PRECURSOR_CIVILIZATIONS.map((people) => ({
+  ...people,
+  ...ELDORIA_PEOPLE_LORE[people.id],
+}));
 
 /**
  * Converts the 18 Stargate NPC Races into playable Target Realms for Combat and Espionage

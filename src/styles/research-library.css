@@ -1,0 +1,221 @@
+/* Fantasy scriptorium treatment for the Research Library. */
+.research-library-view {
+  --script-ink: #26352f;
+  --script-muted: #6c756b;
+  --script-line: #d8d8c8;
+  --script-paper: #fffdf7;
+  --script-parchment: #f5f1e4;
+  --script-moss: #526b4c;
+  --script-brass: #a8752b;
+  --script-rose: #a14f45;
+  color: var(--script-ink) !important;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  background-color: #f3f5ef;
+  background-image: linear-gradient(rgba(82, 107, 76, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(82, 107, 76, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid #dfe4d9;
+}
+
+.research-library-view > * {
+  border-radius: 2px !important;
+}
+
+.research-library-view .bg-white,
+.research-library-view .bg-\[\#f8fafc\],
+.research-library-view .bg-\[\#f1f5f9\] {
+  background-color: var(--script-paper) !important;
+}
+
+.research-library-view .border-\[\#111111\],
+.research-library-view .border-\[\#cccccc\],
+.research-library-view .border-\[\#e2e8f0\],
+.research-library-view .border-\[\#f1f5f9\] {
+  border-color: var(--script-line) !important;
+}
+
+.research-library-view .text-\[\#111111\],
+.research-library-view .text-\[\#555555\],
+.research-library-view .text-\[\#444444\] {
+  color: var(--script-ink) !important;
+}
+
+.research-library-view .text-\[\#666666\],
+.research-library-view .text-\[\#888888\] {
+  color: var(--script-muted) !important;
+}
+
+.research-library-view > :first-child {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(115deg, #fffdf7 0%, #f5f1e4 68%, #edf3e8 100%) !important;
+  border: 1px solid #cfd7c8 !important;
+  border-left: 5px solid var(--script-moss) !important;
+  box-shadow: 0 8px 22px rgba(47, 62, 46, 0.07);
+}
+
+.research-library-view > :first-child::after {
+  content: '✦  ✧  ✦';
+  position: absolute;
+  right: 1.5rem;
+  bottom: 0.9rem;
+  color: rgba(168, 117, 43, 0.35);
+  font-size: 1.2rem;
+  letter-spacing: 0.45rem;
+}
+
+.research-library-view > :first-child .text-base {
+  color: var(--script-ink) !important;
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.08em;
+}
+
+.research-library-view > :first-child .border-\[\#111111\] {
+  border-color: #b9c7b1 !important;
+  background: #edf3e8 !important;
+  color: var(--script-moss) !important;
+}
+
+.research-library-view > :first-child .text-\[\#22c55e\] {
+  color: var(--script-moss) !important;
+}
+
+.research-library-view > :first-child > div:last-child {
+  background: rgba(255, 253, 247, 0.72);
+  border-color: #d8d8c8 !important;
+}
+
+.research-library-view button {
+  border-radius: 2px !important;
+}
+
+.research-library-view button:hover {
+  border-color: var(--script-moss) !important;
+}
+
+.research-library-view .bg-\[\#111111\] {
+  background-color: var(--script-moss) !important;
+}
+
+.research-library-view .bg-\[\#111111\]:hover {
+  background-color: #3d5539 !important;
+}
+
+.research-library-view .text-white {
+  color: #fffdf7 !important;
+}
+
+/* The queue reads like a working table beneath the library masthead. */
+.research-library-view > :nth-child(2) {
+  background: #fffdf7 !important;
+  border: 1px solid #cfd7c8 !important;
+  border-top: 3px solid var(--script-brass) !important;
+  box-shadow: 0 5px 16px rgba(47, 62, 46, 0.05);
+}
+
+.research-library-view > :nth-child(2) .bg-\[\#f8fafc\] {
+  background: #f3f5ef !important;
+}
+
+.research-library-view > :nth-child(2) .bg-\[\#111111\] {
+  background: var(--script-brass) !important;
+}
+
+.research-library-view > :nth-child(2) .bg-\[\#22c55e\] {
+  background: var(--script-moss) !important;
+}
+
+/* Three-column library: index, catalogue, illuminated dossier. */
+.research-library-view > :last-child {
+  align-items: start;
+}
+
+.research-library-view > :last-child > :first-child > div,
+.research-library-view > :last-child > :nth-child(2) > div:first-child,
+.research-library-view > :last-child > :last-child > div {
+  box-shadow: 0 5px 16px rgba(47, 62, 46, 0.045);
+}
+
+.research-library-view > :last-child > :first-child > div,
+.research-library-view > :last-child > :nth-child(2) > div:first-child {
+  background: var(--script-paper) !important;
+}
+
+.research-library-view > :last-child > :first-child > div > div:first-child,
+.research-library-view > :last-child > :nth-child(2) > div:first-child {
+  color: var(--script-moss) !important;
+  letter-spacing: 0.12em;
+}
+
+.research-library-view > :last-child > :first-child > div button {
+  border-color: transparent !important;
+  color: var(--script-muted) !important;
+  background: transparent !important;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.research-library-view > :last-child > :first-child > div button:hover,
+.research-library-view > :last-child > :first-child > div button[class*='bg-\[\#111111\]'] {
+  background: #edf3e8 !important;
+  border-color: #b9c7b1 !important;
+  color: var(--script-moss) !important;
+}
+
+.research-library-view > :last-child > :nth-child(2) > :last-child > div {
+  border-left: 3px solid transparent !important;
+}
+
+.research-library-view > :last-child > :nth-child(2) > :last-child > div:hover,
+.research-library-view > :last-child > :nth-child(2) > :last-child > div[class*='ring-'] {
+  border-left-color: var(--script-brass) !important;
+  background: #fffdf7 !important;
+  box-shadow: 0 4px 14px rgba(47, 62, 46, 0.09);
+}
+
+.research-library-view > :last-child > :nth-child(2) > :last-child > div .text-\[\#22c55e\] {
+  color: var(--script-moss) !important;
+}
+
+.research-library-view > :last-child > :nth-child(2) > :last-child > div .text-\[\#dc2626\] {
+  color: var(--script-rose) !important;
+}
+
+.research-library-view > :last-child > :last-child > div {
+  background: var(--script-paper) !important;
+  border: 1px solid #c8d2c1 !important;
+  border-top: 4px solid var(--script-moss) !important;
+  box-shadow: 0 9px 22px rgba(47, 62, 46, 0.08);
+}
+
+.research-library-view > :last-child > :last-child > div > div:first-child {
+  border-color: #cfd7c8 !important;
+}
+
+.research-library-view > :last-child > :last-child > div > div:first-child > div:first-child {
+  color: var(--script-moss) !important;
+}
+
+.research-library-view > :last-child > :last-child > div .bg-\[\#f8fafc\] {
+  background: #f3f5ef !important;
+  border-color: #d8d8c8 !important;
+}
+
+.research-library-view > :last-child > :last-child > div button:not(:disabled) {
+  background: var(--script-moss) !important;
+  border-color: var(--script-moss) !important;
+  color: #fffdf7 !important;
+  letter-spacing: 0.04em;
+}
+
+.research-library-view > :last-child > :last-child > div button:not(:disabled):hover {
+  background: #3d5539 !important;
+}
+
+@media (max-width: 767px) {
+  .research-library-view {
+    padding: 0.75rem;
+  }
+
+  .research-library-view > :first-child::after {
+    display: none;
+  }
+}

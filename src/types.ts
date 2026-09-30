@@ -1469,11 +1469,11 @@ export interface StargateNpcRace {
   id: string;
   name: string;
   designationOrTitle: string;
-  canonicalSeries: 'Stargate SG-1' | 'Stargate Atlantis' | 'Stargate Universe' | 'The Ark of Truth';
-  galaxy: StargateGalaxy;
+  canonicalSeries: string;
+  galaxy: string;
   homeworld: string;
   stargateAddress: string;
-  classification: 'Organic Humanoid' | 'Bio-Mechanical' | 'Synthetic / Nanite' | 'Parasitic Symbiote' | 'Higher Energy / Ascended' | 'Amphibious / Reptilian';
+  classification: string;
   threatLevel: NpcThreatLevel;
   diplomaticStatus: NpcDiplomaticStatus;
   factionLeader: string;

@@ -50,6 +50,7 @@ import {
 } from '../../data/workforceAcademyData';
 import { PlayerResources } from '../../types';
 import { sound } from '../../sound';
+import { getRarityForTier } from '../../utils/raritySystem';
 
 interface WorkforceAcademyViewProps {
   resources: PlayerResources;
@@ -65,6 +66,27 @@ function matchesWorkforceSearch(unit: WorkforceUnit, query: string): boolean {
   if (!normalizedQuery) return true;
   return [unit.name, unit.jobClass, unit.jobSubclass, unit.unitType, unit.unitSubtype, unit.rankTitle]
     .some((value) => value.toLowerCase().includes(normalizedQuery));
+}
+
+const WORKFORCE_BRANCH_LABELS: Record<WorkforceBranch, string> = {
+  frontline: 'Frontline Combat',
+  orbital_defense: 'Orbital Defense',
+  naquadah_mining: 'Naquadah Mining',
+  espionage: 'Espionage & Intelligence',
+  civilian_production: 'Civilian Production',
+  government: 'Imperial Governance',
+  untrained: 'Untrained Cadre',
+};
+
+function getWorkforceSubStats(unit: WorkforceUnit): string[] {
+  return [
+    unit.stats.foodUpkeep > 0 ? `Food upkeep ${unit.stats.foodUpkeep}` : '',
+    unit.stats.waterUpkeep > 0 ? `Water upkeep ${unit.stats.waterUpkeep}` : '',
+    unit.stats.creditsUpkeep > 0 ? `Credit upkeep ${unit.stats.creditsUpkeep}` : '',
+    unit.stats.espionagePower > 0 ? `Espionage ${unit.stats.espionagePower}` : '',
+    unit.stats.counterIntel > 0 ? `Counter-intel ${unit.stats.counterIntel}` : '',
+    unit.stats.governanceEfficiency > 0 ? `Governance ${unit.stats.governanceEfficiency}` : '',
+  ].filter(Boolean);
 }
 
 export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
@@ -518,6 +540,12 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
               Crowns miners, or covert espionage operatives. Advance the 6 Royal Academy Wings to accelerate training velocity
               and reduce equipment requisitions.
             </p>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-mono uppercase tracking-wider text-[#777777]">
+              <span>90-class archive</span>
+              <span>7 academy categories</span>
+              <span>13 primary stat channels</span>
+              <span>6 sub-stat channels</span>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -741,6 +769,8 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredUnits.map((unit) => {
               const currentEnlisted = academyState.unitCounts[unit.id] || 0;
+              const subStats = getWorkforceSubStats(unit);
+              const rarity = getRarityForTier(unit.tier, 5);
               const { level: wingLvl, discountPct } = getWingStats(unit.requiredAcademyWing);
               const discountMultiplier = Math.max(0.5, 1 - discountPct / 100);
               const isLocked = wingLvl < unit.requiredAcademyLevel;
@@ -797,6 +827,9 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
                               >
                                 CLASS · {unit.jobClass}
                               </span>
+                              <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase border" style={{ color: rarity.color, backgroundColor: rarity.background, borderColor: rarity.border }}>
+                                {rarity.shortLabel} {rarity.name}
+                              </span>
                               <span className={`px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase border ${rankInfo.badgeColor}`}>
                                 {rankInfo.romanNumeral} {rankInfo.name}
                               </span>
@@ -810,6 +843,8 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
                         })()}
                         <h4 className="text-base font-extrabold text-[#111111] mt-1">{unit.name}</h4>
                         <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 border border-[#eeeeee] bg-[#fafafa] p-2 text-[10px]">
+                          <div><span className="block text-[9px] font-bold uppercase text-[#888888]">Category</span><strong className="text-[#333333]">{WORKFORCE_BRANCH_LABELS[unit.branch]}</strong></div>
+                          <div><span className="block text-[9px] font-bold uppercase text-[#888888]">Class</span><strong className="text-[#333333]">{unit.jobClass}</strong></div>
                           <div><span className="block text-[9px] font-bold uppercase text-[#888888]">Subclass</span><strong className="text-[#333333]">{unit.jobSubclass}</strong></div>
                           <div><span className="block text-[9px] font-bold uppercase text-[#888888]">Type</span><strong className="text-[#333333]">{unit.unitType}</strong></div>
                           <div><span className="block text-[9px] font-bold uppercase text-[#888888]">Subtype</span><strong className="text-[#333333]">{unit.unitSubtype}</strong></div>
@@ -823,7 +858,10 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
                       </div>
                     </div>
 
-                    <p className="text-xs text-[#555555] leading-relaxed line-clamp-2">{unit.lore}</p>
+                    <div className="border-l-2 border-amber-300 bg-amber-50/40 px-3 py-2">
+                      <span className="block text-[9px] font-bold uppercase tracking-wider text-amber-800">Full academy research details</span>
+                      <p className="mt-1 text-xs text-[#555555] leading-relaxed">{unit.lore}</p>
+                    </div>
 
                     {/* Stats Pill Matrix */}
                     <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px] bg-neutral-50 p-2 border border-[#eeeeee]">
@@ -881,6 +919,20 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
                           {unit.stats.foodUpkeep}F / {unit.stats.waterUpkeep}W / {unit.stats.creditsUpkeep}CR
                         </span>
                       </div>
+                    </div>
+
+                    <div className="border border-[#eeeeee] bg-[#fafafa] p-2 text-[10px]">
+                      <span className="block text-[9px] font-bold uppercase tracking-wider text-[#888888]">Sub-stats</span>
+                      <span className="mt-1 block leading-relaxed text-[#555555]">
+                        {subStats.length > 0 ? subStats.join(' · ') : 'No secondary modifiers recorded'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 border border-[#eeeeee] bg-white p-2 text-[10px] font-mono">
+                      <div><span className="block text-[9px] uppercase text-[#888888]">Dossier unlock wing</span><strong>{unit.requiredAcademyWing}</strong></div>
+                      <div><span className="block text-[9px] uppercase text-[#888888]">Unlock level</span><strong>Level {unit.requiredAcademyLevel}</strong></div>
+                      <div><span className="block text-[9px] uppercase text-[#888888]">Training turns</span><strong>{unit.cost.trainingTurns}</strong></div>
+                      <div><span className="block text-[9px] uppercase text-[#888888]">Archive record</span><strong>{unit.id.toUpperCase()}</strong></div>
                     </div>
 
                     {/* Requirements / Lock Status */}

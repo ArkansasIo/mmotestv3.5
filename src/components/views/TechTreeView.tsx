@@ -17,13 +17,13 @@ interface TechTreeViewProps {
 
 const BRANCHES: { id: OGameTechBranch | 'all'; label: string; icon: string }[] = [
   { id: 'all', label: 'All Technologies', icon: '✦' },
-  { id: 'economics', label: 'Economics & Mining', icon: '⛏' },
-  { id: 'science', label: 'Core Science & Energy', icon: '⚡' },
-  { id: 'military', label: 'Military & Ward', icon: '⚔' },
-  { id: 'advanced_science', label: 'Advanced Science', icon: '⚛' },
-  { id: 'advanced_fleet', label: 'Advanced Warband', icon: '🚀' },
-  { id: 'endgame', label: 'Endgame & Dimensional', icon: '🌌' },
-  { id: 'megastructures', label: 'Megastructures', icon: '🪐' },
+  { id: 'economics', label: 'Holdings & Craft', icon: '⛏' },
+  { id: 'science', label: 'Leylines & Hearths', icon: '⚡' },
+  { id: 'military', label: 'Arms & Wards', icon: '⚔' },
+  { id: 'advanced_science', label: 'Rune Mastery', icon: '✦' },
+  { id: 'advanced_fleet', label: 'Waystones & Retinues', icon: '🛤' },
+  { id: 'endgame', label: 'Crownworks & Wonders', icon: '👑' },
+  { id: 'megastructures', label: 'Realm Greatworks', icon: '🏰' },
 ];
 
 export const TechTreeView: React.FC<TechTreeViewProps> = ({
@@ -91,14 +91,13 @@ export const TechTreeView: React.FC<TechTreeViewProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-bold tracking-wider">MASTER TECHNOLOGY UNLOCK GRAPH</span>
+              <span className="text-base font-bold tracking-wider">THE GREAT TOME OF LORE & CRAFT</span>
               <span className="px-2 py-0.5 text-[10px] font-mono border border-[#111111] bg-[#f8fafc]">
-                GAME SPEC v4.2
+                AGE OF EMBERS
               </span>
             </div>
             <p className="text-xs text-[#666666] mt-1 max-w-2xl">
-              Hierarchical technology progression network. Technologies unlock prerequisite tiers for advanced
-              combat vessels, borderland holding wards, rune-glyph factories, and star-spanning megastructures.
+              Master crafts and old lore to raise stronger keeps, train sworn companies, open forgotten roads, and build wonders shared across the realm.
             </p>
           </div>
 
@@ -108,7 +107,7 @@ export const TechTreeView: React.FC<TechTreeViewProps> = ({
               <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-ping" />
-                  ACTIVE RESEARCH
+                  ACTIVE STUDY
                 </span>
                 <span className="font-mono text-[#111111]">
                   {researchQueue[0].remainingSeconds}s remaining
@@ -314,7 +313,7 @@ export const TechTreeView: React.FC<TechTreeViewProps> = ({
             <div className="border border-[#111111] bg-white p-5 sticky top-6 space-y-4">
               <div className="border-b border-[#111111] pb-3">
                 <span className="text-[10px] font-mono uppercase text-[#666666] block">
-                  TECHNOLOGY DOSSIER
+                  LORE DOSSIER
                 </span>
                 <h3 className="text-base font-bold text-[#111111]">{selectedTech.name}</h3>
                 <div className="flex items-center gap-2 mt-1">

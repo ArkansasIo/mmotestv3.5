@@ -55,11 +55,11 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
   const [irisClosed, setIrisClosed] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<TabType>('stargate-dhd');
   const [feedback, setFeedback] = useState<string | null>(
-    'Stargate network active: Connected to Atlantis City-Ship (Lantea) in the Pegasus galaxy.'
+    'Leyroad network ready: the Moonwell Hall waystone answers from the Silverwood Reach.'
   );
   const [logs, setLogs] = useState<string[]>([
-    'Subspace event horizon stabilized between Earth Alpha Site and Atlantis.',
-    'Jump Gate Relay capacitors synchronized across 4 orbital moon bases.',
+    'The Eastridge Gatehouse and Moonwell Hall waystones share a clear road.',
+    'Four Crownroad relays report steady resonance.',
   ]);
 
   const activeGate = gates.find((g) => g.id === selectedGateId) || gates[0];
@@ -81,13 +81,13 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
           : g
       )
     );
-    handleLogDebrief(`Wormhole established with ${target.name}! Event horizon open and stable.`);
+    handleLogDebrief(`The Leyroad opens to ${target.name}. Its old marks hold steady.`);
   };
 
   const handleDisconnectWormhole = () => {
     setActiveWormhole(null);
     setGates((prev) => prev.map((g) => ({ ...g, status: 'offline' })));
-    handleLogDebrief('Iris closed. Event horizon collapsed. Stargate wormhole safely disengaged.');
+    handleLogDebrief('The waystone is warded and the Leyroad is closed safely.');
   };
 
   const handleToggleIris = () => {
@@ -95,8 +95,8 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
       const next = !prev;
       handleLogDebrief(
         next
-          ? 'Titanium-Trinium Iris closed! Incoming matter and energy blasts will be disintegrated on contact.'
-          : 'Iris opened! Stargate event horizon clear for off-world travel and incoming personnel.'
+          ? 'The wardstone seal is set. Incoming arrows and spellfire will be turned aside.'
+          : 'The wardstone seal is lifted. The road is open to travelers and sworn companies.'
       );
       return next;
     });
@@ -108,7 +108,7 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
       <div className="border border-[#dedede] bg-white p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase mb-1 font-mono">
-            ANCIENT ASTRIA PORTA & LEYROAD WARBAND RELAYS
+            ELDER WAYSTONES & LEYROAD NETWORK
           </div>
           <h2 className="text-2xl font-bold text-[#111111] flex items-center gap-3">
             <span>Waystone & Realm-spanning Jump Gates</span>
@@ -119,27 +119,26 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
                   : 'bg-neutral-100 text-neutral-600 border-neutral-300'
               }`}
             >
-              {activeWormhole ? 'Event Horizon Active' : 'Stargate Idle'}
+              {activeWormhole ? 'Leyroad Open' : 'Waystone Dormant'}
             </span>
           </h2>
           <p className="text-sm text-[#666666] mt-1 max-w-3xl leading-relaxed">
-            Dial 7-to-9 chevron addresses through the Dial-Home Device (DHD), dispatch SG reconnaissance teams
-            across four realms, execute zero-aether leyroad Jump Gate warband teleportations, and harness the Ori Supergate.
+            Follow rune-marks to open an old road, send a prepared company into the far marches, and restore paired waystones.
           </p>
         </div>
 
         {/* Global Metric Badges */}
         <div className="flex items-center gap-3 font-mono text-xs">
           <div className="p-3 bg-[#fafafa] border border-[#dedede] text-right">
-            <span className="text-[9px] text-[#777777] uppercase block font-bold">Wormhole Status</span>
+            <span className="text-[9px] text-[#777777] uppercase block font-bold">Leyroad Status</span>
             <strong className={`text-xs font-bold block ${activeWormhole ? 'text-sky-700' : 'text-neutral-500'}`}>
-              {activeWormhole ? 'CONNECTED' : 'DISCONNECTED'}
+              {activeWormhole ? 'OPEN' : 'CLOSED'}
             </strong>
           </div>
           <div className="p-3 bg-[#fafafa] border border-[#dedede] text-right">
             <span className="text-[9px] text-[#777777] uppercase block font-bold">Ward Barrier</span>
             <strong className={`text-xs font-bold block ${irisClosed ? 'text-amber-700' : 'text-emerald-700'}`}>
-              {irisClosed ? 'IRIS CLOSED' : 'IRIS OPEN'}
+              {irisClosed ? 'WARD SET' : 'WARD LIFTED'}
             </strong>
           </div>
         </div>
@@ -170,32 +169,32 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
         {[
           {
             id: 'stargate-dhd',
-            label: '1. Ancient Waystone & DHD Console',
+            label: '1. Waystone Dial & Ward',
             icon: Disc,
           },
           {
             id: 'address-directory',
-            label: '2. Off-World Address Book & SG Teams',
+            label: '2. March Directory & Orders',
             icon: Compass,
           },
           {
             id: 'jump-gates',
-            label: '3. Leyroad Jump Gate Relay (Warband Transit)',
+            label: '3. Paired Leyroads',
             icon: Rocket,
           },
           {
             id: 'supergate-crystals',
-            label: '4. Ori Supergate & Control Moonstones',
+            label: '4. Crownstones & Relic Shards',
             icon: Atom,
           },
           {
             id: 'alien-races',
-            label: '5. 18 Waystone Alien Races Dossier',
+            label: '5. 24 Peoples & Powers',
             icon: Globe,
           },
           {
             id: 'gate-tokens',
-            label: '6. Gate Tokens, Anomalies & Raids',
+            label: '6. Road Charms & Trials',
             icon: Sparkles,
           },
         ].map((tab) => {
@@ -223,7 +222,7 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
         })}
       </div>
 
-      {/* Tab 1: Stargate & DHD Dialer Console */}
+      {/* Tab 1: Waystone dialer */}
       {activeTab === 'stargate-dhd' && (
         <StargateDialerPanel
           activeGate={activeGate}
@@ -236,7 +235,7 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
         />
       )}
 
-      {/* Tab 2: Stargate Address Directory & SG Teams */}
+      {/* Tab 2: Waystone directory and expedition orders */}
       {activeTab === 'address-directory' && (
         <StargateAddressDirectory
           gates={gates}
@@ -267,7 +266,7 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
         />
       )}
 
-      {/* Tab 4: Ori Supergate & Ancient Crystals */}
+      {/* Tab 4: Crownstones and relic bindings */}
       {activeTab === 'supergate-crystals' && (
         <SupergateCrystalsPanel
           resources={resources}
@@ -276,7 +275,7 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
         />
       )}
 
-      {/* Tab 5: 18 Stargate Alien Races Dossier */}
+      {/* Tab 5: Peoples and powers of Eldoria */}
       {activeTab === 'alien-races' && (
         <StargateNpcRacesView
           playerProfile={profile || {
@@ -299,7 +298,7 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
         />
       )}
 
-      {/* Tab 6: Gate Tokens, Anomalies & Raids */}
+      {/* Tab 6: Road charms and trials */}
       {activeTab === 'gate-tokens' && (
         <GateTokensSystemView
           resources={resources}

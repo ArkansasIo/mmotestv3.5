@@ -491,16 +491,16 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
           <div className="space-y-1.5 max-w-2xl">
             <div className="flex items-center gap-2 font-mono text-[10px] font-bold text-amber-700 uppercase tracking-widest">
               <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <span>STABILITY MATRIX & CONSUMABLE ACCESS TOKENS</span>
+              <span>WAYSTONE ROAD-CHARMS & EXPEDITION STORES</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight flex items-center gap-3">
-              <span>Gate Tokens & Dimensional Systems</span>
+              <span>Waystone Charms & Far-March Trials</span>
               <span className="text-xs px-2.5 py-0.5 font-mono uppercase font-bold border border-cyan-400 bg-cyan-50 text-cyan-900">
-                v3.5 SGC Protocol
+                AGE OF EMBERS
               </span>
             </h2>
             <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-              Consumable transit tokens calibrate Waystone chevron harmonics. Spend <strong className="text-emerald-700">Alpha Tokens</strong> on deep void expeditions, <strong className="text-cyan-700">Delta Tokens</strong> to breach dimensional anomalies, and <strong className="text-purple-700">Omega Beacons</strong> to lead warband raids against System Lord fortresses.
+              Road-charms guide a company along known waystones. Spend <strong className="text-emerald-700">Roadward Charms</strong> on far-march expeditions, <strong className="text-cyan-700">Riftglass Shards</strong> to cross broken leyroads, and <strong className="text-purple-700">Warhorn Beacons</strong> to challenge the Hollow Crown and its warlords.
             </p>
           </div>
 
@@ -511,7 +511,7 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
               <div className="flex items-center justify-between text-[10px] text-emerald-950 font-bold uppercase tracking-wider">
                 <span className="flex items-center gap-1.5">
                   <span className="w-4 h-4 rounded-xs bg-emerald-600 text-white flex items-center justify-center text-[10px]">ᐰ</span>
-                  <span>Alpha Tokens</span>
+                  <span>Roadward Charms</span>
                 </span>
                 <span className="text-[9px] px-1 py-0.2 bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold">EXP</span>
               </div>
@@ -519,13 +519,13 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
                 <span className="text-2xl font-black text-emerald-950 tracking-tight">{alphaCount}</span>
                 <button
                   onClick={() => handleBuyWithCredits('alpha')}
-                  title="Buy 1x Alpha Token for 45,000 CR"
+                  title="Buy 1 Roadward Charm for 45,000 Crowns"
                   className="text-[9px] px-2 py-0.5 bg-emerald-700 hover:bg-emerald-800 text-white uppercase font-bold transition-colors cursor-pointer"
                 >
-                  +45k CR
+                  +45k Crowns
                 </button>
               </div>
-              <span className="text-[8.5px] text-emerald-800/80 mt-1">Deep Void Recon & Surveying</span>
+              <span className="text-[8.5px] text-emerald-800/80 mt-1">Far-March Surveying</span>
             </div>
 
             {/* Delta Tokens */}
@@ -533,7 +533,7 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
               <div className="flex items-center justify-between text-[10px] text-cyan-950 font-bold uppercase tracking-wider">
                 <span className="flex items-center gap-1.5">
                   <span className="w-4 h-4 rounded-xs bg-cyan-600 text-white flex items-center justify-center text-[10px]">𐎡</span>
-                  <span>Delta Tokens</span>
+                  <span>Riftglass Shards</span>
                 </span>
                 <span className="text-[9px] px-1 py-0.2 bg-cyan-100 border border-cyan-300 text-cyan-800 font-bold">ANOM</span>
               </div>
@@ -541,13 +541,13 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
                 <span className="text-2xl font-black text-cyan-950 tracking-tight">{deltaCount}</span>
                 <button
                   onClick={() => handleBuyWithCredits('delta')}
-                  title="Buy 1x Delta Token for 85,000 CR"
+                  title="Buy 1 Riftglass Shard for 85,000 Crowns"
                   className="text-[9px] px-2 py-0.5 bg-cyan-700 hover:bg-cyan-800 text-white uppercase font-bold transition-colors cursor-pointer"
                 >
-                  +85k CR
+                  +85k Crowns
                 </button>
               </div>
-              <span className="text-[8.5px] text-cyan-800/80 mt-1">Dimensional & Runic Rifts</span>
+              <span className="text-[8.5px] text-cyan-800/80 mt-1">Broken Leyroads & Old Rifts</span>
             </div>
 
             {/* Omega Tokens */}
@@ -555,7 +555,7 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
               <div className="flex items-center justify-between text-[10px] text-purple-950 font-bold uppercase tracking-wider">
                 <span className="flex items-center gap-1.5">
                   <span className="w-4 h-4 rounded-xs bg-purple-700 text-white flex items-center justify-center text-[10px]">Ω</span>
-                  <span>Omega Beacons</span>
+                  <span>Warhorn Beacons</span>
                 </span>
                 <span className="text-[9px] px-1 py-0.2 bg-purple-100 border border-purple-300 text-purple-800 font-bold">RAID</span>
               </div>
@@ -563,13 +563,13 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
                 <span className="text-2xl font-black text-purple-950 tracking-tight">{omegaCount}</span>
                 <button
                   onClick={() => handleBuyWithCredits('omega')}
-                  title="Buy 1x Omega Beacon for 175,000 CR"
+                  title="Buy 1 Warhorn Beacon for 175,000 Crowns"
                   className="text-[9px] px-2 py-0.5 bg-purple-700 hover:bg-purple-800 text-white uppercase font-bold transition-colors cursor-pointer"
                 >
-                  +175k CR
+                  +175k Crowns
                 </button>
               </div>
-              <span className="text-[8.5px] text-purple-800/80 mt-1">System Lord & Supergate Raids</span>
+              <span className="text-[8.5px] text-purple-800/80 mt-1">Warlord & Barrow Raids</span>
             </div>
           </div>
         </div>
@@ -578,7 +578,7 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
         <div className="mt-5 pt-4 border-t border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
           <div className="flex items-center gap-2 text-neutral-600">
             <Gift className="w-4 h-4 text-amber-600" />
-            <span>SGC Requisition Allowance:</span>
+            <span>Crownroad Warden’s Allotment:</span>
             <strong className="text-neutral-900">+5 Alpha, +3 Delta, +1 Omega free per operational shift.</strong>
           </div>
           <button
@@ -603,7 +603,7 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-cyan-400 animate-ping" />
               <span className="text-xs uppercase font-black tracking-widest text-cyan-300">
-                TRANSIT ACTIVE: {activeOperation.title}
+                COMPANY ON THE ROAD: {activeOperation.title}
               </span>
             </div>
             <div className="text-xs text-neutral-300">
@@ -623,7 +623,7 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
               <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
               <span>{activeOperation.phaseText}</span>
             </span>
-            <span className="font-bold text-cyan-300">{activeOperation.progress}% Transited</span>
+            <span className="font-bold text-cyan-300">{activeOperation.progress}% Complete</span>
           </div>
         </div>
       )}
@@ -648,10 +648,10 @@ export const GateTokensSystemView: React.FC<GateTokensSystemViewProps> = ({
       {/* 4. NAVIGATION TABS */}
       <div className="flex flex-wrap gap-2 border-b border-[#dedede] pb-3">
         {[
-          { id: 'anomalies', label: '1. Dimensional Anomalies', icon: Atom, count: `${deltaCount} Delta` },
-          { id: 'raids', label: '2. Waystone Boss Raids', icon: Skull, count: `${omegaCount} Omega` },
-          { id: 'explorations', label: '3. Deep Void Explorations', icon: Compass, count: `${alphaCount} Alpha` },
-          { id: 'synthesizer', label: '4. Token Synthesizer Foundry', icon: Cpu, count: 'Forge' },
+          { id: 'anomalies', label: '1. Broken Leyroads', icon: Atom, count: `${deltaCount} Shards` },
+          { id: 'raids', label: '2. Warlord & Barrow Raids', icon: Skull, count: `${omegaCount} Beacons` },
+          { id: 'explorations', label: '3. Far-March Expeditions', icon: Compass, count: `${alphaCount} Charms` },
+          { id: 'synthesizer', label: '4. Charmwright’s Forge', icon: Cpu, count: 'Forge' },
           { id: 'history', label: '5. Mission & Extraction Logs', icon: History, count: `${historyLogs.length}` },
         ].map((tab) => {
           const Icon = tab.icon;

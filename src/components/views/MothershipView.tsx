@@ -107,7 +107,7 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
 
   // Chassis / Ship Identity
   const [selectedChassisId, setSelectedChassisId] = useState<string>('chassis_vanguard');
-  const [shipName, setShipName] = useState<string>('UCSF PROMETHEUS · CAPITAL-I');
+  const [shipName, setShipName] = useState<string>('OLDROOT BASTION · CROWNWARDED');
   const [callSign, setCallSign] = useState<string>('ALPHA-01');
   const [activeAura, setActiveAura] = useState<string>('shield_harmonizer');
   const [isRenaming, setIsRenaming] = useState<boolean>(false);
@@ -361,12 +361,12 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
       addFlagshipXp(50);
       setFeedback({
         type: 'success',
-        text: 'EMERGENCY WARD OVERCHARGE ACTIVATED! Deflector barriers supercharged +40% capacity.',
+        text: 'HEARTHWARD AEGIS RAISED! The Crownward oathwards gain +40% strength.',
       });
     } else if (abilityId === 'nanite_repair') {
       if ((resources.credits ?? 500000) < 10000) {
         sound.play('warning');
-        setFeedback({ type: 'error', text: 'Need 10,000 Royal Treasury Crowns (CR) to synthesize cellular repair nanites!' });
+        setFeedback({ type: 'error', text: 'The repair rite requires 10,000 Crowns for runeglyph mending.' });
         return;
       }
       if (onUpdateResources) {
@@ -377,7 +377,7 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
       addFlagshipXp(75);
       setFeedback({
         type: 'success',
-        text: 'RUNE-GLYPH CELLULAR REPAIR ENGAGED! Regenerating 25,000 Hull HP across all armor bulkheads.',
+        text: 'RUNEGLYPH MENDING COMPLETE! Restored 25,000 keel strength across the great vessel.',
       });
     } else if (abilityId === 'tachyon_sweep') {
       const yieldNaq = 35000 + Math.floor(Math.random() * 25000);
@@ -393,7 +393,7 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
       addFlagshipXp(120);
       setFeedback({
         type: 'success',
-        text: `TACHYON SENSOR SWEEP COMPLETE: Harvested +${yieldNaq.toLocaleString()} Naquadah and +${yieldDeut.toLocaleString()} Deuterium from spatial ripples!`,
+        text: `LANTERN-LINE SURVEY COMPLETE: Recovered +${yieldNaq.toLocaleString()} Crowns and +${yieldDeut.toLocaleString()} Aether from the far marches.`,
       });
     } else if (abilityId === 'vanguard_rally') {
       sound.play('confirm');
@@ -401,17 +401,17 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
       addFlagshipXp(100);
       setFeedback({
         type: 'success',
-        text: 'VANGUARD WARBAND RALLY HORN SOUNDED! All escort ships inspired with +35% Attack & Critical strike power.',
+        text: 'THE CROWNWARD BANNER IS RAISED! All sworn companies gain +35% strike and critical power.',
       });
     } else if (abilityId === 'lance_precharge') {
       setLanceChargePct((prev) => Math.min(100, prev + 25));
       sound.play('research');
       setAbilityCooldowns((prev) => ({ ...prev, lance_precharge: 30 }));
       addFlagshipXp(40);
-      setFeedback({
-        type: 'success',
-        text: 'DOOMSDAY PRE-CHARGE ROUTINE ENGAGED: Injected +25% instantaneous capacitor energy into spinal lance.',
-      });
+        setFeedback({
+          type: 'success',
+          text: 'CROWNFIRE LANCE PREPARED: The Hearthstone reserve adds +25% charge to the siege lance.',
+        });
     }
   };
 
@@ -551,20 +551,20 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
 
     addFlagshipXp(200);
 
-    const updated = activeSorties.filter((s) => s.missionId !== mission.id);
-    setActiveSorties(updated);
-    try {
-      localStorage.setItem('uc_mothership_active_sorties', JSON.stringify(updated));
-    } catch {
-      // ignore
-    }
 
-    sound.play('trade');
-    setFeedback({
-      type: 'success',
-      text: `SORTIE SUCCESS: ${mission.name} complete! Claimed +${mission.rewards.credits.toLocaleString()} GC, +${mission.rewards.naquadah.toLocaleString()} Naquadah, +${mission.rewards.glory} Glory XP!`,
-    });
-  };
+      const updated = activeSorties.filter((s) => s.missionId !== mission.id);
+      setActiveSorties(updated);
+      try {
+        localStorage.setItem('uc_mothership_active_sorties', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      sound.play('trade');
+      setFeedback({
+        type: 'success',
+        text: `EXPEDITION COMPLETE: ${mission.name}. Claimed +${mission.rewards.credits.toLocaleString()} Guild Marks, +${mission.rewards.naquadah.toLocaleString()} Crowns, and +${mission.rewards.glory} Renown.`,
+      });
+    };
 
   // ============================================================================
   // HANDLERS: MILESTONES & CLAIMING
@@ -591,10 +591,10 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
     saveMilestones(updated);
 
     sound.play('trade');
-    setFeedback({
-      type: 'success',
-      text: `Claimed Milestone: ${ms.title}! +${ms.rewardCredits.toLocaleString()} GC, +${ms.rewardGlory} Glory XP.`,
-    });
+      setFeedback({
+        type: 'success',
+        text: `Claimed Milestone: ${ms.title}! +${ms.rewardCredits.toLocaleString()} GC, +${ms.rewardGlory} Glory XP.`,
+      });
   };
 
   // ============================================================================
@@ -912,7 +912,7 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
           <div>
             <div className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase mb-1 flex items-center gap-1.5 font-mono">
               <Crown className="w-3.5 h-3.5 text-amber-500" />
-              <span>SUPREME ROYAL RETINUE COMMAND · FLAGSHIP NEXUS & TITAN DOCK</span>
+              <span>CROWNWARDED GREAT VESSEL · RETINUE & BATTLE COMMAND</span>
               <span className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 text-[9px] font-bold">
                 RANK {flagshipLevel} FLAGSHIP
               </span>
@@ -1030,14 +1030,14 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
       {/* Navigation Sub-Tabs */}
       <div className="flex items-center gap-2 border-b border-[#dedede] bg-white px-2 pt-2 overflow-x-auto">
         {[
-          { id: 'overview', label: '1. Flagship Overview & HUD', icon: Anchor },
-          { id: 'hardpoints', label: '2. Modular Hardpoints & Weapons', icon: Swords },
-          { id: 'modules', label: '3. Core Modules (12 Systems)', icon: Cpu },
-          { id: 'hangar', label: '4. Carrier Wings & Sorties', icon: Rocket },
-          { id: 'officers', label: '5. Bridge Officers Academy', icon: Award },
-          { id: 'exploration', label: '6. Deep Wilds Void Recon', icon: Compass },
-          { id: 'superweapon', label: '7. Doomsday Lance & Core', icon: Flame },
-          { id: 'themes', label: '8. Hull Livery & Visuals', icon: Palette },
+          { id: 'overview', label: '1. Great Vessel & Hearth', icon: Anchor },
+          { id: 'hardpoints', label: '2. War Engines & Mounts', icon: Swords },
+          { id: 'modules', label: '3. Vessel Works (12)', icon: Cpu },
+          { id: 'hangar', label: '4. Retinues & Expeditions', icon: Rocket },
+          { id: 'officers', label: '5. Crownward Captains', icon: Award },
+          { id: 'exploration', label: '6. Far-March Recon', icon: Compass },
+          { id: 'superweapon', label: '7. Crownfire Siege Lance', icon: Flame },
+          { id: 'themes', label: '8. Banners & Livery', icon: Palette },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -1072,9 +1072,9 @@ export const MothershipView: React.FC<MothershipViewProps> = ({
               <div>
                 <span className="text-[10px] font-bold text-[#777] uppercase font-mono flex items-center gap-1.5">
                   <Activity className="w-3.5 h-3.5 text-cyan-600" />
-                  <span>REAL-TIME FLAGSHIP SUB-SYSTEM DIAGNOSTICS & SEER-SIGHT</span>
+                  <span>GREAT VESSEL WARDS & HEARTHSTONE LEDGER</span>
                 </span>
-                <h2 className="text-lg font-bold text-[#111]">Interactive Flagship Schematic Core</h2>
+                <h2 className="text-lg font-bold text-[#111]">Crownward Vessel Plan</h2>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono text-[#666]">Reactor State:</span>

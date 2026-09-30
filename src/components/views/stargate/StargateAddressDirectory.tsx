@@ -42,7 +42,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
   onLogDebrief,
   onIncrementStargateCount,
 }) => {
-  const [galaxyFilter, setGalaxyFilter] = useState<'All' | 'Milky Way' | 'Pegasus' | 'Ida' | 'Universe'>('All');
+  const [galaxyFilter, setGalaxyFilter] = useState<string>('All');
   const [securityFilter, setSecurityFilter] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedTeamId, setSelectedTeamId] = useState<string>('team-sg1');
@@ -51,6 +51,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
 
   const selectedGate = gates.find((g) => g.id === selectedGateId) || gates[0];
   const selectedTeam = teams.find((t) => t.id === selectedTeamId) || teams[0];
+  const regions = ['All', ...Array.from(new Set(gates.map((gate) => gate.galaxy)))];
 
   const filteredGates = gates.filter((gate) => {
     if (galaxyFilter !== 'All' && gate.galaxy !== galaxyFilter) return false;
@@ -72,13 +73,13 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
   const handleDeploySGTeam = () => {
     if (!activeWormhole) {
       sound.play('warning');
-      onLogDebrief('Cannot deploy off-world: Stargate event horizon is not established! Dial a gate first.');
+      onLogDebrief('The Leyroad is closed. Open a waystone before sending a company.');
       return;
     }
 
     if (resources.attackTurns < selectedTeam.turnCost) {
       sound.play('warning');
-      onLogDebrief(`Insufficient Attack Turns! Dispatching ${selectedTeam.code} requires ${selectedTeam.turnCost} Attack Turn.`);
+      onLogDebrief(`The host needs ${selectedTeam.turnCost} more march order to send ${selectedTeam.name}.`);
       return;
     }
 
@@ -93,12 +94,12 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
       let crystMult = 1.0;
       let darkMatterBonus = 0;
 
-      if (selectedTeam.code === 'SG-11') {
+      if (selectedTeam.id === 'team-sg11') {
         naqMult = 2.0; // +100% mining
-      } else if (selectedTeam.code === 'SG-1') {
+      } else if (selectedTeam.id === 'team-sg1') {
         crystMult = 1.5;
         darkMatterBonus = 50;
-      } else if (selectedTeam.code === 'SG-3') {
+      } else if (selectedTeam.id === 'team-sg3') {
         naqMult = 1.4;
       }
 
@@ -142,10 +143,10 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
 
       sound.play('success');
       const artifactMsg = connectedGate.lootEstimates.rareArtifact
-        ? ` Secured Stargate Artifact Fragment: [${connectedGate.lootEstimates.rareArtifact}] & +1 Dakara Transmuter Fragment!`
+        ? ` Recovered the relic [${connectedGate.lootEstimates.rareArtifact}] and one transmuter shard.`
         : '';
       onLogDebrief(
-        `Mission Accomplished: ${selectedTeam.code} (${selectedTeam.leader}) returned through the gate from ${connectedGate.name}! Recovered ${lootNaq.toLocaleString()} Naquadah, ${lootCryst.toLocaleString()} Crystal, and ${lootDm} Dark Matter.${artifactMsg}`
+        `${selectedTeam.name} returned from ${connectedGate.name} with ${lootNaq.toLocaleString()} Crowns, ${lootCryst.toLocaleString()} Moonstone, and ${lootDm} Relic Dust.${artifactMsg}`
       );
     }, 1500);
   };
@@ -154,9 +155,9 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
     <div id="stargate-address-directory" className="space-y-6">
       {/* Search and Filters Bar */}
       <div className="bg-white border border-[#dedede] p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Galaxy Tabs */}
+        {/* Region tabs */}
         <div className="flex flex-wrap gap-1.5 font-mono text-xs">
-          {(['All', 'Milky Way', 'Pegasus', 'Ida', 'Universe'] as const).map((gal) => (
+          {regions.map((gal) => (
             <button
               key={gal}
               type="button"
@@ -170,7 +171,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
                   : 'bg-[#fafafa] text-[#555555] border-[#dedede] hover:border-[#111111]'
               }`}
             >
-              {gal === 'All' ? 'All Galaxies' : gal}
+              {gal === 'All' ? 'All Regions' : gal}
             </button>
           ))}
         </div>
@@ -181,7 +182,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
             <Search size={14} className="absolute left-2.5 top-2.5 text-[#777777]" />
             <input
               type="text"
-              placeholder="Search holding / DHD..."
+              placeholder="Search holding or waystone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-8 pr-3 py-1.5 bg-[#fafafa] border border-[#dedede] text-xs font-mono text-[#111111] w-48 sm:w-56 focus:outline-none focus:border-[#111111]"
@@ -236,7 +237,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
                         isSelected ? 'text-neutral-300' : 'text-[#777777]'
                       }`}
                     >
-                      {gate.designation} · {gate.galaxy} ({gate.distanceLy.toLocaleString()} ly)
+                      {gate.designation} · {gate.galaxy} ({gate.distanceLy.toLocaleString()} road marks)
                     </span>
                   </div>
 
@@ -255,7 +256,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
 
                     {isConnected && (
                       <span className="text-[10px] font-bold text-sky-400 animate-pulse">
-                        ● WORMHOLE ACTIVE
+                        ● LEYROAD OPEN
                       </span>
                     )}
                   </div>
@@ -280,7 +281,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
                       isSelected ? 'text-neutral-400' : 'text-[#777777]'
                     }`}
                   >
-                    Origin: {gate.pointOfOrigin}
+                    First Mark: {gate.pointOfOrigin}
                   </span>
                 </div>
               </div>
@@ -290,21 +291,21 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
 
         {/* Right Column: Selected Gate Intelligence Dossier & SG Team Deploy */}
         <div className="lg:col-span-6 space-y-4">
-          {/* MALP Telemetry Readout */}
+          {/* Lantern scout field report */}
           <div className="bg-white border border-[#dedede] p-6 space-y-4">
             <div className="border-b border-[#eeeeee] pb-3 flex items-start justify-between">
               <div>
                 <span className="text-[9px] font-bold text-[#777777] uppercase tracking-wider block font-mono">
-                  MALP RECONNAISSANCE SCOUT SEER-SIGHT
+                  LANTERN SCOUT FIELD REPORT
                 </span>
                 <h3 className="text-xl font-bold text-[#111111]">{selectedGate.name}</h3>
                 <span className="text-xs font-mono text-[#555555]">{selectedGate.classification}</span>
               </div>
               <div className="text-right font-mono text-xs">
-                <span className="text-[10px] text-[#777777] block uppercase font-bold">Power Draw</span>
+                <span className="text-[10px] text-[#777777] block uppercase font-bold">Aether Offering</span>
                 <span className="font-bold text-[#111111] flex items-center gap-1 justify-end">
                   <Zap size={13} className="text-amber-500" />
-                  {selectedGate.powerReqMw} MW
+                  {selectedGate.powerReqMw} Aether
                 </span>
               </div>
             </div>
@@ -316,17 +317,17 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
                 <strong className="text-[#111111] block mt-0.5">{selectedGate.malpTelemetry.atmosphere}</strong>
               </div>
               <div className="p-2.5 bg-[#fafafa] border border-[#dedede]">
-                <span className="text-[9px] text-[#777777] uppercase block font-bold">Radiation / Gravity</span>
+                <span className="text-[9px] text-[#777777] uppercase block font-bold">Ward / Ground</span>
                 <strong className="text-[#111111] block mt-0.5">
                   {selectedGate.malpTelemetry.radiation} · {selectedGate.malpTelemetry.gravity}
                 </strong>
               </div>
               <div className="p-2.5 bg-[#fafafa] border border-[#dedede]">
-                <span className="text-[9px] text-[#777777] uppercase block font-bold">Life Signs</span>
+                <span className="text-[9px] text-[#777777] uppercase block font-bold">Signs of Life</span>
                 <strong className="text-[#111111] block mt-0.5">{selectedGate.malpTelemetry.lifeSigns}</strong>
               </div>
               <div className="p-2.5 bg-[#fafafa] border border-[#dedede]">
-                <span className="text-[9px] text-[#777777] uppercase block font-bold">Tactical Threat</span>
+                <span className="text-[9px] text-[#777777] uppercase block font-bold">Road Hazards</span>
                 <strong
                   className={`block mt-0.5 ${
                     selectedGate.malpTelemetry.threatRating === 'None'
@@ -342,7 +343,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
             {/* Geological & Artifact Resources */}
             <div className="p-3 bg-[#fafafa] border border-[#dedede] space-y-1.5 text-xs font-mono">
               <span className="text-[10px] text-[#777777] uppercase block font-bold">
-                Exploitable Veins & Artifact seer-sight
+                Available Stores & Relics
               </span>
               <p className="text-[#333333]">{selectedGate.malpTelemetry.resourcesAvailable}</p>
               <div className="flex flex-wrap gap-3 pt-1 text-[11px] font-bold text-[#111111]">
@@ -362,17 +363,17 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
             </p>
           </div>
 
-          {/* SG Team Deployment Operation */}
+          {/* Expedition company */}
           <div className="bg-white border border-[#dedede] p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-[#eeeeee] pb-3">
               <div>
                 <span className="text-[9px] font-bold text-[#777777] uppercase tracking-wider block font-mono">
-                  SGC EXPEDITIONARY FORCE PROTOCOL
+                  CROWNROAD EXPEDITION CHARTER
                 </span>
-                <h4 className="text-base font-bold text-[#111111]">Deploy Off-World SG Recon Team</h4>
+                <h4 className="text-base font-bold text-[#111111]">Send a Waystone Company</h4>
               </div>
               <span className="text-xs font-mono text-[#555555]">
-                Available Turns: <strong>{resources.attackTurns}</strong>
+                March Orders: <strong>{resources.attackTurns}</strong>
               </span>
             </div>
 
@@ -395,7 +396,7 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
                   >
                     <div className="flex items-center justify-between">
                       <strong className="text-xs font-bold font-mono">{team.code}</strong>
-                      <span className="text-[9px] font-mono opacity-80">{team.missionsCount} Tours</span>
+                      <span className="text-[9px] font-mono opacity-80">{team.missionsCount} Journeys</span>
                     </div>
                     <span
                       className={`text-[9px] block truncate mt-0.5 ${
@@ -429,10 +430,10 @@ export const StargateAddressDirectory: React.FC<StargateAddressDirectoryProps> =
               <Sparkles size={15} />
               <span>
                 {isDeploying
-                  ? 'Transiting Event Horizon...'
+                  ? 'Taking the Leyroad...'
                   : !isCurrentWormhole
-                  ? `Dial ${selectedGate.name} to Deploy`
-                  : `Dispatch ${selectedTeam.code} through Wormhole (1 Turn)`}
+                  ? `Open ${selectedGate.name}`
+                  : `Send ${selectedTeam.name} (1 March Order)`}
               </span>
             </button>
           </div>

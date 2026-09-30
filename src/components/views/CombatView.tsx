@@ -63,6 +63,7 @@ export const CombatView: React.FC<CombatViewProps> = ({
 
   const selectedTarget = targets.find((t) => t.id === selectedTargetId);
   const activeFormationDef = FLEET_FORMATIONS.find((f) => f.id === selectedFormation) || FLEET_FORMATIONS[0];
+  const currentStrikePower = resources.attackUnits * 5 + resources.superUnits * 25;
 
   const handleSelectPreset = (presetId: string) => {
     const preset = fleetPresets.find((p) => p.id === presetId);
@@ -152,6 +153,18 @@ export const CombatView: React.FC<CombatViewProps> = ({
         <p className="text-sm text-[#666666] mt-1 max-w-3xl leading-relaxed">
           Simulate Game combat rounds (1-6 rounds), ward absorptions, rapid-fire weapon metrics, debris field wreckage formation (30% Iron & Moonstone), and holding moon creation probabilities.
         </p>
+        <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#eeeeee] pt-4 text-[10px] font-mono uppercase tracking-wider text-[#777777] sm:grid-cols-4">
+          <div><span className="block">Category</span><strong className="text-[#111111]">Tactical Warfare</strong></div>
+          <div><span className="block">Class / Subclass</span><strong className="text-[#111111]">Fleet Combat · Holding Invasion</strong></div>
+          <div><span className="block">Type / Subtype</span><strong className="text-[#111111]">{actionType} · {selectedTarget?.race || 'Target Realm'}</strong></div>
+          <div><span className="block">Primary stats</span><strong className="text-[#111111]">ATK {Math.round(currentStrikePower)} · DEF {selectedTarget ? Math.round(selectedTarget.estimatedUnits * 5 * (1 + selectedTarget.defenseLevel * 0.2)) : 0}</strong></div>
+        </div>
+        <div className="mt-2 grid grid-cols-2 gap-2 border border-[#eeeeee] bg-[#fafafa] p-2 text-[10px] font-mono text-[#666666] sm:grid-cols-4">
+          <span><strong>Operating sub-stats:</strong></span>
+          <span>{turnsToSpend} march orders</span>
+          <span>{activeFormationDef.name} · ×{activeFormationDef.attackModifier.toFixed(2)} attack</span>
+          <span>{selectedTarget?.isProtected ? 'Protected target' : `${selectedTarget?.antiCovertLevel || 0} anti-covert`}</span>
+        </div>
       </div>
 
       {errorNotice && (

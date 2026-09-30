@@ -7,6 +7,7 @@ import {
 } from '../../types';
 import { sound } from '../../sound';
 import { INITIAL_OGAME_FACILITIES } from '../../ogameData';
+import { getRarityForProgress } from '../../utils/raritySystem';
 
 interface FactoryViewProps {
   facilities: OGameFacility[];
@@ -29,6 +30,40 @@ const FACILITY_CATEGORY_LABELS: Record<FacilityCategory, string> = {
   processing: 'Refinery or alchemical works',
   infrastructure: 'Lore or infrastructure',
 };
+
+const FACILITY_CLASS_LABELS: Record<FacilityCategory, string> = {
+  resource: 'Crown Extraction',
+  processing: 'Alchemical Refinement',
+  manufacturing: 'Forgecraft & Workshops',
+  infrastructure: 'Holding Infrastructure',
+};
+
+function getFacilityProfile(facility: OGameFacility) {
+  const productionEntries = Object.entries(facility.productionPerLevel || {}).filter(([, value]) => value !== undefined);
+  const productionNames = productionEntries.map(([resource]) => resource === 'energy' ? 'Leyline Power' : resource === 'deuterium' ? 'Aether' : resource === 'metal' ? 'Iron' : 'Moonstone');
+  const primaryStats = [
+    `Level ${facility.level} / ${facility.maxLevel}`,
+    ...productionEntries.map(([resource, value]) => `+${value} ${resource === 'energy' ? 'power' : resource}/level`),
+  ];
+  const subStats = [
+    facility.energyConsumptionPerLevel > 0 ? `Aether draw ${facility.energyConsumptionPerLevel}/level` : 'No leyline draw',
+    `Cost growth ×${facility.costMultiplier.toFixed(2)}`,
+    facility.baseBuildTimeSeconds ? `Base build ${facility.baseBuildTimeSeconds}s` : 'Standard works timing',
+  ];
+  return {
+    categoryName: FACILITY_CATEGORY_LABELS[facility.category],
+    className: FACILITY_CLASS_LABELS[facility.category],
+    subclassName: productionNames.length > 0 ? productionNames.join(' · ') : 'Realm support works',
+    typeName: facility.productionPerLevel?.energy ? 'Power generation' : facility.productionPerLevel ? 'Resource production' : 'Infrastructure support',
+    subtypeName: facility.bonusDescription,
+    primaryStats,
+    subStats,
+    details: facility.description,
+    unlocks: facility.prerequisites.length > 0
+      ? facility.prerequisites.map((prerequisite) => `${prerequisite.name} Lv ${prerequisite.requiredLevel}`)
+      : ['Foundational works · no prerequisites'],
+  };
+}
 
 export const FactoryView: React.FC<FactoryViewProps> = ({
   facilities,
@@ -67,6 +102,11 @@ export const FactoryView: React.FC<FactoryViewProps> = ({
     return selectedCategory === 'all' || f.category === selectedCategory;
   });
 
+  const archiveClasses = new Set(facilities.map((facility) => getFacilityProfile(facility).className));
+  const archiveSubclasses = new Set(facilities.map((facility) => getFacilityProfile(facility).subclassName));
+  const archiveTypes = new Set(facilities.map((facility) => getFacilityProfile(facility).typeName));
+  const archiveSubtypes = new Set(facilities.map((facility) => getFacilityProfile(facility).subtypeName));
+
   const getCostForNextLevel = (facility: OGameFacility) => {
     const mult = Math.pow(facility.costMultiplier, facility.level);
     return {
@@ -96,7 +136,7 @@ export const FactoryView: React.FC<FactoryViewProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div id="factory-works-view" className="factory-works-view space-y-6">
       {/* Top Banner */}
       <div className="border border-[#111111] bg-white p-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -111,6 +151,18 @@ export const FactoryView: React.FC<FactoryViewProps> = ({
               Manage deep mines, moonstone quarries, Aether distilleries, and the royal workshops that supply every holding.
               Mechanists and runeglyph crews shorten forge, keep, and warband construction.
             </p>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-mono uppercase tracking-wider text-[#777777]">
+              <span>90-class works archive</span>
+              <span>{facilities.length} facilities catalogued</span>
+              <span>4 forge categories</span>
+              <span>Production · power · unlock data</span>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[#e2e8f0] pt-3 text-[10px] font-mono uppercase tracking-wider text-[#666666] sm:grid-cols-4">
+              <span><strong className="block text-sm text-[#111111]">{archiveClasses.size}</strong>Classes</span>
+              <span><strong className="block text-sm text-[#111111]">{archiveSubclasses.size}</strong>Subclasses</span>
+              <span><strong className="block text-sm text-[#111111]">{archiveTypes.size}</strong>Types</span>
+              <span><strong className="block text-sm text-[#111111]">{archiveSubtypes.size}</strong>Subtypes</span>
+            </div>
           </div>
 
           {/* Efficiency Metric */}
@@ -238,6 +290,8 @@ export const FactoryView: React.FC<FactoryViewProps> = ({
             const cost = getCostForNextLevel(facility);
             const affordable = canAfford(facility);
             const upgrading = isUpgrading(facility.id);
+            const facilityProfile = getFacilityProfile(facility);
+            const rarity = getRarityForProgress(facility.level, facility.maxLevel);
 
             return (
               <div
@@ -248,7 +302,7 @@ export const FactoryView: React.FC<FactoryViewProps> = ({
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
                       <span className="text-[10px] font-mono uppercase text-[#666666]">
-                        {FACILITY_CATEGORY_LABELS[facility.category]}
+                        {facilityProfile.categoryName} · {facilityProfile.className}
                       </span>
                       <h4 className="text-sm font-bold text-[#111111]">{facility.name}</h4>
                     </div>
@@ -256,11 +310,29 @@ export const FactoryView: React.FC<FactoryViewProps> = ({
                     <span className="px-2 py-0.5 text-xs font-mono font-bold border border-[#111111] bg-[#f8fafc]">
                       Level {facility.level}
                     </span>
+                    <span className="px-2 py-0.5 text-[10px] font-mono font-bold border" style={{ color: rarity.color, backgroundColor: rarity.background, borderColor: rarity.border }}>
+                      {rarity.shortLabel} · {rarity.name}
+                    </span>
                   </div>
 
-                  <p className="text-xs text-[#555555] mb-3 leading-relaxed">
-                    {facility.description}
-                  </p>
+                  <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 border border-[#eeeeee] bg-[#fafafa] p-2 text-[10px]">
+                    <div><span className="block text-[9px] uppercase text-[#888888]">Category</span><strong>{facilityProfile.categoryName}</strong></div>
+                    <div><span className="block text-[9px] uppercase text-[#888888]">Class</span><strong>{facilityProfile.className}</strong></div>
+                    <div><span className="block text-[9px] uppercase text-[#888888]">Subclass</span><strong>{facilityProfile.subclassName}</strong></div>
+                    <div><span className="block text-[9px] uppercase text-[#888888]">Type</span><strong>{facilityProfile.typeName}</strong></div>
+                    <div className="col-span-2"><span className="block text-[9px] uppercase text-[#888888]">Subtype</span><strong>{facilityProfile.subtypeName}</strong></div>
+                  </div>
+
+                  <div className="mt-3 border-l-2 border-amber-300 bg-amber-50/40 px-3 py-2">
+                    <span className="block text-[9px] font-bold uppercase tracking-wider text-amber-800">Full works details</span>
+                    <p className="mt-1 text-xs text-[#555555] leading-relaxed">{facilityProfile.details}</p>
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-2 border border-[#e2e8f0] bg-[#f8fafc] p-2 text-[10px] font-mono">
+                    <div className="col-span-2"><span className="block text-[9px] uppercase text-[#888888]">Primary stats</span><strong>{facilityProfile.primaryStats.join(' · ')}</strong></div>
+                    <div className="col-span-2"><span className="block text-[9px] uppercase text-[#888888]">Sub-stats</span><span>{facilityProfile.subStats.join(' · ')}</span></div>
+                    <div className="col-span-2"><span className="block text-[9px] uppercase text-[#888888]">Unlocks & prerequisites</span><span>{facilityProfile.unlocks.join(' · ')}</span></div>
+                  </div>
 
                   <div className="p-2 border border-[#e2e8f0] bg-[#f8fafc] text-xs font-mono space-y-1 mb-4">
                     <div className="text-[#111111] font-semibold">{facility.bonusDescription}</div>

@@ -450,7 +450,7 @@ export function NemesisSystemView({
   };
 
   return (
-    <div className="space-y-6">
+    <div id="nemesis-system-view" className="rival-system nemesis-system-view space-y-6">
       {/* Top Header Banner */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />

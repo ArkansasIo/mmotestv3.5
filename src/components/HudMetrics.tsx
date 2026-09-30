@@ -119,7 +119,7 @@ export const HudMetrics: React.FC<HudMetricsProps> = ({
         </div>
         <strong className="block text-xl sm:text-2xl font-bold tracking-tight text-[#111111] my-0.5 font-mono">
           {resources.bankedNaquadah.toLocaleString()}{' '}
-          <span className="text-xs text-amber-700 font-semibold">CR</span>
+          <span className="text-xs text-amber-700 font-semibold">Crowns</span>
         </strong>
         <div className="flex items-center justify-between text-[10px] text-[#777777] font-mono mt-1">
           <span>Protected from raids · 2% int</span>

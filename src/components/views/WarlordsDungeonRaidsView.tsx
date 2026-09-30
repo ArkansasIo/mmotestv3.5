@@ -193,7 +193,7 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
   };
 
   return (
-    <main id="warlords-dungeon-raids-view" className="space-y-5 text-[#e9e4d5]">
+    <main id="warlords-dungeon-raids-view" className="rival-system warlord-raid-system space-y-5 text-[#26313a]">
       <header className="grid gap-5 border border-[#465240] bg-[#202a22] p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:p-7">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#d0ac70]">Age of Embers · War Council ledger</span>

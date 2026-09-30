@@ -26,8 +26,8 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
   const [dialedSequence, setDialedSequence] = useState<string[]>([]);
   const [lockedChevrons, setLockedChevrons] = useState<number>(0);
   const [isDialing, setIsDialing] = useState<boolean>(false);
-  const [dialStepText, setDialStepText] = useState<string>('DHD Ready. Select glyphs or auto-dial destination.');
-  const [idcCode, setIdcCode] = useState<string>('SG-1-ALPHA-7729');
+  const [dialStepText, setDialStepText] = useState<string>('Caller Stone ready. Choose road-marks or follow a known road.');
+  const [idcCode, setIdcCode] = useState<string>('CW-1-EASTRIDGE-0001');
   const [idbVerified, setIdbVerified] = useState<boolean>(true);
   const [ringRotation, setRingRotation] = useState<number>(0);
 
@@ -39,7 +39,7 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
     if (!isDialing && !isCurrentConnected) {
       setDialedSequence([]);
       setLockedChevrons(0);
-      setDialStepText(`Target selected: ${activeGate.name} (${activeGate.chevrons.length} chevrons required)`);
+      setDialStepText(`Waystone chosen: ${activeGate.name} (${activeGate.chevrons.length} marks required)`);
     }
   }, [activeGate.id, isDialing, isCurrentConnected]);
 
@@ -53,7 +53,7 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
       const next = [...dialedSequence, glyph.symbol];
       setDialedSequence(next);
       setLockedChevrons(next.length);
-      setDialStepText(`Chevron ${next.length} encoded: [${glyph.name} - ${glyph.symbol}]`);
+      setDialStepText(`Road-mark ${next.length} set: [${glyph.name} · ${glyph.symbol}]`);
 
       // If full sequence entered, execute dial
       if (next.length === activeGate.chevrons.length) {
@@ -83,17 +83,17 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
       sound.play('stargate_lock');
 
       if (current < totalChevrons) {
-        setDialStepText(`Chevron ${current} locked in place...`);
+        setDialStepText(`Road-mark ${current} answers...`);
       } else {
         clearInterval(interval);
-        setDialStepText(`Chevron ${totalChevrons} locked! Engaging Kawoosh Event Horizon...`);
+        setDialStepText(`The final mark answers. The Leyroad begins to open...`);
         sound.play('stargate_engage');
 
         setTimeout(() => {
           setIsDialing(false);
           sound.play('success');
           onEstablishWormhole(target);
-          setDialStepText(`Wormhole stable! Two-way subspace matter transit active.`);
+          setDialStepText(`The road is open. Travelers may pass in either direction.`);
         }, 1200);
       }
     }, 400);
@@ -104,13 +104,13 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
     sound.play('click');
     setDialedSequence([]);
     setLockedChevrons(0);
-    setDialStepText('DHD sequence cleared. Ready for input.');
+    setDialStepText('Road-marks cleared. The Caller Stone awaits.');
   };
 
   const handleTransmitIDC = () => {
     sound.play('confirm');
     setIdbVerified(true);
-    setDialStepText(`IDC signal [${idcCode}] accepted. Iris auto-sync confirmed.`);
+    setDialStepText(`Envoy seal [${idcCode}] accepted. The oathward recognizes your company.`);
   };
 
   return (
@@ -126,10 +126,10 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
           <div className="w-full flex justify-between items-center text-[10px] font-mono text-[#94a3b8] uppercase mb-4 z-10">
             <span className="flex items-center gap-1.5">
               <span className={`w-2 h-2 rounded-full ${isCurrentConnected ? 'bg-emerald-400 animate-ping' : 'bg-neutral-600'}`} />
-              Astria Porta · Model Mark VII
+              Eldoria Waystone · Old Road
             </span>
             <span className="tracking-widest">
-              {isCurrentConnected ? 'WORMHOLE ACTIVE' : isDialing ? 'ENCODING CHEVRONS' : 'RING IDLE'}
+              {isCurrentConnected ? 'LEYROAD OPEN' : isDialing ? 'READING ROAD-MARKS' : 'WAYSTONE DORMANT'}
             </span>
           </div>
 
@@ -178,7 +178,7 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
               {/* Ring Glyph markings */}
               <div className="absolute inset-2 rounded-full border border-dashed border-[#334155] opacity-60" />
               <div className="text-[10px] font-mono text-[#475569] uppercase tracking-widest pointer-events-none">
-                {isDialing ? 'ENCODING...' : 'ANCIENT GLYPHS'}
+                {isDialing ? 'READING...' : 'OLD ROAD-MARKS'}
               </div>
             </div>
 
@@ -194,10 +194,10 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
                   <div className="absolute w-full h-[1px] bg-[#334155] rotate-90" />
                   <Shield size={24} className="text-amber-400 relative z-10 mb-1" />
                   <span className="text-[9px] font-bold text-white uppercase tracking-wider relative z-10 font-mono">
-                    IRIS CLOSED
+                    WARD SEALED
                   </span>
                   <span className="text-[8px] text-[#94a3b8] font-mono relative z-10">
-                    Trinium Barrier 100%
+                    Oathward 100%
                   </span>
                 </div>
               ) : isCurrentConnected ? (
@@ -209,9 +209,9 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
                   <div className="relative text-center z-10">
                     <Sparkles size={22} className="text-white mx-auto animate-spin" />
                     <span className="text-[10px] font-bold text-white uppercase tracking-wider block font-mono mt-1">
-                      EVENT HORIZON
+                      ROAD OPEN
                     </span>
-                    <span className="text-[8px] text-sky-100 font-mono">STABLE WORMHOLE</span>
+                    <span className="text-[8px] text-sky-100 font-mono">WAYSTONE LINKED</span>
                   </div>
                 </div>
               ) : isDialing ? (
@@ -248,7 +248,7 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
               }`}
             >
               <Shield size={13} />
-              <span>{irisClosed ? 'Open Iris (Barrier Off)' : 'Close Iris (Barrier Armed)'}</span>
+              <span>{irisClosed ? 'Lift Oathward' : 'Set Oathward'}</span>
             </button>
 
             {isCurrentConnected && (
@@ -258,11 +258,11 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
                 onClick={() => {
                   sound.play('click');
                   onDisconnectWormhole();
-                  setDialStepText('Iris closed. Event horizon collapsed. Stargate offline.');
+                  setDialStepText('The oathward is set. The Leyroad has closed.');
                 }}
                 className="px-3 py-1.5 bg-rose-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-rose-700 transition-colors cursor-pointer border border-rose-500 font-mono"
               >
-                Disconnect Wormhole ✕
+                Close Leyroad ✕
               </button>
             )}
           </div>
@@ -274,7 +274,7 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
             <div className="flex items-center justify-between border-b border-[#eeeeee] pb-3">
               <div>
                 <span className="text-[9px] font-bold text-[#777777] uppercase tracking-wider block font-mono">
-                  DIAL-HOME DEVICE SEER-SIGHT CONSOLE
+                  CALLER STONE FIELD CONSOLE
                 </span>
                 <h3 className="text-xl font-bold text-[#111111]">{activeGate.name}</h3>
                 <span className="text-xs text-[#555555] font-mono">{activeGate.designation}</span>
@@ -298,7 +298,7 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
             <div className="mt-4 p-3 bg-[#fafafa] border border-[#dedede] space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-[#777777] uppercase font-mono">
-                  Required Chevrons ({activeGate.chevrons.length} Coordinates)
+                  Required Road-Marks ({activeGate.chevrons.length})
                 </span>
                 <span className="text-[10px] font-mono text-[#555555]">
                   Locked: {lockedChevrons}/{activeGate.chevrons.length}
@@ -315,14 +315,14 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
                           ? 'bg-[#111111] text-amber-400 border-amber-500 shadow-sm'
                           : 'bg-white text-[#888888] border-[#dedede]'
                       }`}
-                      title={`Chevron #${idx + 1}: ${sym}`}
+                      title={`Road-mark ${idx + 1}: ${sym}`}
                     >
                       {sym}
                     </span>
                   );
                 })}
                 <span className="text-[10px] text-[#777777] font-mono ml-1">
-                  Origin: <strong>{activeGate.pointOfOrigin}</strong>
+                  First Mark: <strong>{activeGate.pointOfOrigin}</strong>
                 </span>
               </div>
             </div>
@@ -345,7 +345,7 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
                 className="py-2.5 px-3 bg-[#111111] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333333] transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 font-mono"
               >
                 <Zap size={14} className="text-amber-400" />
-                <span>Auto-Dial Address</span>
+                <span>Follow Known Road</span>
               </button>
 
               <button
@@ -355,15 +355,15 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
                 onClick={handleClear}
                 className="py-2.5 px-3 bg-white text-[#333333] border border-[#dedede] text-xs font-bold uppercase tracking-wider hover:bg-neutral-100 transition-colors disabled:opacity-50 cursor-pointer font-mono"
               >
-                Clear Chevrons
+                Clear Road-Marks
               </button>
             </div>
 
-            {/* Iris Deactivation Code (GDO) section */}
+            {/* Envoy seal section */}
             <div className="flex items-center justify-between gap-2 p-2 bg-[#fafafa] border border-[#dedede]">
               <div className="flex items-center gap-2">
                 <KeyRound size={14} className="text-[#555555]" />
-                <span className="text-[10px] font-mono font-bold text-[#555555]">GDO / IDC Code:</span>
+                <span className="text-[10px] font-mono font-bold text-[#555555]">Envoy Seal:</span>
                 <input
                   type="text"
                   value={idcCode}
@@ -376,22 +376,22 @@ export const StargateDialerPanel: React.FC<StargateDialerPanelProps> = ({
                 onClick={handleTransmitIDC}
                 className="px-2.5 py-1 bg-white border border-[#dedede] text-[10px] font-bold uppercase font-mono hover:border-[#111111] cursor-pointer"
               >
-                Transmit IDC
+                Present Seal
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Lower DHD (Dial-Home Device) Physical Keyboard */}
+      {/* Caller Stone rune board */}
       <div className="border border-[#dedede] bg-white p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-[#eeeeee] pb-3">
           <div>
             <h4 className="text-sm font-bold text-[#111111] uppercase tracking-wider font-mono">
-              Dial-Home Device (DHD) Physical Keypad Matrix
+              Caller Stone Road-Mark Board
             </h4>
             <span className="text-xs text-[#777777]">
-              Click glyphs manually or activate central activator dome to trigger wormhole encoding.
+              Set the road-marks by hand or follow the known path to open a Leyroad.
             </span>
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-[#555555]">

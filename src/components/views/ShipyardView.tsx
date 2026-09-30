@@ -43,24 +43,24 @@ interface ShipyardViewProps {
 }
 
 const CATEGORIES: { id: OGameShipCategory | 'all'; label: string; icon: string }[] = [
-  { id: 'all', label: 'All Vessels', icon: '✦' },
-  { id: 'civilian', label: 'Civilian & Haulers', icon: '📦' },
-  { id: 'combat', label: 'Escorts & Cruisers', icon: '⚔' },
-  { id: 'carrier', label: 'Carrier Wings', icon: '🛫' },
-  { id: 'capital', label: 'Capital & Titans', icon: '👑' },
+  { id: 'all', label: 'All Retinues', icon: '✦' },
+  { id: 'civilian', label: 'Caravans & Supplies', icon: '📦' },
+  { id: 'combat', label: 'Warbands & Galleys', icon: '⚔' },
+  { id: 'carrier', label: 'Sky-Barge Companies', icon: '🛫' },
+  { id: 'capital', label: 'Great Vessels', icon: '👑' },
 ];
 
 const PRESET_CODENAMES = [
-  'Vanguard Strike Squadron',
-  'Aegis Interceptor Flotilla',
-  'Deep Space Survey Taskforce',
-  'Solar Siege Dreadnought Wing',
-  'Eclipse Planetary Raider',
-  'Starlight Hauler Convoy',
-  'Titan Omega Fleet',
-  'Ghost Recon Vanguard',
-  'Hydra Swarm Battleline',
-  'Apex Dominion Armada',
+  'Crownroad Lantern Guard',
+  'Northwatch Shieldwall',
+  'Deepdelve Survey Company',
+  'Dragonfire Siege Train',
+  'Eclipse March Outriders',
+  'Amber Road Supply Host',
+  'Starfall Oathguard',
+  'Gloamveil Pathfinders',
+  'Briarheart Thornwardens',
+  'Nine-Crown Vanguard',
 ];
 
 export const ShipyardView: React.FC<ShipyardViewProps> = ({
@@ -144,12 +144,12 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
   const handleSelectActiveBuildShips = () => {
     sound.play('click');
     if (activeBuildShipIds.length === 0) {
-      showNotification('No vessels currently in active production queue.');
+      showNotification('No retinues are currently being mustered.');
       return;
     }
     const newIds = new Set([...selectedShipIds, ...activeBuildShipIds]);
     setSelectedShipIds(Array.from(newIds));
-    showNotification(`Selected ${activeBuildShipIds.length} ship type(s) with active builds.`);
+    showNotification(`Selected ${activeBuildShipIds.length} retinue type(s) in the muster queue.`);
   };
 
   const handleClearSelectedShips = () => {
@@ -163,7 +163,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
   // Batch Action: Cancel active orders for selected ships
   const handleBatchCancelSelectedShips = () => {
     if (activeQueueForSelected.length === 0) {
-      showNotification('None of the selected ships have active orders in the shipyard queue.');
+      showNotification('The selected retinues have no active muster orders.');
       return;
     }
 
@@ -176,14 +176,14 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
 
     sound.play('warning');
     showNotification(
-      `Cancelled ${queueIdsToCancel.length} active construction order(s) for selected ships (with 85% resource refund).`
+      `Cancelled ${queueIdsToCancel.length} muster order(s); 85% of the materials were returned.`
     );
   };
 
   // Batch Action: Accelerate active orders for selected ships
   const handleBatchAccelerateSelectedShips = (instant = true) => {
     if (activeQueueForSelected.length === 0) {
-      showNotification('None of the selected ships currently have active orders to accelerate.');
+      showNotification('The selected retinues have no muster orders to hasten.');
       return;
     }
 
@@ -193,9 +193,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
     }
 
     sound.play('success');
-    showNotification(
-      `⚡ Overclock activated! Accelerated ${queueIdsToAccelerate.length} production orders — hulls delivered directly to active fleet!`
-    );
+      showNotification(`The selected muster order(s) are complete and ready to march.`);
   };
 
   // Batch Action: Construct all selected ships according to their quantities
@@ -220,13 +218,13 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
     if (queuedCount > 0) {
       sound.play('confirm');
       showNotification(
-        `Commissioned construction batches for ${queuedCount} selected ship type(s)!${
-          failedCount > 0 ? ` (${failedCount} skipped due to insufficient minerals)` : ''
+        `Commissioned ${queuedCount} selected retinue type(s)!${
+          failedCount > 0 ? ` (${failedCount} skipped because the treasury lacked materials)` : ''
         }`
       );
     } else {
       sound.play('warning');
-      showNotification('Insufficient resources to construct the selected vessel batches.');
+      showNotification('The treasury lacks materials for those muster orders.');
     }
   };
 
@@ -240,7 +238,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
       });
       return updated;
     });
-    showNotification(`Set target construction quantity to ×${qty} for all ${selectedShipIds.length} selected vessels.`);
+    showNotification(`Set the muster target to ×${qty} for all ${selectedShipIds.length} selected retinues.`);
   };
 
   // Batch Action: Set max affordable on all selected
@@ -256,7 +254,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
       });
       return updated;
     });
-    showNotification(`Calculated and set maximum affordable quantities for all ${selectedShipIds.length} selected vessels.`);
+    showNotification(`Set the largest affordable muster for all ${selectedShipIds.length} selected retinues.`);
   };
 
   // Queue-specific batch selection
@@ -292,7 +290,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
     if (onAccelerateShipyardQueue) {
       onAccelerateShipyardQueue(selectedQueueIds, true);
     }
-    showNotification(`⚡ Accelerated ${selectedQueueIds.length} selected queue orders into active fleet!`);
+    showNotification(`${selectedQueueIds.length} selected muster order(s) are complete and ready to march.`);
     setSelectedQueueIds([]);
   };
 
@@ -357,13 +355,13 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
   const handleSavePresetSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!presetName.trim()) {
-      alert('Please enter a name for the Fleet Formation Preset.');
+      alert('Please enter a name for this warband muster.');
       return;
     }
 
     const totalAssigned = Object.values(presetComposition).reduce((sum, v) => sum + (v || 0), 0);
     if (totalAssigned <= 0) {
-      alert('Please assign at least 1 ship to this Fleet Formation Preset.');
+      alert('Assign at least one retinue before saving this muster.');
       return;
     }
 
@@ -380,8 +378,8 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
     if (onSavePreset) {
       onSavePreset(newPreset);
     }
-    setIsEditorOpen(false);
-    showNotification(`Fleet Formation Preset "${newPreset.name}" successfully saved!`);
+      setIsEditorOpen(false);
+      showNotification(`Warband muster "${newPreset.name}" is saved.`);
   };
 
   const handleSaveCurrentHangarAsPreset = () => {
@@ -395,14 +393,14 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
     });
 
     if (totalCount === 0) {
-      alert('Your hangar currently has no ships to snapshot into a preset!');
+      alert('The warforge has no active retinues to record as a muster.');
       return;
     }
 
     const newPreset: FleetFormationPreset = {
       id: `preset_hangar_${Date.now()}`,
-      name: `Hangar Snapshot (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
-      description: 'Snapshot of all active vessels in borderland hangar.',
+      name: `Warforge Muster (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
+      description: 'A record of every retinue currently ready at the royal warforge.',
       formation: selectedFormation,
       composition: comp,
       createdAt: Date.now(),
@@ -412,7 +410,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
     if (onSavePreset) {
       onSavePreset(newPreset);
     }
-    showNotification(`Saved entire active hangar (${totalCount} hulls) as a new preset!`);
+      showNotification(`Saved all ${totalCount} active retinues as a new muster.`);
   };
 
   const handleApplyPreset = (preset: FleetFormationPreset) => {
@@ -421,7 +419,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
       onSelectPreset(preset.id);
     }
     sound.play('confirm');
-    showNotification(`Formation doctrine set to "${preset.name}" (${preset.formation.toUpperCase()} formation active).`);
+    showNotification(`The host adopts "${preset.name}" and forms a ${preset.formation} line.`);
   };
 
   const handleBatchBuildMissing = (preset: FleetFormationPreset) => {
@@ -437,9 +435,9 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
     });
 
     if (queuedBatches > 0) {
-      showNotification(`Queued missing vessels for "${preset.name}" into the orbital shipyard!`);
+      showNotification(`The warforge is mustering missing retinues for "${preset.name}".`);
     } else {
-      showNotification('Either all ships are already built or insufficient resources for batch order.');
+      showNotification('The muster is already complete, or the treasury lacks materials.');
     }
   };
 
@@ -505,31 +503,30 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-bold tracking-wider">BORDERLAND WARFORGE & NAVAL COMMAND</span>
+              <span className="text-base font-bold tracking-wider">CROWNROAD WARFORGE & RETINUE</span>
               <span className="px-2 py-0.5 text-[10px] font-mono border border-[#111111] bg-[#f8fafc]">
                 GAME SPEC §17-21, 25
               </span>
             </div>
             <p className="text-xs text-[#666666] mt-1">
-              Zero-g drydocks constructing civilian transports, heavy capital cruisers, fighter carriers,
-              and holding-breaker Titan flagships. Configure warband combat doctrines and tactical formations.
+              Guild crews build supply caravans, river galleys, sky-barges, and legendary siege vessels. Muster your retinue and choose its battle formation.
             </p>
           </div>
 
-          {/* Fleet Readiness Metrics */}
+          {/* Retinue readiness */}
           <div className="flex items-center gap-3 text-xs font-mono">
             <div className="border border-[#111111] bg-[#f8fafc] p-2.5 min-w-[120px]">
               <div className="text-[10px] text-[#666666]">ACTIVE WARBAND</div>
-              <div className="font-bold text-[#111111]">{totalFleetSize.toLocaleString()} Hulls</div>
+              <div className="font-bold text-[#111111]">{totalFleetSize.toLocaleString()} Retinues</div>
             </div>
             <div className="border border-[#111111] bg-[#f8fafc] p-2.5 min-w-[120px]">
-              <div className="text-[10px] text-[#666666]">ALPHA ATTACK</div>
+              <div className="text-[10px] text-[#666666]">OPENING STRIKE</div>
               <div className="font-bold text-[#22c55e]">
                 {Math.round(totalFleetAttack * activeFormation.attackModifier).toLocaleString()}
               </div>
             </div>
             <div className="border border-[#111111] bg-[#f8fafc] p-2.5 min-w-[120px]">
-              <div className="text-[10px] text-[#666666]">DEFLECTOR RATING</div>
+              <div className="text-[10px] text-[#666666]">WARD STRENGTH</div>
               <div className="font-bold text-[#2563eb]">
                 {Math.round(totalFleetShield * activeFormation.defenseModifier).toLocaleString()}
               </div>
@@ -537,17 +534,17 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
           </div>
         </div>
 
-        {/* Tactical Fleet Formation Selector & Preset Quickbar */}
+        {/* Warband formation selector and muster quickbar */}
         <div className="mt-4 pt-3 border-t border-[#e2e8f0] space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-[#111111]">Tactical Warband Formation Doctrine:</span>
+              <span className="text-xs font-bold text-[#111111]">Warband Battle Formation:</span>
               <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-[#111111] text-white">
                 {activeFormation.name.toUpperCase()}
               </span>
             </div>
             <span className="text-[11px] font-mono text-[#666666]">
-              Atk: x{activeFormation.attackModifier} | Def: x{activeFormation.defenseModifier} | Spd: x{activeFormation.speedModifier} | Flagship Guard: x{activeFormation.flagshipProtection}
+              Strike: x{activeFormation.attackModifier} | Ward: x{activeFormation.defenseModifier} | Pace: x{activeFormation.speedModifier} | Banner Guard: x{activeFormation.flagshipProtection}
             </span>
           </div>
 
@@ -577,7 +574,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
               onClick={handleSaveCurrentHangarAsPreset}
               className="px-3 py-1 text-xs font-mono border border-[#111111] bg-[#f8fafc] hover:bg-[#111111] hover:text-white font-semibold transition-colors cursor-pointer"
             >
-              + Save Current Hangar as Preset
+              + Save Ready Retinues as Muster
             </button>
           </div>
         </div>
@@ -607,7 +604,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
               : 'border-[#cccccc] bg-white text-[#111111] hover:border-[#111111]'
           }`}
         >
-          ⚙ Drydocks & Hull Construction
+            ⚒ Warforge & Muster Queue
         </button>
         <button
           type="button"
@@ -621,7 +618,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
               : 'border-[#cccccc] bg-white text-[#111111] hover:border-[#111111]'
           }`}
         >
-          <span>❖ Warband Formations & Saved Presets</span>
+          <span>❖ Warband Formations & Musters</span>
           <span className="px-1.5 py-0.2 text-[10px] rounded bg-amber-500 text-white font-mono">
             {fleetPresets.length}
           </span>
@@ -629,17 +626,17 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
       </div>
 
       {/* ========================================================================= */}
-      {/* TAB 1: DRYDOCKS & SHIP CONSTRUCTION */}
+      {/* TAB 1: WARFORGE & MUSTERING */}
       {/* ========================================================================= */}
       {activeTab === 'drydocks' && (
         <div className="space-y-6">
-          {/* Active Shipyard Production Queue */}
+          {/* Active warforge muster queue */}
           {shipyardQueue.length > 0 && (
             <div className="border border-[#111111] bg-white p-4 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-bold mb-3 pb-2 border-b border-[#e2e8f0]">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-ping" />
-                  <span>BORDERLAND WARFORGE PRODUCTION QUEUE ({shipyardQueue.length} Batches)</span>
+                    <span>WARFORGE MUSTER QUEUE ({shipyardQueue.length} Orders)</span>
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
@@ -730,7 +727,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
 
                       <div className="flex items-center justify-between text-[11px] font-mono">
                         <span className="text-[10px] text-[#777777]">
-                          Hulls in hangar upon completion
+                          Retinues ready when the order completes
                         </span>
                         <div className="flex items-center gap-2">
                           <button
@@ -740,7 +737,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                                 onAccelerateShipyardQueue([item.id], true);
                               }
                               sound.play('success');
-                              showNotification(`⚡ Accelerated ${item.shipName} build! Hulls added to hangar.`);
+                              showNotification(`${item.shipName} has completed its muster and is ready to march.`);
                             }}
                             className="text-emerald-700 hover:text-emerald-900 font-bold hover:underline cursor-pointer flex items-center gap-0.5"
                           >
@@ -828,11 +825,11 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
 
                   <div className="flex items-center gap-2 text-xs font-mono">
                     <span className="font-bold text-[#111111]">
-                      {selectedShipIds.length} of {ships.length} ships selected
+                      {selectedShipIds.length} of {ships.length} retinue types selected
                     </span>
                     {activeQueueForSelected.length > 0 && (
                       <span className="px-1.5 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 font-bold rounded-2xs text-[10px] animate-pulse">
-                        {activeQueueForSelected.length} active build order(s)
+                        {activeQueueForSelected.length} active muster order(s)
                       </span>
                     )}
                   </div>
@@ -853,8 +850,8 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                       }`}
                       title={
                         activeQueueForSelected.length === 0
-                          ? 'Select ships with active construction orders to accelerate'
-                          : `Instantly finish ${activeQueueForSelected.length} queue item(s)`
+                          ? 'Select retinues with active muster orders to hasten'
+                          : `Complete ${activeQueueForSelected.length} muster order(s)`
                       }
                     >
                       <FastForward size={14} />
@@ -873,8 +870,8 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                       }`}
                       title={
                         activeQueueForSelected.length === 0
-                          ? 'Select ships with active construction orders to cancel'
-                          : `Cancel ${activeQueueForSelected.length} active build order(s) with refund`
+                          ? 'Select retinues with active muster orders to cancel'
+                          : `Cancel ${activeQueueForSelected.length} muster order(s) with refund`
                       }
                     >
                       <XCircle size={14} />
@@ -893,7 +890,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                       }`}
                     >
                       <Hammer size={14} />
-                      <span>Batch Construct ({selectedShipIds.length})</span>
+                      <span>Muster Selected ({selectedShipIds.length})</span>
                     </button>
                   </div>
 
@@ -970,7 +967,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                             <div>
                               <div className="flex items-center gap-1.5">
                                 <span className="text-[10px] font-mono uppercase text-[#666666]">
-                                  {ship.category} Class
+                                  {ship.category === 'civilian' ? 'Caravan' : ship.category === 'combat' ? 'Warband' : ship.category === 'carrier' ? 'Sky-Barge' : 'Great Vessel'}
                                 </span>
                                 {totalBuildingThisShip > 0 && (
                                   <span className="px-1.5 py-0.2 text-[9px] font-mono bg-amber-100 text-amber-900 border border-amber-300 font-bold rounded-2xs flex items-center gap-1">
@@ -984,7 +981,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                           </div>
 
                           <span className="px-2 py-0.5 text-xs font-mono font-bold border border-[#111111] bg-[#f8fafc] shrink-0">
-                            In Hangar: {ship.quantity}
+                            Ready: {ship.quantity}
                           </span>
                         </div>
 
@@ -993,7 +990,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                           <div className="mb-2 p-1.5 bg-amber-50/70 border border-amber-300/80 rounded-2xs flex items-center justify-between text-[10px] font-mono">
                             <span className="text-amber-900 font-semibold flex items-center gap-1">
                               <Clock size={11} className="text-amber-600" />
-                              Under Construction: ×{totalBuildingThisShip}
+                              Muster Underway: ×{totalBuildingThisShip}
                             </span>
                             <div className="flex items-center gap-1.5">
                               <button
@@ -1006,7 +1003,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                                       true
                                     );
                                     sound.play('success');
-                                    showNotification(`⚡ Accelerated ${ship.name} production! Hulls ready.`);
+                                    showNotification(`${ship.name} is ready to march.`);
                                   }
                                 }}
                                 className="text-amber-800 hover:text-amber-950 font-bold underline cursor-pointer"
@@ -1024,7 +1021,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                                     activeQueueItemsForShip.forEach((q) => onCancelShipyardQueue(q.id));
                                   }
                                   sound.play('warning');
-                                  showNotification(`Cancelled ${ship.name} build orders.`);
+                                  showNotification(`Cancelled muster orders for ${ship.name}.`);
                                 }}
                                 className="text-red-700 hover:text-red-900 underline cursor-pointer"
                               >
@@ -1041,7 +1038,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                         {/* Stats Grid */}
                         <div className="grid grid-cols-3 gap-1.5 text-[11px] font-mono mb-3 bg-[#f8fafc] p-2 border border-[#e2e8f0]">
                           <div>
-                            <span className="text-[#666666] block text-[9px]">Hull</span>
+                            <span className="text-[#666666] block text-[9px]">Keel</span>
                             <span className="font-semibold text-[#111111]">{ship.structure.toLocaleString()}</span>
                           </div>
                           <div>
@@ -1053,15 +1050,15 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                             <span className="font-semibold text-[#111111]">{ship.weaponPower.toLocaleString()}</span>
                           </div>
                           <div>
-                            <span className="text-[#666666] block text-[9px]">Cargo</span>
+                            <span className="text-[#666666] block text-[9px]">Stores</span>
                             <span className="font-semibold text-[#111111]">{ship.cargoCapacity.toLocaleString()}</span>
                           </div>
                           <div>
-                            <span className="text-[#666666] block text-[9px]">Speed</span>
+                            <span className="text-[#666666] block text-[9px]">Pace</span>
                             <span className="font-semibold text-[#111111]">{ship.speed.toLocaleString()}</span>
                           </div>
                           <div>
-                            <span className="text-[#666666] block text-[9px]">Build Time</span>
+                            <span className="text-[#666666] block text-[9px]">Muster Time</span>
                             <span className="font-semibold text-[#111111]">{ship.buildTimeSeconds}s</span>
                           </div>
                         </div>
@@ -1071,9 +1068,9 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                       <div className="pt-3 border-t border-[#e2e8f0] space-y-2">
                         <div className="flex items-center justify-between text-[11px] font-mono text-[#666666]">
                           <span>
-                            Cost (×{qty}): M {(ship.cost.metal * qty).toLocaleString()} | C{' '}
+                            Cost (×{qty}): Iron {(ship.cost.metal * qty).toLocaleString()} | Moonstone{' '}
                             {(ship.cost.crystal * qty).toLocaleString()}
-                            {ship.cost.deuterium > 0 && ` | D ${(ship.cost.deuterium * qty).toLocaleString()}`}
+                            {ship.cost.deuterium > 0 && ` | Aether ${(ship.cost.deuterium * qty).toLocaleString()}`}
                           </span>
                         </div>
 
@@ -1134,7 +1131,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                                 : 'border-[#111111] bg-[#111111] text-white hover:bg-black'
                             }`}
                           >
-                            {affordable ? `Construct ×${qty}` : 'Need Ore'}
+                            {affordable ? `Muster ×${qty}` : 'Need Materials'}
                           </button>
                         </div>
                       </div>
@@ -1149,23 +1146,21 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
               {selectedShip && (
                 <div className="border border-[#111111] bg-white p-5 sticky top-6 space-y-4 font-mono text-xs">
                   <div className="border-b border-[#111111] pb-3">
-                    <span className="text-[10px] text-[#666666] uppercase">NAVAL SPECIFICATION</span>
+                    <span className="text-[10px] text-[#666666] uppercase">WARFORGE RECORD</span>
                     <h3 className="text-base font-bold text-[#111111] mt-0.5">{selectedShip.name}</h3>
                     <div className="text-xs text-[#666666] mt-1">
-                      Active in Hangar: <span className="font-bold text-[#111111]">{selectedShip.quantity} units</span>
+                      Ready at Warforge: <span className="font-bold text-[#111111]">{selectedShip.quantity} retinues</span>
                     </div>
                   </div>
-
                   <div>
-                    <div className="font-bold text-[#111111] mb-1">Combat Doctrine:</div>
+                    <div className="font-bold text-[#111111] mb-1">Field Role:</div>
                     <p className="text-[#444444] leading-relaxed">{selectedShip.description}</p>
                   </div>
-
                   {/* Rapid-Fire Matrix */}
                   {Object.keys(selectedShip.rapidfireAgainst).length > 0 && (
                     <div className="border border-[#e2e8f0] bg-[#f8fafc] p-3">
                       <div className="font-bold text-[#111111] mb-1.5 flex items-center gap-1.5">
-                        <span>⚡</span> RAPID-FIRE MULTIPLIERS
+                        <span>⚡</span> STRIKES PER ROUND
                       </div>
                       <div className="space-y-1 text-[11px]">
                         {Object.entries(selectedShip.rapidfireAgainst).map(([target, rate]) => (
@@ -1180,36 +1175,36 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
 
                   {/* Technical Specifications */}
                   <div className="border-t border-[#e2e8f0] pt-3">
-                    <div className="font-bold text-[#111111] mb-2">Technical seer-sight:</div>
+                    <div className="font-bold text-[#111111] mb-2">Warband particulars:</div>
                     <div className="space-y-1.5">
                       <div className="flex justify-between py-1 border-b border-[#f1f5f9]">
-                        <span className="text-[#666666]">Hull Structural Points:</span>
+                        <span className="text-[#666666]">Keel Strength:</span>
                         <span className="font-bold">{selectedShip.structure.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between py-1 border-b border-[#f1f5f9]">
-                        <span className="text-[#666666]">Deflector Shielding:</span>
+                        <span className="text-[#666666]">Ward Strength:</span>
                         <span className="font-bold">{selectedShip.shield.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between py-1 border-b border-[#f1f5f9]">
-                        <span className="text-[#666666]">Weapon Cannon Damage:</span>
+                        <span className="text-[#666666]">Strike Power:</span>
                         <span className="font-bold">{selectedShip.weaponPower.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between py-1 border-b border-[#f1f5f9]">
-                        <span className="text-[#666666]">Cargo Bay Capacity:</span>
+                        <span className="text-[#666666]">Supply Capacity:</span>
                         <span className="font-bold">{selectedShip.cargoCapacity.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between py-1 border-b border-[#f1f5f9]">
-                        <span className="text-[#666666]">Leyroad Velocity:</span>
-                        <span className="font-bold">{selectedShip.speed.toLocaleString()} km/s</span>
+                        <span className="text-[#666666]">March Pace:</span>
+                        <span className="font-bold">{selectedShip.speed.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between py-1 border-b border-[#f1f5f9]">
-                        <span className="text-[#666666]">Fuel Burn Rate:</span>
+                        <span className="text-[#666666]">Aether Upkeep:</span>
                         <span className="font-bold">{selectedShip.fuelConsumption} Aether</span>
                       </div>
                       {selectedShip.hangarCapacity && (
                         <div className="flex justify-between py-1 border-b border-[#f1f5f9] text-[#2563eb]">
-                          <span>Fighter Hangar Capacity:</span>
-                          <span className="font-bold">{selectedShip.hangarCapacity} craft</span>
+                          <span>Deck Berths:</span>
+                          <span className="font-bold">{selectedShip.hangarCapacity} companies</span>
                         </div>
                       )}
                     </div>
@@ -1230,10 +1225,10 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
           <div className="border border-[#111111] bg-white p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h3 className="text-sm font-bold text-[#111111] tracking-wider uppercase">
-                SAVED WARBAND FORMATION PRESETS
+                SAVED WARBAND MUSTERS
               </h3>
               <p className="text-xs text-[#666666] mt-0.5">
-                Save bespoke warband compositions and tactical doctrines for rapid one-click deployment in Deep Wilds Expeditions and Holding Attack strikes.
+                Save retinue compositions and battle formations for swift deployment on expeditions or defense of a holding.
               </p>
             </div>
 
@@ -1243,14 +1238,14 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                 onClick={handleOpenNewPreset}
                 className="px-4 py-2 text-xs font-mono font-bold bg-[#111111] text-white hover:bg-black transition-colors cursor-pointer"
               >
-                + Create New Preset
+                + Create New Muster
               </button>
               <button
                 type="button"
                 onClick={handleSaveCurrentHangarAsPreset}
                 className="px-3 py-2 text-xs font-mono border border-[#111111] bg-[#f8fafc] hover:bg-[#111111] hover:text-white font-semibold transition-colors cursor-pointer"
               >
-                Snapshot Hangar
+                Record Ready Retinues
               </button>
             </div>
           </div>
@@ -1260,8 +1255,8 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
             <span className="text-xs font-bold text-[#666666] mr-1">Filter:</span>
             {[
               { id: 'preset_all', label: 'All Presets' },
-              { id: 'preset_attack', label: '⚔ Attack Armadas' },
-              { id: 'preset_expedition', label: '🌌 Expedition Vanguards' },
+              { id: 'preset_attack', label: '⚔ Warhosts' },
+              { id: 'preset_expedition', label: '🌲 Expedition Companies' },
               { id: 'preset_custom', label: '★ Custom Saved' },
             ].map((f) => (
               <button
@@ -1323,10 +1318,10 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
 
                       <div className="text-right">
                         <span className="text-xs font-mono font-bold text-[#111111] block">
-                          {stats.totalHulls} Hulls
+                          {stats.totalHulls} Retinues
                         </span>
                         {stats.isFullyReady ? (
-                          <span className="text-[10px] font-mono text-[#22c55e] font-bold">● Hangar Ready</span>
+                          <span className="text-[10px] font-mono text-[#22c55e] font-bold">● Muster Ready</span>
                         ) : (
                           <span className="text-[10px] font-mono text-[#eab308] font-bold">
                             Missing {stats.missingCount}
@@ -1345,7 +1340,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                     {/* Tactical Telemetry */}
                     <div className="grid grid-cols-3 gap-1.5 text-[10px] font-mono p-2 border border-[#e2e8f0] bg-[#f8fafc]">
                       <div>
-                        <span className="text-[#666666] block text-[9px]">Alpha Strike</span>
+                        <span className="text-[#666666] block text-[9px]">Opening Strike</span>
                         <span className="font-bold text-[#22c55e]">{stats.effectiveAtk.toLocaleString()}</span>
                       </div>
                       <div>
@@ -1353,15 +1348,15 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                         <span className="font-bold text-[#2563eb]">{stats.effectiveShield.toLocaleString()}</span>
                       </div>
                       <div>
-                        <span className="text-[#666666] block text-[9px]">Formation Speed</span>
-                        <span className="font-bold text-[#111111]">{stats.effectiveSpeed.toLocaleString()} km/s</span>
+                        <span className="text-[#666666] block text-[9px]">March Pace</span>
+                        <span className="font-bold text-[#111111]">{stats.effectiveSpeed.toLocaleString()}</span>
                       </div>
                       <div>
-                        <span className="text-[#666666] block text-[9px]">Cargo Bay</span>
+                        <span className="text-[#666666] block text-[9px]">Stores</span>
                         <span className="font-bold text-[#111111]">{stats.totalCargo.toLocaleString()}</span>
                       </div>
                       <div>
-                        <span className="text-[#666666] block text-[9px]">Fuel Burn</span>
+                        <span className="text-[#666666] block text-[9px]">Aether Upkeep</span>
                         <span className="font-bold text-[#111111]">{stats.totalFuel.toLocaleString()}</span>
                       </div>
                       <div>
@@ -1373,7 +1368,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                     {/* Ship Composition Breakdown */}
                     <div className="space-y-1">
                       <span className="text-[10px] font-mono uppercase font-bold text-[#666666] block">
-                        Composition Roster:
+                        Retinue Roster:
                       </span>
                       <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
                         {Object.entries(preset.composition).map(([shipId, qty]) => {
@@ -1410,7 +1405,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                         onClick={() => handleApplyPreset(preset)}
                         className="py-1.5 text-xs font-mono font-bold bg-[#111111] text-white hover:bg-black transition-colors cursor-pointer text-center"
                       >
-                        Apply Doctrine
+                        Form the Host
                       </button>
 
                       {stats.missingCount > 0 ? (
@@ -1419,7 +1414,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                           onClick={() => handleBatchBuildMissing(preset)}
                           className="py-1.5 text-xs font-mono font-bold border border-[#111111] bg-[#f8fafc] hover:bg-[#111111] hover:text-white transition-colors cursor-pointer text-center"
                         >
-                          Build Missing ({stats.missingCount})
+                          Muster Missing ({stats.missingCount})
                         </button>
                       ) : (
                         <button
@@ -1430,7 +1425,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                           }}
                           className="py-1.5 text-xs font-mono font-bold border border-[#22c55e] bg-[#f0fdf4] text-[#15803d] hover:bg-[#22c55e] hover:text-white transition-colors cursor-pointer text-center"
                         >
-                          Launch Expedition →
+                          Begin Expedition →
                         </button>
                       )}
                     </div>
@@ -1444,7 +1439,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                         }}
                         className="hover:text-[#111111] underline cursor-pointer"
                       >
-                        [Deploy to Combat Raid]
+                        [March to Battle]
                       </button>
 
                       <div className="flex items-center gap-2">
@@ -1459,7 +1454,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                           <button
                             type="button"
                             onClick={() => {
-                              if (confirm(`Delete Fleet Preset "${preset.name}"?`)) {
+                              if (confirm(`Delete warband muster "${preset.name}"?`)) {
                                 onDeletePreset(preset.id);
                               }
                             }}
@@ -1486,9 +1481,9 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
           <div className="bg-white border-2 border-[#111111] max-w-2xl w-full p-6 space-y-5 animate-fade-in my-8">
             <div className="flex items-center justify-between border-b border-[#111111] pb-3">
               <div>
-                <span className="text-[10px] font-mono text-[#666666] uppercase">WARBAND FORMATION WORKSHOP</span>
+                <span className="text-[10px] font-mono text-[#666666] uppercase">RETINUE MUSTER HALL</span>
                 <h3 className="text-base font-bold text-[#111111]">
-                  {editingPresetId ? 'Edit Fleet Formation Preset' : 'Create & Name Fleet Formation Preset'}
+                  {editingPresetId ? 'Edit Warband Muster' : 'Name a New Warband Muster'}
                 </h3>
               </div>
               <button
@@ -1504,7 +1499,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
               {/* Preset Name & Tactical Codename Generator */}
               <div>
                 <label className="text-xs font-mono font-bold text-[#111111] block mb-1">
-                  Preset Name / Tactical Warband Call-Sign:
+                  Muster Name / Warband Banner:
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -1512,7 +1507,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                     required
                     value={presetName}
                     onChange={(e) => setPresetName(e.target.value)}
-                    placeholder="e.g. 7th Strike Armada"
+                    placeholder="e.g. Northwatch Shieldwall"
                     className="flex-1 px-3 py-2 border border-[#cccccc] focus:border-[#111111] outline-none text-xs font-mono"
                   />
                   <button
@@ -1531,13 +1526,13 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
               {/* Description */}
               <div>
                 <label className="text-xs font-mono font-bold text-[#111111] block mb-1">
-                  Tactical Operational Role & Description:
+                  Muster's Purpose:
                 </label>
                 <input
                   type="text"
                   value={presetDesc}
                   onChange={(e) => setPresetDesc(e.target.value)}
-                  placeholder="e.g. Heavy siege warband with long-range broadside artillery"
+                  placeholder="e.g. A shieldwall prepared to reclaim the Eastridge crossing"
                   className="w-full px-3 py-2 border border-[#cccccc] focus:border-[#111111] outline-none text-xs font-mono"
                 />
               </div>
@@ -1545,7 +1540,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
               {/* Tactical Formation Selection */}
               <div>
                 <label className="text-xs font-mono font-bold text-[#111111] block mb-1">
-                  Formation Combat Doctrine:
+                  Battle Formation:
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {FLEET_FORMATIONS.map((f) => (
@@ -1565,18 +1560,18 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                           presetFormation === f.id ? 'text-neutral-300' : 'text-[#666666]'
                         }`}
                       >
-                        Atk: x{f.attackModifier} | Def: x{f.defenseModifier} | Spd: x{f.speedModifier}
+                        Strike: x{f.attackModifier} | Ward: x{f.defenseModifier} | Pace: x{f.speedModifier}
                       </div>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Ships Composition Allocation */}
+              {/* Retinue composition */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-mono font-bold text-[#111111]">
-                    Assign Ship Quantities:
+                    Assign Retinue Counts:
                   </label>
                   <div className="flex items-center gap-1.5 text-[11px] font-mono">
                     <button
@@ -1614,7 +1609,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                         <div>
                           <span className="font-bold text-[#111111]">{ship.name}</span>
                           <span className="text-[#666666] ml-2 text-[10px]">
-                            (In Hangar: {ship.quantity} | Atk: {ship.weaponPower} | Ward: {ship.shield})
+                            (Ready: {ship.quantity} | Strike: {ship.weaponPower} | Ward: {ship.shield})
                           </span>
                         </div>
 
@@ -1701,7 +1696,7 @@ export const ShipyardView: React.FC<ShipyardViewProps> = ({
                   type="submit"
                   className="px-6 py-2 text-xs font-mono font-bold bg-[#111111] text-white hover:bg-black cursor-pointer"
                 >
-                  Save Warband Formation Preset
+                  Save Warband Muster
                 </button>
               </div>
             </form>

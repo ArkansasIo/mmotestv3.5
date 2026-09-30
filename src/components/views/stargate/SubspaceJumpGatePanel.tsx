@@ -110,31 +110,31 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
   const handleExecuteJump = () => {
     if (originGateId === destGateId) {
       sound.play('warning');
-      onLogDebrief('Jump Gate Error: Origin and Destination relays cannot be identical!');
+      onLogDebrief('Choose two different waystones for the Leyroad journey.');
       return;
     }
 
     if (originRelay.status !== 'online' || originRelay.cooldownSeconds > 0) {
       sound.play('warning');
-      onLogDebrief(`Jump Gate capacitor is recharging! (${originRelay.cooldownSeconds}s remaining).`);
+      onLogDebrief(`The origin waystone is reawakening (${originRelay.cooldownSeconds}s remaining).`);
       return;
     }
 
     if (destRelay.status !== 'online' || destRelay.cooldownSeconds > 0) {
       sound.play('warning');
-      onLogDebrief(`Destination gate [${destRelay.name}] capacitor is recharging! (${destRelay.cooldownSeconds}s remaining).`);
+      onLogDebrief(`The destination waystone is reawakening (${destRelay.cooldownSeconds}s remaining).`);
       return;
     }
 
     if (totalShipsSelected === 0) {
       sound.play('warning');
-      onLogDebrief('No vessels assigned to the subspace jump transit!');
+      onLogDebrief('Choose at least one retinue for the Leyroad journey.');
       return;
     }
 
     if (totalShipsSelected > originRelay.maxFleetDisplacement) {
       sound.play('warning');
-      onLogDebrief(`Displacement Limit Exceeded! Max transit capacity is ${originRelay.maxFleetDisplacement.toLocaleString()} ships.`);
+      onLogDebrief(`This waystone can carry ${originRelay.maxFleetDisplacement.toLocaleString()} retinues at most.`);
       return;
     }
 
@@ -187,7 +187,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
 
       sound.play('success');
       onLogDebrief(
-        `Subspace Compression Warp Executed! ${totalShipsSelected.toLocaleString()} vessels teleported instantaneously from ${originRelay.name} to ${destRelay.name} with 0 Deuterium burn.`
+        `${totalShipsSelected.toLocaleString()} retinues took the Leyroad from ${originRelay.name} to ${destRelay.name} without an Aether toll.`
       );
 
       // Reset selection
@@ -199,7 +199,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
     const costNaq = 50000;
     if (resources.naquadah < costNaq) {
       sound.play('warning');
-      onLogDebrief(`Insufficient Naquadah to flush coolant heatsinks! (Requires ${costNaq.toLocaleString()} Naquadah).`);
+      onLogDebrief(`Insufficient Crowns to restore the waystone (${costNaq.toLocaleString()} required).`);
       return;
     }
 
@@ -219,7 +219,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
       )
     );
 
-    onLogDebrief(`Emergency Coolant Injected! Relay capacitor recharged instantly to 100%.`);
+    onLogDebrief('A Crown was offered; the waystone has returned to full resonance.');
   };
 
   const handleUpgradeRelay = (relayId: string, upgradeType: 'level' | 'coolant' | 'stabilizer') => {
@@ -228,7 +228,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
 
     if (resources.naquadah < costNaq || (resources.crystal ?? 0) < costCryst) {
       sound.play('warning');
-      onLogDebrief(`Insufficient resources for upgrade! Requires ${costNaq.toLocaleString()} Naquadah and ${costCryst.toLocaleString()} Crystal.`);
+      onLogDebrief(`The upgrade requires ${costNaq.toLocaleString()} Crowns and ${costCryst.toLocaleString()} Moonstone.`);
       return;
     }
 
@@ -274,23 +274,22 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
       <div className="bg-white border border-[#dedede] p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-[9px] font-bold text-[#777777] uppercase tracking-wider block font-mono">
-            GAME LEYROAD RELAY MATRIX · ZERO AETHER WARBAND TELEPORTATION
+            WAYSTONE NETWORK · PAIRED LEYROAD TRANSIT
           </span>
-          <h3 className="text-xl font-bold text-[#111111]">Lunar & Starbase Jump Gate Network</h3>
+          <h3 className="text-xl font-bold text-[#111111]">Paired Waystone Network</h3>
           <p className="text-xs text-[#666666] mt-1 max-w-2xl leading-relaxed">
-            Instantaneous mass-displacement gateways established across borderland moon bases and starbases.
-            Transports entire battle armadas across realm-wide sectors with <strong>zero travel duration</strong> and{' '}
-            <strong>zero aether fuel consumption</strong>.
+            Linked waystones carry prepared retinues between known keeps in moments, with <strong>no travel delay</strong> and{' '}
+            <strong>no Aether toll</strong>.
           </p>
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs">
           <div className="p-3 bg-[#fafafa] border border-[#dedede] text-right">
-            <span className="text-[9px] text-[#777777] uppercase block font-bold">Active Gate Nodes</span>
-            <strong className="text-sm font-bold text-[#111111]">{relays.length} Relays</strong>
+            <span className="text-[9px] text-[#777777] uppercase block font-bold">Paired Stones</span>
+            <strong className="text-sm font-bold text-[#111111]">{relays.length} Waystones</strong>
           </div>
           <div className="p-3 bg-[#fafafa] border border-[#dedede] text-right">
-            <span className="text-[9px] text-[#777777] uppercase block font-bold">Fuel Burn Rate</span>
+            <span className="text-[9px] text-[#777777] uppercase block font-bold">Road Toll</span>
             <strong className="text-sm font-bold text-emerald-700">0 Aether</strong>
           </div>
         </div>
@@ -302,7 +301,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
         <div className="bg-white border border-[#dedede] p-5 space-y-3">
           <div className="flex items-center justify-between border-b border-[#eeeeee] pb-2">
             <span className="text-[10px] font-mono font-bold text-[#777777] uppercase">
-              1. ORIGIN JUMP GATE (DEPARTURE)
+              1. ORIGIN WAYSTONE
             </span>
             <span
               className={`px-2 py-0.5 text-[9px] font-bold uppercase font-mono border ${
@@ -311,7 +310,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
                   : 'bg-amber-50 text-amber-700 border-amber-300'
               }`}
             >
-              {originRelay.status === 'online' ? 'Capacitor Ready (100%)' : `Cooling (${originRelay.cooldownSeconds}s)`}
+              {originRelay.status === 'online' ? 'Road Open' : `Reawakening (${originRelay.cooldownSeconds}s)`}
             </span>
           </div>
 
@@ -333,7 +332,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
           {/* Capacitor Bar */}
           <div className="space-y-1">
             <div className="flex justify-between text-[10px] font-mono text-[#777777]">
-              <span>Capacitor Charge</span>
+              <span>Stone Resonance</span>
               <span>{originRelay.capacitorCharge}%</span>
             </div>
             <div className="w-full h-2 bg-[#eeeeee] overflow-hidden">
@@ -353,7 +352,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
               className="w-full py-1.5 bg-[#fafafa] hover:bg-neutral-100 border border-[#dedede] text-[10px] font-bold uppercase font-mono text-[#111111] cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Zap size={12} className="text-amber-500" />
-              <span>Flush Coolant Heatsink (50,000 Crowns)</span>
+              <span>Restore Resonance (50,000 Crowns)</span>
             </button>
           )}
         </div>
@@ -362,7 +361,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
         <div className="bg-white border border-[#dedede] p-5 space-y-3">
           <div className="flex items-center justify-between border-b border-[#eeeeee] pb-2">
             <span className="text-[10px] font-mono font-bold text-[#777777] uppercase">
-              2. DESTINATION JUMP GATE (ARRIVAL)
+              2. DESTINATION WAYSTONE
             </span>
             <span
               className={`px-2 py-0.5 text-[9px] font-bold uppercase font-mono border ${
@@ -371,7 +370,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
                   : 'bg-amber-50 text-amber-700 border-amber-300'
               }`}
             >
-              {destRelay.status === 'online' ? 'Capacitor Ready (100%)' : `Cooling (${destRelay.cooldownSeconds}s)`}
+              {destRelay.status === 'online' ? 'Road Open' : `Reawakening (${destRelay.cooldownSeconds}s)`}
             </span>
           </div>
 
@@ -393,7 +392,7 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
           {/* Capacitor Bar */}
           <div className="space-y-1">
             <div className="flex justify-between text-[10px] font-mono text-[#777777]">
-              <span>Capacitor Charge</span>
+              <span>Stone Resonance</span>
               <span>{destRelay.capacitorCharge}%</span>
             </div>
             <div className="w-full h-2 bg-[#eeeeee] overflow-hidden">
@@ -413,21 +412,21 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
               className="w-full py-1.5 bg-[#fafafa] hover:bg-neutral-100 border border-[#dedede] text-[10px] font-bold uppercase font-mono text-[#111111] cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Zap size={12} className="text-amber-500" />
-              <span>Flush Coolant Heatsink (50,000 Crowns)</span>
+              <span>Restore Resonance (50,000 Crowns)</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Fleet Cargo Selector & Jump Action */}
+      {/* Retinue selector and Leyroad crossing */}
       <div className="bg-white border border-[#dedede] p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-[#eeeeee] pb-3">
           <div>
             <h4 className="text-sm font-bold text-[#111111] uppercase tracking-wider font-mono">
-              Stationed Armada Dispatch Matrix
+              Retinue Muster for the Journey
             </h4>
             <span className="text-xs text-[#777777]">
-              Select vessels currently docked at {originRelay.name} for instantaneous runic relocation.
+              Choose retinues stationed at {originRelay.name} to travel the paired road.
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -448,17 +447,17 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
           </div>
         </div>
 
-        {/* Ship Types Grid */}
+        {/* Retinue types */}
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
           {(
             [
-              { key: 'lightFighters', label: 'Light Fighter', max: originRelay.stationedFleet.lightFighters },
-              { key: 'heavyCruisers', label: 'Heavy Cruiser', max: originRelay.stationedFleet.heavyCruisers },
-              { key: 'battleships', label: 'war galley', max: originRelay.stationedFleet.battleships },
-              { key: 'battlecruisers', label: 'Battlecruiser', max: originRelay.stationedFleet.battlecruisers },
-              { key: 'deathstars', label: 'Deathstar / Ripstar', max: originRelay.stationedFleet.deathstars },
-              { key: 'largeCargos', label: 'Large Cargo', max: originRelay.stationedFleet.largeCargos },
-              { key: 'recyclers', label: 'Recycler', max: originRelay.stationedFleet.recyclers },
+              { key: 'lightFighters', label: 'Light Warband', max: originRelay.stationedFleet.lightFighters },
+              { key: 'heavyCruisers', label: 'Blacksteel Vanguard', max: originRelay.stationedFleet.heavyCruisers },
+              { key: 'battleships', label: 'Ironbound War Galley', max: originRelay.stationedFleet.battleships },
+              { key: 'battlecruisers', label: 'Crownward Longship', max: originRelay.stationedFleet.battlecruisers },
+              { key: 'deathstars', label: 'Crownland Citadel', max: originRelay.stationedFleet.deathstars },
+              { key: 'largeCargos', label: 'Amber Road Caravan', max: originRelay.stationedFleet.largeCargos },
+              { key: 'recyclers', label: "Delver's Salvage Cart", max: originRelay.stationedFleet.recyclers },
             ] as const
           ).map((ship) => (
             <div key={ship.key} className="p-3 bg-[#fafafa] border border-[#dedede] space-y-2">
@@ -485,12 +484,12 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
         <div className="pt-3 border-t border-[#eeeeee] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="font-mono text-xs space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[#777777]">Total Ships:</span>
+              <span className="text-[#777777]">Total Retinues:</span>
               <strong className="text-base text-[#111111]">{totalShipsSelected.toLocaleString()}</strong>
               <span className="text-[#777777]">/ Max {originRelay.maxFleetDisplacement.toLocaleString()} limit</span>
             </div>
             <span className="text-[10px] text-emerald-700 block">
-              Transit Fuel Cost: 0 Aether · Flight Time: 00:00:00 (Instantaneous)
+              Aether Toll: 0 · March Time: Immediate
             </span>
           </div>
 
@@ -510,8 +509,8 @@ export const SubspaceJumpGatePanel: React.FC<SubspaceJumpGatePanelProps> = ({
             <Rocket size={15} className="text-amber-400" />
             <span>
               {isJumping
-                ? 'Compressing Subspace Corridor...'
-                : `Engage Subspace Jump (${totalShipsSelected.toLocaleString()} Vessels) →`}
+                ? 'Opening the Leyroad...'
+                : `Send Retinue (${totalShipsSelected.toLocaleString()}) →`}
             </span>
           </button>
         </div>

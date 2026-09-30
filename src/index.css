@@ -1,2 +1,4 @@
 @import "./styles/master.css";
 @import "tailwindcss";
+@import "./styles/rival-systems.css";
+@import "./styles/research-library.css";

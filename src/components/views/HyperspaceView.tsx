@@ -58,7 +58,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
     const cost = drive.level * 25000;
     if (resources.naquadah < cost) {
       sound.play('warning');
-      showMsg(`Insufficient Naquadah to upgrade ${drive.name} (Need ${cost.toLocaleString()}).`);
+      showMsg(`Insufficient Crowns to improve ${drive.name} (Need ${cost.toLocaleString()}).`);
       return;
     }
 
@@ -74,14 +74,14 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
     );
     setDrives(updated);
     sound.play('research');
-    showMsg(`Upgraded ${drive.name} to Level ${drive.level + 1}! Fleet sublight & FTL transit boosted.`);
+    showMsg(`${drive.name} reaches Rank ${drive.level + 1}! Retinue march pace and Leyroad passage improve.`);
   };
 
   // Trigger Instant Jump Gate
   const handleJumpFleet = (gate: SubspaceJumpGate) => {
     if (!gate.ready) {
       sound.play('warning');
-      showMsg(`Jump Gate capacitor is recharging! (${gate.cooldownSeconds}s remaining).`);
+      showMsg(`The waystone is still reawakening (${gate.cooldownSeconds}s remaining).`);
       return;
     }
 
@@ -97,20 +97,20 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
     );
     setJumpGates(updated);
     sound.play('success');
-    showMsg(`Instantaneous Jump conduit opened! Fleet transferred instantaneously from ${gate.originMoon} to ${gate.destinationMoon} with 0 deuterium burn.`);
+    showMsg(`The Leyroad opens. The retinue passes from ${gate.originMoon} to ${gate.destinationMoon} without an Aether toll.`);
   };
 
   // Trigger Mothership Tactical Ability
   const handleUseAbility = (ability: MothershipTacticalAbility) => {
     if (mothershipEnergy < ability.energyCost) {
       sound.play('warning');
-      showMsg(`Insufficient Mothership Core Energy! Need ${ability.energyCost} Energy.`);
+      showMsg(`The Crownward reserve is low. ${ability.energyCost} Aether is required.`);
       return;
     }
 
     setMothershipEnergy((e) => e - ability.energyCost);
     sound.play('combat');
-    showMsg(`Activated Flagship Tactical Protocol: [${ability.name}]! Effect dispatched across active combat grid.`);
+    showMsg(`${ability.name} is called. The sworn host answers the order.`);
   };
 
   return (
@@ -119,25 +119,24 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
       <div className="border border-[#dedede] bg-white p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase mb-1">
-            FTL PROPULSION & TITAN COMMAND MATRIX
+            ROADLORE & CROWNWARD COMMAND
           </div>
           <h2 className="text-2xl font-bold text-[#111111] flex items-center gap-3">
             <span>Leyroad Drives & Royal Retinue Systems</span>
             <span className="text-xs bg-[#111111] text-white px-2.5 py-0.5 font-mono uppercase">
-              Slipstream Online
+              Known Roads Open
             </span>
           </h2>
           <p className="text-sm text-[#666666] mt-1 max-w-2xl leading-relaxed">
-            Manage multi-tier FTL propulsion engines, execute zero-delay Lunar Jump Gate transfers, deploy
-            supermassive Titan Motherships, and navigate unstable leyroad wormhole rifts.
+            Improve five arts of wayfinding, travel between paired stones, command legendary skyholds, and chart broken leyroads.
           </p>
         </div>
 
         <div className="border border-[#dedede] bg-[#fafafa] p-3 text-right font-mono">
-          <span className="text-[10px] text-[#777777] block uppercase font-bold">Royal Retinue Core Energy</span>
+          <span className="text-[10px] text-[#777777] block uppercase font-bold">Crownward Aether Reserve</span>
           <span className="text-lg font-bold text-[#111111] flex items-center gap-1.5 justify-end">
             <Zap size={15} className="text-amber-500" />
-            <span>{mothershipEnergy.toLocaleString()} MW</span>
+            <span>{mothershipEnergy.toLocaleString()} Aether</span>
           </span>
         </div>
       </div>
@@ -163,7 +162,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
               : 'border-transparent text-[#777777] hover:text-[#111111]'
           }`}
         >
-          Leyroad Drives (Tiers 1-5)
+          Roadcraft Ranks I-V
         </button>
         <button
           type="button"
@@ -174,7 +173,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
               : 'border-transparent text-[#777777] hover:text-[#111111]'
           }`}
         >
-          Lunar Jump Gate Network
+          Paired Waystones
         </button>
         <button
           type="button"
@@ -185,7 +184,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
               : 'border-transparent text-[#777777] hover:text-[#111111]'
           }`}
         >
-          Titan Royal Retinue Classes
+          Crownward Flagships
         </button>
         <button
           type="button"
@@ -196,21 +195,21 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
               : 'border-transparent text-[#777777] hover:text-[#111111]'
           }`}
         >
-          Unstable Wormhole Rifts
+          Broken Leyroads
         </button>
       </div>
 
       {/* ============================================================ */}
-      {/* 1. HYPERSPACE DRIVE SYSTEMS */}
+      {/* 1. LEYROAD TRAVEL */}
       {/* ============================================================ */}
       {activeTab === 'drives' && (
         <div className="space-y-6">
           <div className="border border-[#dedede] bg-white p-6">
             <h3 className="text-base font-bold text-[#111111] uppercase tracking-wider mb-1">
-              FTL Propulsion Technology Hierarchy
+              Five Arts of Leyroad Travel
             </h3>
             <p className="text-xs text-[#666666] mb-6">
-              Higher-tier drives drastically accelerate warband flight times across realms and lower aether burn.
+              Mastered roadcraft shortens marches between known waystones and reduces Aether upkeep.
             </p>
 
             <div className="space-y-4">
@@ -235,9 +234,9 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                       </div>
                       <p className="text-xs text-[#666666] leading-relaxed">{drive.description}</p>
                       <div className="flex flex-wrap gap-4 text-[11px] font-mono pt-1 text-[#333333]">
-                        <span>🚀 Speed Multiplier: <strong>{drive.speedMultiplier}x</strong></span>
-                        <span>⛽ Fuel Efficiency: <strong>{drive.fuelEfficiency}x</strong></span>
-                        <span>🧪 Consumption: <strong>{drive.deuteriumCostPerHour} Deut/h</strong></span>
+                        <span>March Pace: <strong>{drive.speedMultiplier}x</strong></span>
+                        <span>Aether Efficiency: <strong>{drive.fuelEfficiency}x</strong></span>
+                        <span>Upkeep: <strong>{drive.deuteriumCostPerHour} Aether/hour</strong></span>
                       </div>
                     </div>
 
@@ -245,7 +244,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                       <div className="text-right font-mono">
                         <span className="text-[10px] text-[#888888] block uppercase">Upgrade Cost</span>
                         <span className="text-xs font-bold text-[#111111]">
-                          {upgradeCost.toLocaleString()} Naq
+                          {upgradeCost.toLocaleString()} Crowns
                         </span>
                       </div>
 
@@ -271,16 +270,16 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
       )}
 
       {/* ============================================================ */}
-      {/* 2. LUNAR JUMP GATE NETWORK */}
+      {/* 2. PAIRED WAYSTONES */}
       {/* ============================================================ */}
       {activeTab === 'jumpgates' && (
         <div className="border border-[#dedede] bg-white p-6 space-y-6">
           <div>
             <h3 className="text-base font-bold text-[#111111] uppercase tracking-wider mb-1">
-              Leyroad Lunar Jump Gate Network
+              Paired Waystone Network
             </h3>
             <p className="text-xs text-[#666666]">
-              Instantly relays entire armada formations between moon bases with zero aether consumption.
+              A linked pair carries a sworn retinue between known keeps without spending Aether.
             </p>
           </div>
 
@@ -290,14 +289,14 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-[10px] font-mono uppercase bg-[#eeeeee] px-2 py-0.5 text-[#555555]">
-                      Relay Conduit
+                      Waystone Pair
                     </span>
                     <span
                       className={`text-[10px] font-bold uppercase font-mono ${
                         gate.ready ? 'text-[#16a34a]' : 'text-amber-600'
                       }`}
                     >
-                      {gate.ready ? '● Gate Ready' : `⏳ Cooling (${gate.cooldownSeconds}s)`}
+                      {gate.ready ? '● Road Open' : `⏳ Reawakening (${gate.cooldownSeconds}s)`}
                     </span>
                   </div>
 
@@ -314,10 +313,10 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                     </div>
                   </div>
 
-                  {/* Capacitor Meter */}
+                  {/* Waystone resonance meter */}
                   <div className="space-y-1 mb-4">
                     <div className="flex justify-between text-[10px] font-mono">
-                      <span>Capacitor Charge</span>
+                      <span>Stone Resonance</span>
                       <span>{gate.chargePercentage}%</span>
                     </div>
                     <div className="w-full h-2 bg-[#eeeeee] overflow-hidden">
@@ -339,7 +338,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                       : 'bg-[#eeeeee] text-[#888888] cursor-not-allowed'
                   }`}
                 >
-                  {gate.ready ? 'Engage Instant Fleet Jump →' : 'Recharging Gate Capacitor'}
+                  {gate.ready ? 'Open the Leyroad →' : 'Waystone Reawakening'}
                 </button>
               </div>
             ))}
@@ -348,17 +347,17 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
       )}
 
       {/* ============================================================ */}
-      {/* 3. TITAN MOTHERSHIP CLASSES & TACTICAL ABILITIES */}
+      {/* 3. CROWNWARDED FLAGSHIPS & BATTLE ORDERS */}
       {/* ============================================================ */}
       {activeTab === 'motherships' && (
         <div className="space-y-6">
           {/* Tactical Flagship Abilities */}
           <div className="border border-[#dedede] bg-white p-6">
             <h3 className="text-base font-bold text-[#111111] uppercase tracking-wider mb-1">
-              Active Royal Retinue Tactical Protocols
+              Crownward Battle Orders
             </h3>
             <p className="text-xs text-[#666666] mb-4">
-              Discharge the royal retinue zero-point energy core to activate battlefield supremacy powers.
+              Spend the flagship’s Aether reserve to call a battle order for the sworn host.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -372,7 +371,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
 
                   <div className="pt-3 border-t border-[#eeeeee]">
                     <div className="text-[10px] font-mono text-[#888888] mb-2">
-                      Cost: {ab.energyCost} MW Energy
+                      Cost: {ab.energyCost} Aether
                     </div>
                     <button
                       type="button"
@@ -380,7 +379,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                       disabled={mothershipEnergy < ab.energyCost}
                       className="w-full py-1.5 bg-[#111111] text-white text-[11px] font-bold uppercase hover:bg-[#333333] transition-colors cursor-pointer"
                     >
-                      Execute Protocol
+                      Call the Oath
                     </button>
                   </div>
                 </div>
@@ -391,10 +390,10 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
           {/* Titan Classes */}
           <div className="border border-[#dedede] bg-white p-6">
             <h3 className="text-base font-bold text-[#111111] uppercase tracking-wider mb-1">
-              Capital Titan & World-Forge Classes
+              Crownward Flagships & Great Barges
             </h3>
             <p className="text-xs text-[#666666] mb-6">
-              Colossal flagships capable of housing entire starfighter wings and holding siege cannons.
+              Legendary vessels shelter companies, wardwrights, healers, and the engines of a long siege.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -413,20 +412,20 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
 
                   <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-white p-3 border border-[#eeeeee]">
                     <div>
-                      <span className="text-[#888888] block text-[10px]">Hull Integrity</span>
+                        <span className="text-[#888888] block text-[10px]">Keel Integrity</span>
                       <strong className="text-[#111111]">{(titan.hullHp / 1000000).toFixed(1)}M HP</strong>
                     </div>
                     <div>
-                      <span className="text-[#888888] block text-[10px]">Ward Power</span>
+                        <span className="text-[#888888] block text-[10px]">Ward Strength</span>
                       <strong className="text-cyan-700">{(titan.shieldHp / 1000000).toFixed(1)}M SP</strong>
                     </div>
                     <div>
-                      <span className="text-[#888888] block text-[10px]">Firepower</span>
-                      <strong className="text-red-700">{(titan.firepower / 1000).toFixed(0)}k DPS</strong>
+                        <span className="text-[#888888] block text-[10px]">Battle Might</span>
+                      <strong className="text-red-700">{(titan.firepower / 1000).toFixed(0)}k</strong>
                     </div>
                     <div>
-                      <span className="text-[#888888] block text-[10px]">Hangar Slots</span>
-                      <strong className="text-[#111111]">{titan.hangarSlots} Squadrons</strong>
+                        <span className="text-[#888888] block text-[10px]">Deck Berths</span>
+                      <strong className="text-[#111111]">{titan.hangarSlots} Companies</strong>
                     </div>
                   </div>
 
@@ -441,16 +440,16 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
       )}
 
       {/* ============================================================ */}
-      {/* 4. UNSTABLE WORMHOLE RIFTS */}
+      {/* 4. BROKEN LEYROADS */}
       {/* ============================================================ */}
       {activeTab === 'wormholes' && (
         <div className="border border-[#dedede] bg-white p-6 space-y-6">
           <div>
             <h3 className="text-base font-bold text-[#111111] uppercase tracking-wider mb-1">
-              Active Deep-Wilds Wormhole Anomalies
+              Broken Roads of the Deep Wilds
             </h3>
             <p className="text-xs text-[#666666]">
-              Leyroad tears connecting directly to uncharted alien ruins. High reward expedition targets.
+              Frayed paths lead into uncharted ruins and wounded places. The rewards may be great, but so is the danger.
             </p>
           </div>
 
@@ -460,7 +459,7 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-mono uppercase bg-[#eeeeee] px-2 py-0.5 text-[#555555]">
-                      {wormhole.stability} Stability
+                      {wormhole.stability} Road Stability
                     </span>
                     <span className="text-xs font-mono text-red-600 font-bold">
                       {wormhole.dangerRating.toUpperCase()} DANGER
@@ -485,11 +484,11 @@ export const HyperspaceView: React.FC<HyperspaceViewProps> = ({
                   type="button"
                   onClick={() => {
                     sound.play('warning');
-                    showMsg(`Expedition battle group dispatched into ${wormhole.name}! Sensor telemetry streaming...`);
+                    showMsg(`An expedition company has entered ${wormhole.name}. Their lantern marks will guide the return.`);
                   }}
                   className="w-full py-2.5 bg-[#111111] text-white text-xs font-bold uppercase hover:bg-[#333333] transition-colors cursor-pointer"
                 >
-                  Dispatch Deep Wilds Flotilla →
+                  Send a Far-March Company →
                 </button>
               </div>
             ))}
