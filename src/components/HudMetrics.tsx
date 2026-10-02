@@ -79,7 +79,7 @@ export const HudMetrics: React.FC<HudMetricsProps> = ({
         </div>
       </div>
 
-      {/* 3. Workforce & Recruits */}
+      {/* 3. Muster & Retinue */}
       <div
         onClick={() => handleCardClick('units')}
         className="p-3 sm:p-4 hover:bg-neutral-50/80 transition-colors cursor-pointer group"
@@ -88,7 +88,7 @@ export const HudMetrics: React.FC<HudMetricsProps> = ({
           <span className="text-[10px] font-bold text-[#666666] uppercase tracking-wider flex items-center gap-1.5 font-mono">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             <Users size={12} className="text-blue-600" />
-            <span>Workforce & Recruits</span>
+            <span>Muster & Retinue</span>
           </span>
           <ChevronRight size={12} className="text-neutral-400 group-hover:text-blue-600 transition-colors" />
         </div>

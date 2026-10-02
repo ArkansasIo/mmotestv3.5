@@ -21,16 +21,14 @@ import {
   BarChart3,
   Rocket,
   Award,
-  Key,
   Terminal,
   Link,
 } from 'lucide-react';
 import { sound } from '../../sound';
-import { PlayerProfile, RaceId, AdminAuthSession, AdminCredentialAccount } from '../../types';
+import { PlayerProfile, RaceId } from '../../types';
 import { RACES, GOVERNMENTS } from '../../gameData';
 import { DevelopmentCreditsView } from '../views/DevelopmentCreditsView';
 import { PatchNotesModal } from '../modals/PatchNotesModal';
-import { RootAdminUrlLoginModal } from '../modals/RootAdminUrlLoginModal';
 
 interface TitleScreenProps {
   profile: PlayerProfile;
@@ -48,7 +46,6 @@ interface TitleScreenProps {
     }
   ) => void;
   onQuickStart: () => void;
-  onRootAdminLogin?: (session: AdminAuthSession, account: AdminCredentialAccount) => void;
 }
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({
@@ -56,24 +53,22 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onLogin,
   onRegister,
   onQuickStart,
-  onRootAdminLogin,
 }) => {
   const [authMode, setAuthMode] = useState<'splash' | 'login' | 'register' | 'servers'>('splash');
   const [regStep, setRegStep] = useState<1 | 2 | 3 | 4>(1);
   const [showCreditsModal, setShowCreditsModal] = useState<boolean>(false);
   const [showPatchModal, setShowPatchModal] = useState<boolean>(false);
-  const [showRootAdminModal, setShowRootAdminModal] = useState<boolean>(false);
   const [patchModalTab, setPatchModalTab] = useState<'update' | 'patch'>('patch');
 
   // Login Form States
   const [usernameInput, setUsernameInput] = useState<string>(profile.username || 'Aria_Vale');
-  const [passwordInput, setPasswordInput] = useState<string>('••••••••••••');
+  const [passwordInput, setPasswordInput] = useState<string>('');
   const [selectedServer, setSelectedServer] = useState<string>('Elderglen (Crownlands) - 12ms');
 
   // Detailed Registration Form States
   const [regUsername, setRegUsername] = useState<string>('Aria_Vale');
   const [regEmail, setRegEmail] = useState<string>('aria@valewyn.realm');
-  const [regPassword, setRegPassword] = useState<string>('PassCode9982!');
+  const [regPassword, setRegPassword] = useState<string>('');
   const [regEmpireName, setRegEmpireName] = useState<string>('The Crownlands of Valewyn');
   const [regCapitalName, setRegCapitalName] = useState<string>('Valewyn Crownlands');
   const [regLeaderTitle, setRegLeaderTitle] = useState<string>('Realm Warden');
@@ -106,27 +101,26 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#17140f] text-white flex flex-col justify-between relative overflow-x-hidden font-sans select-none">
-      {/* Background Grid & Radial Flare */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(120,53,15,0.22)_0%,transparent_72%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none" />
+    <div className="relative flex min-h-[100svh] flex-col justify-between overflow-x-hidden bg-[#111912] font-sans text-[#f3edda] selection:bg-[#d7b875] selection:text-[#172018]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_18%_22%,rgba(95,119,76,0.22)_0%,transparent_45%),radial-gradient(ellipse_at_86%_78%,rgba(159,116,57,0.13)_0%,transparent_38%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(135deg,transparent_48%,rgba(226,208,162,0.12)_49%,transparent_50%),linear-gradient(45deg,transparent_48%,rgba(226,208,162,0.08)_49%,transparent_50%)] [background-size:36px_36px]" />
 
       {/* Top Navigation Bar */}
-      <header className="relative z-10 border-b border-white/10 px-6 py-4 flex items-center justify-between backdrop-blur-md bg-black/60">
+      <header className="relative z-10 flex items-center justify-between gap-4 border-b border-[#d8c69b]/20 bg-[#101610]/85 px-4 py-3 backdrop-blur-md sm:px-7 sm:py-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-white text-black font-extrabold flex items-center justify-center text-lg tracking-tighter shadow-sm">
-            ER
+          <div className="grid size-10 shrink-0 place-items-center border border-[#c9a861]/70 bg-[#263326] text-[#e4c57e] shadow-[inset_0_0_0_3px_rgba(17,25,18,0.8)]">
+            <Crown size={20} strokeWidth={1.6} />
           </div>
-          <div>
-            <h1 className="font-bold text-sm tracking-widest text-white uppercase">ELDORIA: REALMS AT WAR</h1>
-            <span className="text-[10px] text-white/50 font-mono">MEDIEVAL FANTASY MMORPG · AGE OF EMBERS</span>
+          <div className="min-w-0">
+            <h1 className="whitespace-nowrap font-serif text-[10px] font-bold uppercase tracking-[0.11em] text-[#f2e8cb] sm:text-sm sm:tracking-[0.16em]">Eldoria: Realms at War</h1>
+            <span className="hidden text-[9px] font-mono uppercase tracking-[0.13em] text-[#b8b19e] sm:block">Chronicles of the Marches · Age of Embers</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 sm:gap-6 text-xs font-mono">
-          <div className="hidden sm:flex items-center gap-2 bg-emerald-500/10 text-emerald-400 px-3 py-1 border border-emerald-500/30">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>THE REALM HALL IS OPEN · AGE OF EMBERS</span>
+        <div className="flex items-center gap-2 text-xs font-mono sm:gap-3">
+          <div className="hidden items-center gap-2 border border-emerald-700/70 bg-emerald-950/45 px-3 py-1.5 text-emerald-200 sm:flex">
+            <span className="size-1.5 animate-pulse bg-emerald-400" />
+            <span className="text-[9px] uppercase tracking-wider">Realm gates open</span>
           </div>
           <button
             type="button"
@@ -134,59 +128,81 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               sound.play('click');
               setShowCreditsModal(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all cursor-pointer text-xs"
+            className="flex items-center gap-1.5 border border-[#b99b5d]/40 bg-[#283226] px-2.5 py-1.5 text-[#e7d8b2] transition-colors hover:bg-[#34412e] sm:px-3"
             title="View Development Team Credits"
           >
             <Award size={13} className="text-amber-400" />
-            <span>Royal Chronicler: <strong className="text-amber-300">Stephen</strong></span>
-            <span className="text-[9px] font-black uppercase px-1.5 py-0.2 bg-amber-400 text-black ml-1">Credits</span>
+            <span className="hidden sm:inline">Realm Chroniclers</span>
+            <span className="text-[9px] font-black uppercase text-[#e2c47d]">Credits</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              sound.play('click');
-              setShowRootAdminModal(true);
-            }}
-            className="flex items-center gap-1.5 px-3 py-1 bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/50 transition-all cursor-pointer text-xs font-mono font-bold"
-            title="Root Admin URL Login Terminal"
-          >
-            <Key size={13} className="text-amber-400" />
-            <span>Root Admin URL Access</span>
-          </button>
         </div>
       </header>
 
       {/* Main Content Area */}
       <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-6 my-4">
-        <div className="w-full max-w-5xl">
+        <div className="w-full max-w-6xl">
 
           {/* 1. SPLASH / HERO MODE */}
           {authMode === 'splash' && (
-            <div className="text-center space-y-8 animate-fade-in max-w-2xl mx-auto py-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 text-xs font-mono text-white/90">
-                <Sparkles size={14} className="text-amber-400" />
-                <span>MEDIEVAL FANTASY MMORPG · AGE OF EMBERS</span>
-              </div>
+            <div className="grid items-stretch gap-6 animate-fade-in lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.75fr)] lg:gap-10">
+              <section className="flex flex-col justify-center py-3 sm:py-8 lg:py-12">
+                <figure className="relative mb-7 aspect-[16/7] w-full overflow-hidden border border-[#c5a867]/55 bg-[#263326] shadow-[0_18px_45px_rgba(0,0,0,0.28)]">
+                  <img src="/images/eldoria-crownlands.svg" alt="The Crownlands of Eldoria, with a hilltop citadel above the Marches river" className="h-full w-full object-cover object-[center_57%]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#111912]/80 via-transparent to-[#111912]/5" />
+                  <figcaption className="absolute bottom-3 left-3 border-l-2 border-[#dfc477] pl-2 text-[9px] font-mono uppercase tracking-[0.17em] text-[#f0dfb4] sm:bottom-4 sm:left-4">Elderglen · Crownlands March</figcaption>
+                </figure>
+                <div className="mb-6 inline-flex w-fit items-center gap-2 border border-[#bea260]/50 bg-[#202b20]/85 px-3 py-1.5 text-[9px] font-mono uppercase tracking-[0.18em] text-[#dfca97]">
+                  <Sparkles size={13} className="text-[#e0bd6b]" />
+                  <span>Age of Embers · The Crownlands await</span>
+                </div>
 
-              <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-white uppercase leading-none">
-                Eldoria: Realms at War
-              </h2>
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[#b2a477]">A living realm of oaths and old magic</p>
+                <h2 className="max-w-3xl font-serif text-5xl font-semibold leading-[0.98] text-[#f4ecd7] sm:text-6xl lg:text-7xl">
+                  Eldoria
+                  <span className="mt-2 block text-2xl font-normal italic text-[#d3b976] sm:text-3xl">Realms at War</span>
+                </h2>
 
-              <p className="text-sm sm:text-base text-white/70 leading-relaxed">
-                Choose your people and swear an oath to a crown. Explore enchanted biomes, master blade and spell, gather a guild, brave ancient dungeons, and shape the fate of nine great realms.
-              </p>
+                <p className="mt-6 max-w-xl text-sm leading-7 text-[#c9c7b8] sm:text-base">
+                  Choose your people. Swear an oath to a crown. Then shape the Marches through warbands, wonder, and hard-won alliances.
+                </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                <div className="mt-8 grid max-w-xl grid-cols-3 border-y border-[#d8c69b]/20 py-4 text-[9px] font-mono uppercase tracking-wider text-[#aaa58f] sm:text-[10px]">
+                  <div className="pr-2"><strong className="mb-1 block font-serif text-lg text-[#e8d6a7] sm:text-xl">90+</strong>lands & keeps</div>
+                  <div className="border-x border-[#d8c69b]/20 px-3"><strong className="mb-1 block font-serif text-lg text-[#e8d6a7] sm:text-xl">5 peoples</strong>nine crowns</div>
+                  <div className="pl-3"><strong className="mb-1 block font-serif text-lg text-[#e8d6a7] sm:text-xl">One saga</strong>your command</div>
+                </div>
+
+                <div className="mt-7 flex flex-wrap gap-2 text-[9px] font-mono uppercase tracking-wider text-[#9da38d]">
+                  <span className="border border-white/10 bg-white/[0.03] px-2.5 py-1.5">Blade & spell</span>
+                  <span className="border border-white/10 bg-white/[0.03] px-2.5 py-1.5">Ancient lairs</span>
+                  <span className="border border-white/10 bg-white/[0.03] px-2.5 py-1.5">A realm to rule</span>
+                </div>
+              </section>
+
+              <aside className="relative flex flex-col justify-center border border-[#b99b5d]/55 bg-[#e7e0cc] p-5 text-[#1e291f] shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-7 lg:my-8">
+                <div className="pointer-events-none absolute inset-1 border border-[#7f795f]/25" />
+                <div className="relative">
+                  <div className="mb-5 flex items-center justify-between border-b border-[#283528]/20 pb-4">
+                    <div>
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-[#68715d]">The gatehouse</span>
+                      <h3 className="mt-1 font-serif text-2xl font-semibold">Enter the realm</h3>
+                    </div>
+                    <div className="grid size-11 place-items-center border border-[#8c7541]/50 bg-[#d8cfb5] text-[#6d5b34]"><Crown size={22} /></div>
+                  </div>
+
+                  <p className="mb-5 text-xs leading-relaxed text-[#5f6254]">Return to your holding, begin a new saga, or step inside as a wandering adventurer.</p>
+
+                  <div className="space-y-2.5">
                 <button
                   type="button"
                   onClick={() => {
                     sound.play('click');
                     setAuthMode('login');
                   }}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-neutral-200 transition-colors cursor-pointer"
+                  className="flex w-full items-center justify-between border border-[#243124] bg-[#243124] px-4 py-3.5 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#f2ead5] transition-colors hover:bg-[#344531]"
                 >
-                  Hero Login →
+                  <span>Enter your keep</span><ArrowRight size={16} />
                 </button>
                 <button
                   type="button"
@@ -195,20 +211,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                     setAuthMode('register');
                     setRegStep(1);
                   }}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-amber-400 text-black font-bold text-xs uppercase tracking-widest hover:bg-amber-300 transition-colors cursor-pointer"
+                  className="flex w-full items-center justify-between border border-[#a88b50] bg-[#d8bd7b] px-4 py-3.5 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#282819] transition-colors hover:bg-[#e2ca91]"
                 >
-                  Begin Your Saga
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.play('click');
-                    setShowRootAdminModal(true);
-                  }}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-neutral-900 border border-amber-400/50 text-amber-300 font-bold text-xs uppercase tracking-widest hover:bg-neutral-800 transition-colors cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Key size={14} className="text-amber-400" />
-                  <span>Root Admin URL</span>
+                  <span>Found a new realm</span><ChevronRight size={16} />
                 </button>
                 <button
                   type="button"
@@ -216,47 +221,51 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                     sound.play('success');
                     onQuickStart();
                   }}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-colors cursor-pointer"
+                  className="w-full border border-[#b5bba6] bg-[#dce2d2] px-4 py-3 text-[10px] font-bold uppercase tracking-[0.13em] text-[#354532] transition-colors hover:bg-[#e7ebdf]"
                 >
-                  Enter as a Wanderer
+                  Continue as a wanderer
                 </button>
               </div>
 
-              {/* Development Team Credits Link Button */}
-              <div className="flex justify-center pt-1">
+              <div className="mt-5 flex items-center justify-between border-t border-[#283528]/15 pt-4 text-[9px] font-mono uppercase tracking-wider text-[#77796b]">
+                <span>Five peoples · Nine crowns</span>
                 <button
                   type="button"
                   onClick={() => {
                     sound.play('click');
                     setShowCreditsModal(true);
                   }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-black/40 hover:bg-black/70 border border-white/20 text-xs text-amber-300 font-mono transition-all cursor-pointer uppercase tracking-wider"
+                  className="inline-flex items-center gap-1.5 text-[#75633b] transition-colors hover:text-[#263326]"
                 >
-                  <Award size={13} className="text-amber-400" />
-                  <span>Read the Keepers’ Chronicle</span>
+                  <Award size={12} />
+                  <span>Keepers’ chronicle</span>
                 </button>
               </div>
-
-              <div className="pt-8 grid grid-cols-3 gap-4 border-t border-white/10 text-xs font-mono text-white/60">
-                <div className="p-3 bg-white/5 border border-white/10">
-                  <span className="block text-white font-bold text-sm">90+</span>
-                  Lands & Keeps
-                </div>
-                <div className="p-3 bg-white/5 border border-white/10">
-                  <span className="block text-white font-bold text-sm">5 PEOPLES & 9 CROWNS</span>
-                  Peoples & Crowns
-                </div>
-                <div className="p-3 bg-white/5 border border-white/10">
-                  <span className="block text-white font-bold text-sm">100% REAL-TIME</span>
-                  Living Realms & Warbands
-                </div>
               </div>
+              </aside>
             </div>
           )}
 
           {/* 2. COMMANDER LOGIN MODE */}
           {authMode === 'login' && (
-            <div className="bg-black/90 border border-white/20 p-8 space-y-6 backdrop-blur-xl animate-fade-in max-w-md mx-auto">
+            <div className="mx-auto grid w-full max-w-5xl overflow-hidden border border-[#b99b5d]/60 bg-[#1b261d] shadow-[0_28px_90px_rgba(0,0,0,0.42)] animate-fade-in md:grid-cols-[minmax(0,1fr)_minmax(370px,0.9fr)]">
+              <section className="relative hidden flex-col justify-between overflow-hidden border-r border-[#d8c69b]/15 bg-[#233126] p-8 md:flex lg:p-10">
+                <img src="/images/eldoria-oath-hall.svg" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#17231d]/45 via-[#17231d]/75 to-[#17231d]/90" />
+                <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,transparent_49%,rgba(226,208,162,0.12)_50%,transparent_51%)] [background-size:24px_24px]" />
+                <div className="relative">
+                  <span className="inline-flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-[#c9b77f]"><Shield size={13} /> Oaths bind the Marches</span>
+                  <h2 className="mt-7 font-serif text-4xl leading-tight text-[#f2ead5]">Your hall-fire<br /><em className="text-[#d2b875]">still burns.</em></h2>
+                  <p className="mt-4 max-w-sm text-sm leading-6 text-[#c2c8b6]">Take up your banner again. Your people, holdings, and unfinished stories await beyond the gate.</p>
+                </div>
+                <div className="relative mt-10 border-t border-[#d8c69b]/20 pt-4 text-[9px] font-mono uppercase tracking-[0.15em] text-[#a9ad99]">Elderglen · Crownlands March</div>
+              </section>
+              <div className="space-y-6 p-5 sm:p-8">
+              <figure className="relative -mx-5 -mt-5 h-28 overflow-hidden border-b border-[#c4a765]/50 md:hidden sm:-mx-8 sm:-mt-8 sm:h-36">
+                <img src="/images/eldoria-oath-hall.svg" alt="The oath hall where Eldoria's banners gather beneath the rafters" className="h-full w-full object-cover object-[center_58%]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#142019]/75 via-[#142019]/20 to-transparent" />
+                <figcaption className="absolute bottom-3 left-4 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#f0dfb4]">Oath Hall · Elderglen Keep</figcaption>
+              </figure>
               <div className="border-b border-white/10 pb-4 flex justify-between items-center">
                 <div>
                   <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest">GUILD GATE</span>
@@ -323,17 +332,23 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-neutral-200 transition-colors cursor-pointer mt-2"
+                  className="mt-2 flex w-full items-center justify-between border border-[#c3a662] bg-[#d8bd7b] px-4 py-3.5 text-left text-xs font-bold uppercase tracking-[0.14em] text-[#282819] transition-colors hover:bg-[#e2ca91]"
                 >
-                  Enter the Keep →
+                  <span>Enter the keep</span><ArrowRight size={16} />
                 </button>
               </form>
+              </div>
             </div>
           )}
 
           {/* 3. DETAILED EMPIRE REGISTRATION SYSTEM */}
           {authMode === 'register' && (
-            <div className="bg-black/95 border border-white/20 p-6 sm:p-8 space-y-6 backdrop-blur-2xl animate-fade-in shadow-2xl">
+            <div className="space-y-6 border border-[#b99b5d]/60 bg-[#172119]/95 p-5 shadow-[0_28px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl animate-fade-in sm:p-8">
+              <figure className="relative -mx-5 -mt-5 h-28 overflow-hidden border-b border-[#c4a765]/50 sm:-mx-8 sm:-mt-8 sm:h-40">
+                <img src="/images/eldoria-founding-map.svg" alt="An illuminated map of Eldoria's Marches, with rivers, keeps, forests, and mountain passes" className="h-full w-full object-cover object-[center_51%]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#142019]/90 via-[#142019]/35 to-transparent" />
+                <figcaption className="absolute bottom-3 left-4 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#f0dfb4] sm:bottom-4 sm:left-6">A new oath takes root in the Marches</figcaption>
+              </figure>
               {/* Header */}
               <div className="border-b border-white/10 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -911,19 +926,6 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         }}
       />
 
-      {/* Root Admin URL Login & Creation Modal */}
-      <RootAdminUrlLoginModal
-        isOpen={showRootAdminModal}
-        onClose={() => setShowRootAdminModal(false)}
-        onAuthSuccess={(session, account) => {
-          setShowRootAdminModal(false);
-          if (onRootAdminLogin) {
-            onRootAdminLogin(session, account);
-          } else {
-            onLogin(account.username, 'tauri');
-          }
-        }}
-      />
     </div>
   );
 };

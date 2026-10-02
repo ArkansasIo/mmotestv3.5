@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { sound } from '../../sound';
 import { PlayerWeapon, WeaponType, PlayerResources, EquipmentCategory } from '../../types';
+import { getRarityDetails, getWeaponRarityMap } from '../../data/raritySystem';
 
 interface ArmoryViewProps {
   resources: PlayerResources;
@@ -52,12 +53,14 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [tierFilter, setTierFilter] = useState<number | 'all'>('all');
+  const [rarityFilter, setRarityFilter] = useState<number | 'all'>('all');
   const [sortBy, setSortBy] = useState<'power' | 'price' | 'tier' | 'name'>('power');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [notice, setNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [inspectedItem, setInspectedItem] = useState<WeaponType | null>(null);
+  const rarityByWeaponId = useMemo(() => getWeaponRarityMap(weapons), [weapons]);
 
   // Update tab when route changes
   useEffect(() => {
@@ -182,6 +185,10 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
         return false;
       }
 
+      if (rarityFilter !== 'all' && rarityByWeaponId.get(w.id) !== rarityFilter) {
+        return false;
+      }
+
       // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -204,7 +211,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
       else if (sortBy === 'name') comparison = a.name.localeCompare(b.name);
       return sortOrder === 'asc' ? -comparison : comparison;
     });
-  }, [weapons, inventory, activeTab, selectedSubCategory, tierFilter, searchQuery, sortBy, sortOrder]);
+  }, [weapons, inventory, activeTab, selectedSubCategory, tierFilter, rarityFilter, rarityByWeaponId, searchQuery, sortBy, sortOrder]);
 
   // Subcategories available for active tab
   const availableSubCategories = useMemo(() => {
@@ -404,8 +411,22 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
               />
             </div>
 
-            {/* Tier Filter & Sorting */}
+            {/* Rarity, Tier Filter & Sorting */}
             <div className="flex flex-wrap items-center gap-2 text-xs">
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] font-bold text-[#777777] uppercase">Rarity:</span>
+                <select
+                  value={rarityFilter}
+                  onChange={(e) => setRarityFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value, 10))}
+                  className="border border-[#cccccc] px-2 py-1 bg-white text-xs"
+                >
+                  <option value="all">All Ranks</option>
+                  {Array.from({ length: 9 }, (_, index) => {
+                    const rarity = getRarityDetails(index + 1);
+                    return <option key={rarity.level} value={rarity.level}>R{rarity.level} · {rarity.name}</option>;
+                  })}
+                </select>
+              </div>
               <div className="flex items-center gap-1">
                 <span className="text-[10px] font-bold text-[#777777] uppercase">Tier:</span>
                 <select
@@ -487,6 +508,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
                 <th className="py-3 px-4">Military System / Ordnance</th>
                 <th className="py-3 px-2">Classification</th>
                 <th className="py-3 px-2">Tier</th>
+                <th className="py-3 px-2">Rarity</th>
                 <th className="py-3 px-2">Combat Rating</th>
                 <th className="py-3 px-2">Unit Price</th>
                 <th className="py-3 px-2">In Depot</th>
@@ -497,7 +519,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
             <tbody className="divide-y divide-[#eeeeee]">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[#888888]">
+                  <td colSpan={9} className="py-12 text-center text-[#888888]">
                     No warband gear matched your current filter criteria.
                   </td>
                 </tr>
@@ -573,6 +595,13 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
                         <span className={`px-1.5 py-0.5 border text-[10px] ${tierColors[w.tier] || 'border-[#cccccc]'}`}>
                           Tier {w.tier}
                         </span>
+                      </td>
+
+                      <td className="py-3.5 px-2">
+                        {(() => {
+                          const rarity = getRarityDetails(rarityByWeaponId.get(w.id) || 1);
+                          return <span className={`inline-flex items-center gap-1 border px-1.5 py-0.5 text-[9px] font-bold ${rarity.className}`}><span>R{rarity.level}</span><span>{rarity.name}</span></span>;
+                        })()}
                       </td>
 
                       {/* Combat Rating */}
@@ -719,6 +748,10 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
                   </span>
                   <span className="text-xs text-[#666666]">{inspectedItem.subCategory}</span>
                   <span className="text-xs text-[#888888]">· Tier {inspectedItem.tier}</span>
+                  {(() => {
+                    const rarity = getRarityDetails(rarityByWeaponId.get(inspectedItem.id) || 1);
+                    return <span className={`border px-1.5 py-0.5 text-[9px] font-bold ${rarity.className}`}>R{rarity.level} · {rarity.name}</span>;
+                  })()}
                 </div>
               </div>
               <button

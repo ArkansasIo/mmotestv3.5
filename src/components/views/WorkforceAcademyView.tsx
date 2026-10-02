@@ -530,19 +530,17 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
           <div>
             <div className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase mb-1 flex items-center gap-1.5 font-mono">
               <GraduationCap size={14} className="text-amber-500" />
-              <span>DOMINION WORKFORCE ENLISTMENT & SPECIALIZED ACADEMY · 90-ROLE ROSTER</span>
+              <span>THE CROWN'S MUSTERHALL · SIX ADVENTURING ORDERS · 90 CALLINGS</span>
             </div>
             <h2 className="text-2xl font-black text-[#111111] tracking-tight">
-              Workforce Recruitment & Specialized Academy
+              Royal Musterhall & Adventurer Academy
             </h2>
             <p className="text-xs sm:text-sm text-[#666666] mt-1 max-w-3xl leading-relaxed">
-              Enlist raw citizen population into frontline combat divisions, borderland ward garrisons, deep-mantle
-              Crowns miners, or covert espionage operatives. Advance the 6 Royal Academy Wings to accelerate training velocity
-              and reduce equipment requisitions.
+              Call citizens to the shield companies, border wardens, deep-mantle miners, and quiet-foot scouts. Advance the six Orders of the Crown to hasten training and lower equipment requisitions.
             </p>
             <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-mono uppercase tracking-wider text-[#777777]">
-              <span>90-class archive</span>
-              <span>7 academy categories</span>
+              <span>90-callings muster roll</span>
+              <span>7 company paths</span>
               <span>13 primary stat channels</span>
               <span>6 sub-stat channels</span>
             </div>
@@ -550,15 +548,15 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="px-3 py-2 bg-neutral-50 border border-[#dedede] font-mono text-xs">
-              <span className="text-[10px] text-[#888888] uppercase block">Unassigned Recruits</span>
+              <span className="text-[10px] text-[#888888] uppercase block">Unsworn Recruits</span>
               <b className="text-base text-indigo-700 font-extrabold">{availableUntrained.toLocaleString()}</b>
             </div>
             <div className="px-3 py-2 bg-neutral-50 border border-[#dedede] font-mono text-xs">
-              <span className="text-[10px] text-[#888888] uppercase block">Active Personnel</span>
+              <span className="text-[10px] text-[#888888] uppercase block">Mustered Retinue</span>
               <b className="text-base text-[#111111] font-extrabold">{totals.totalPersonnel.toLocaleString()}</b>
             </div>
             <div className="px-3 py-2 bg-neutral-50 border border-[#dedede] font-mono text-xs">
-              <span className="text-[10px] text-[#888888] uppercase block">Drill Readiness</span>
+              <span className="text-[10px] text-[#888888] uppercase block">Trial Readiness</span>
               <b className="text-base text-amber-600 font-extrabold">{academyState.academyDrillRank}</b>
             </div>
           </div>
@@ -648,7 +646,7 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
             }`}
           >
             <Crosshair size={14} className={activeTab === 'enlistment' ? 'text-amber-400' : 'text-[#777777]'} />
-            <span>01. Enlistment & Academy Specialization</span>
+            <span>01. Call the Muster</span>
           </button>
 
           <button
@@ -664,7 +662,7 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
             }`}
           >
             <Users size={14} className={activeTab === 'roster' ? 'text-amber-400' : 'text-[#777777]'} />
-            <span>02. Royal Workforce Roster (90 Roles)</span>
+            <span>02. Muster Roll (90 Callings)</span>
           </button>
 
           <button
@@ -680,7 +678,7 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
             }`}
           >
             <GraduationCap size={14} className={activeTab === 'wings' ? 'text-amber-400' : 'text-[#777777]'} />
-            <span>03. Specialized Academy Wings ({INITIAL_ACADEMY_WINGS.length})</span>
+            <span>03. Orders of the Crown ({INITIAL_ACADEMY_WINGS.length})</span>
           </button>
 
           <button
@@ -1170,7 +1168,7 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
         </div>
       )}
 
-      {/* TAB 3: SPECIALIZED ACADEMY WINGS */}
+      {/* TAB 3: ORDERS OF THE CROWN */}
       {activeTab === 'wings' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {INITIAL_ACADEMY_WINGS.map((wing) => {
@@ -1273,7 +1271,7 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
                 DOMINION CADET PROVING GROUNDS
               </span>
               <h3 className="text-lg font-black text-[#111111] mt-0.5">
-                Academy Readiness Drills & Live War Games
+                Trial Grounds & Live War Games
               </h3>
               <p className="text-xs text-[#666666] mt-1">
                 Conduct war simulations and live geological exercises to elevate military readiness and inspire raw
@@ -1287,7 +1285,7 @@ export const WorkforceAcademyView: React.FC<WorkforceAcademyViewProps> = ({
                 <b className="text-lg text-[#111111]">{academyState.academyDrillScore.toLocaleString()}</b>
               </div>
               <div className="p-3 bg-neutral-50 border border-[#eeeeee]">
-                <span className="text-[10px] text-[#888888] uppercase block">Honorary Academy Rank</span>
+                <span className="text-[10px] text-[#888888] uppercase block">Musterhall Rank</span>
                 <b className="text-lg text-amber-600">{academyState.academyDrillRank}</b>
               </div>
             </div>

@@ -1183,7 +1183,7 @@ export const AdminIngameSystemsTab: React.FC<AdminIngameSystemsTabProps> = ({
                   IN-GAME SYSTEM 08 // LEADERSHIP & PROGRESSION
                 </span>
                 <h3 className="text-base font-bold font-mono text-[#111111]">
-                  72 Legendary Champions Roster, Workforce Academy & Battle Pass Seasons
+                  72 Legendary Champions, Royal Musterhall & Battle Pass Seasons
                 </h3>
               </div>
             </div>
@@ -1222,10 +1222,10 @@ export const AdminIngameSystemsTab: React.FC<AdminIngameSystemsTabProps> = ({
               </button>
             </div>
 
-            {/* Workforce Academy */}
+            {/* Royal Musterhall */}
             <div className="border border-neutral-200 bg-neutral-50/80 p-3.5 space-y-2.5">
               <span className="font-bold text-[#111111] uppercase block border-b pb-1.5">
-                Workforce Academy Master
+                Royal Musterhall Master
               </span>
               <p className="text-[11px] text-[#666666]">
                 Instantly graduate 5,000 Grandmaster personnel in all 4 workforce branches:
@@ -1239,7 +1239,7 @@ export const AdminIngameSystemsTab: React.FC<AdminIngameSystemsTabProps> = ({
                     defenseUnits: resources.defenseUnits + 5000,
                     spies: resources.spies + 500,
                   });
-                  showNotify('Workforce Academy graduation complete: +5,000 Miners, +5,000 Marines, +5,000 Guards.');
+                  showNotify('Royal Musterhall graduation complete: +5,000 Miners, +5,000 Marines, +5,000 Guards.');
                 }}
                 className="w-full py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs uppercase cursor-pointer"
               >

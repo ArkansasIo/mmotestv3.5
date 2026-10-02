@@ -2,33 +2,33 @@
    THEMES SUB-CSS ENGINE: Basic Default White & Dark Navy Blue Themes
    ========================================================================== */
 
-/* 1. DEFAULT WHITE BACKGROUND THEME (Clean Light Mode) */
+/* 1. ELDORIA FIELD JOURNAL THEME */
 :root,
 .theme-white-default {
-  --bg-main: #ffffff;
-  --bg-alt: #f8fafc;
-  --bg-panel: #ffffff;
-  --bg-card: #f1f5f9;
-  --bg-header: #0f172a;
-  --bg-sidebar: #ffffff;
+  --bg-main: #eef0e7;
+  --bg-alt: #e6e9df;
+  --bg-panel: #fbfbf5;
+  --bg-card: #f0f2e9;
+  --bg-header: #1d3025;
+  --bg-sidebar: #e7ebdf;
 
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-subtle: #64748b;
+  --text-main: #20291f;
+  --text-muted: #586252;
+  --text-subtle: #77806f;
   --text-header: #ffffff;
 
-  --border-color: #cbd5e1;
-  --border-light: #e2e8f0;
-  --border-focus: #0284c7;
+  --border-color: #c9d0c2;
+  --border-light: #dce1d5;
+  --border-focus: #8d713e;
 
-  --accent-primary: #0284c7;
-  --accent-primary-hover: #0369a1;
-  --accent-secondary: #0d9488;
-  --accent-amber: #d97706;
+  --accent-primary: #365b43;
+  --accent-primary-hover: #294735;
+  --accent-secondary: #537a68;
+  --accent-amber: #a4772e;
 
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --panel-border: 1px solid #cbd5e1;
-  --theme-name: "Default White Background";
+  --card-shadow: 0 3px 12px rgba(39, 51, 36, 0.06);
+  --panel-border: 1px solid #c9d0c2;
+  --theme-name: "Eldoria Field Journal";
 }
 
 /* 2. DARK NAVY BLUE THEME (Deep Cosmic Navy Mode) */

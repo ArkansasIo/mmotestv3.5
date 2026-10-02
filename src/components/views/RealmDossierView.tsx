@@ -29,7 +29,7 @@ export const RealmDossierView: React.FC<RealmDossierViewProps> = ({ profile, res
     { name: 'Royal Warforge', route: 'shipyard', status: 'Mustered', detail: 'Ships, formations, and fleet construction' },
     { name: 'Lore Scriptorium', route: 'tech-library', status: 'Studying', detail: 'Research, prerequisites, and archive progress' },
     { name: 'Waystone Network', route: 'stargate-network', status: 'Linked', detail: 'Gate relays, travel, and far-march access' },
-    { name: 'Workforce Academy', route: 'workforce-academy', status: 'Training', detail: 'Ninety specialized roles and promotion cadres' },
+    { name: 'Royal Musterhall', route: 'workforce-academy', status: 'Training', detail: 'Ninety adventurer callings and six sworn orders' },
     { name: 'Realm Defense Grid', route: 'defenses', status: `DefCon ${profile.defconLevel}`, detail: 'Holding wards, weapons, and border security' },
   ], [profile.defconLevel]);
 

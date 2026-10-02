@@ -171,6 +171,7 @@ import { MagicSystemView } from './components/views/MagicSystemView';
 import { applyThemeToDOM, getActiveThemeId } from './config/themeConfig';
 import { AICSystemView } from './components/views/AICSystemView';
 import { ProfessionWorkshopView } from './components/views/ProfessionWorkshopView';
+import { TemperingView } from './components/views/TemperingView';
 import { MasterUpgradesView } from './components/views/MasterUpgradesView';
 import { NemesisSystemView } from './components/views/NemesisSystemView';
 import { AddWorldsUniverseBossView } from './components/views/AddWorldsUniverseBossView';
@@ -198,6 +199,13 @@ import {
   type ProfessionInventory,
   type ProfessionSkillBook,
 } from './data/professionData';
+import {
+  findCraftedEquipment,
+  getTemperedEquipmentStats,
+  getTemperingCap,
+  getTemperingCost,
+  type TemperingLevels,
+} from './data/temperingData';
 import { PatchNotesModal } from './components/modals/PatchNotesModal';
 import { SaveStateManagerModal } from './components/modals/SaveStateManagerModal';
 import { AdminLoginModal } from './components/modals/AdminLoginModal';
@@ -639,6 +647,9 @@ export default function App() {
   const [professionEquipment, setProfessionEquipment] = useState<ProfessionEquipment>(() =>
     loadStored('profession_equipment', INITIAL_PROFESSION_EQUIPMENT)
   );
+  const [temperingLevels, setTemperingLevels] = useState<TemperingLevels>(() =>
+    loadStored('profession_tempering_levels', {})
+  );
 
   // Auto-save changes to localStorage and Firestore
   useEffect(() => {
@@ -698,6 +709,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('uc_state_profession_equipment', JSON.stringify(professionEquipment));
   }, [professionEquipment]);
+
+  useEffect(() => {
+    localStorage.setItem('uc_state_profession_tempering_levels', JSON.stringify(temperingLevels));
+  }, [temperingLevels]);
 
   useEffect(() => {
     localStorage.setItem('uc_state_cron_config', JSON.stringify(cronConfig));
@@ -849,7 +864,7 @@ export default function App() {
   const netColonyIncome = Math.max(0, planetIncomeTotal - planetMaintenanceTotal);
   const planetDefTotal = planets.reduce((sum, p) => sum + (p.defenseBonus || 0), 0);
 
-  // Workforce Academy 90-Role totals with Persistent Veterancy & Doctrine
+  // Royal Musterhall 90-calling totals with persistent veterancy and doctrine
   const workforceTotals = calculateWorkforceTotals(
     workforceAcademyState.unitCounts,
     workforceAcademyState.unitExperience
@@ -923,10 +938,11 @@ export default function App() {
   const professionEquipmentStats = Object.values(professionEquipment).reduce((total, itemId) => {
     const item = PROFESSION_RECIPES.find((recipe) => recipe.output.id === itemId)?.output;
     if (!item) return total;
+    const tempered = getTemperedEquipmentStats(itemId, temperingLevels);
     return {
-      attack: total.attack + item.stats.attack,
-      ward: total.ward + item.stats.ward,
-      vitality: total.vitality + item.stats.vitality,
+      attack: total.attack + item.stats.attack + tempered.attack,
+      ward: total.ward + item.stats.ward + tempered.ward,
+      vitality: total.vitality + item.stats.vitality + tempered.vitality,
     };
   }, { attack: 0, ward: 0, vitality: 0 });
 
@@ -2859,6 +2875,45 @@ export default function App() {
     sound.play('confirm');
   };
 
+  const handleTemperProfessionEquipment = (itemId: string) => {
+    const item = findCraftedEquipment(itemId);
+    const currentLevel = temperingLevels[itemId] || 0;
+    if (!item || currentLevel >= getTemperingCap(item.rarity)) return;
+
+    const isOwned = (professionInventory[itemId] || 0) > 0 || Object.values(professionEquipment).includes(itemId);
+    const nextCost = getTemperingCost(currentLevel + 1);
+    const isOre = FANTASY_ORE_VEINS.some((vein) => vein.id === nextCost.materialId);
+    const hasMaterials = (professionInventory[nextCost.materialId] || 0) >= nextCost.materialCount &&
+      (!isOre || (resources.oreStockpile?.[nextCost.materialId] || 0) >= nextCost.materialCount);
+    const hasResources = resources.metal >= nextCost.metal && resources.crystal >= nextCost.crystal &&
+      resources.deuterium >= nextCost.deuterium && resources.naquadah >= nextCost.naquadah;
+
+    if (!isOwned || !hasMaterials || !hasResources) {
+      sound.play('warning');
+      return;
+    }
+
+    setResources((current) => ({
+      ...current,
+      metal: current.metal - nextCost.metal,
+      crystal: current.crystal - nextCost.crystal,
+      deuterium: current.deuterium - nextCost.deuterium,
+      naquadah: current.naquadah - nextCost.naquadah,
+      ...(isOre ? {
+        oreStockpile: {
+          ...current.oreStockpile,
+          [nextCost.materialId]: Math.max(0, (current.oreStockpile?.[nextCost.materialId] || 0) - nextCost.materialCount),
+        },
+      } : {}),
+    }));
+    setProfessionInventory((current) => ({
+      ...current,
+      [nextCost.materialId]: Math.max(0, (current[nextCost.materialId] || 0) - nextCost.materialCount),
+    }));
+    setTemperingLevels((current) => ({ ...current, [itemId]: currentLevel + 1 }));
+    sound.play('confirm');
+  };
+
   const handleEquipProfessionItem = (itemId: string) => {
     const recipe = PROFESSION_RECIPES.find((entry) => entry.output.id === itemId);
     const slot = recipe?.output.slot;
@@ -3034,6 +3089,7 @@ export default function App() {
       professionSkills,
       professionInventory,
       professionEquipment,
+      temperingLevels,
       decrees,
       worldModifiers,
       serverSettings,
@@ -3058,6 +3114,7 @@ export default function App() {
       if (parsed.professionSkills) setProfessionSkills(parsed.professionSkills);
       if (parsed.professionInventory) setProfessionInventory(parsed.professionInventory);
       if (parsed.professionEquipment) setProfessionEquipment(parsed.professionEquipment);
+      if (parsed.temperingLevels) setTemperingLevels(parsed.temperingLevels);
       if (parsed.decrees) setDecrees(parsed.decrees);
       if (parsed.worldModifiers) setWorldModifiers(parsed.worldModifiers);
       if (parsed.serverSettings) setServerSettings(parsed.serverSettings);
@@ -3302,6 +3359,7 @@ export default function App() {
     setProfessionSkills(INITIAL_PROFESSION_SKILLS);
     setProfessionInventory(INITIAL_PROFESSION_INVENTORY);
     setProfessionEquipment(INITIAL_PROFESSION_EQUIPMENT);
+    setTemperingLevels({});
     setActiveExpeditions(INITIAL_EXPEDITIONS);
     setExpeditionLogs(INITIAL_EXPEDITION_LOGS);
     setMegastructures(INITIAL_MEGASTRUCTURES);
@@ -3337,7 +3395,6 @@ export default function App() {
           setIsLoggedIn(true);
           localStorage.setItem('uc_state_isLoggedIn', JSON.stringify(true));
         }}
-        onRootAdminLogin={handleRootAdminLoginSuccess}
       />
     );
   }
@@ -3791,10 +3848,21 @@ export default function App() {
                 skills={professionSkills}
                 inventory={professionInventory}
                 equipment={professionEquipment}
+                temperingLevels={temperingLevels}
                 onGather={handleGatherProfessionMaterial}
                 onCraft={handleCraftProfessionRecipe}
                 onEquip={handleEquipProfessionItem}
                 onUnequip={handleUnequipProfessionItem}
+              />
+            )}
+
+            {activeRoute === 'tempering' && (
+              <TemperingView
+                resources={resources}
+                inventory={professionInventory}
+                equipment={professionEquipment}
+                temperingLevels={temperingLevels}
+                onTemper={handleTemperProfessionEquipment}
               />
             )}
 

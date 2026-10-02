@@ -23,6 +23,7 @@ import {
   AlertCircle,
   Clock,
   Radio,
+  X,
 } from 'lucide-react';
 import { sound } from '../../../sound';
 import {
@@ -86,6 +87,7 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
     ALL_72_COMMANDERS[0]
   );
   const [selectedInstance, setSelectedInstance] = useState<PlayerCommanderInstance | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   // Gacha Summon Result Animation State
   const [summonResults, setSummonResults] = useState<CommanderData[] | null>(null);
@@ -111,6 +113,12 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
   const saveAssignments = (slots: CommanderSlotAssignments) => {
     setSlotAssignments(slots);
     localStorage.setItem(STORAGE_KEY_COMMANDER_ASSIGNMENTS, JSON.stringify(slots));
+  };
+
+  const openCommanderDetails = (commander: CommanderData) => {
+    setSelectedCommander(commander);
+    setSelectedInstance(myCommanders.find((instance) => instance.commanderId === commander.id) ?? null);
+    setIsDetailsOpen(true);
   };
 
   // Perform Gacha Summon
@@ -446,7 +454,7 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
               </div>
               <h3 className="text-lg font-black text-[#111111] uppercase">Universal Sovereign Pool</h3>
               <p className="text-xs text-[#666666] mt-1">
-                Equal probability across all 72 champions. Guaranteed 4★+ every 10 pulls, guaranteed Mythic at 50 pulls.
+                Equal probability within each rarity. Guaranteed Epic or higher every 10 pulls, guaranteed Mythic at 50 pulls.
               </p>
               <div className="mt-4 text-[11px] text-[#888888] space-y-0.5">
                 <div>• Mythic: 1.5% | Legendary: 6.5% | Epic: 17.0%</div>
@@ -474,7 +482,7 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
                 <span>Ascended Mythics Rate-Up</span>
               </h3>
               <p className="text-xs text-[#666666] mt-1">
-                2.5x boosted chance to summon Supreme Thor, Archon Samantha Carter, and System Lord Ba'al!
+                Higher overall Mythic odds. Champions within each rarity have equal odds; standard pity rules still apply.
               </p>
               <div className="mt-4 text-[11px] text-amber-800 space-y-0.5">
                 <div>• Mythic: 3.5% (Boosted) | Legendary: 8.5% | Epic: 20.0%</div>
@@ -514,7 +522,7 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
               >
                 <Crown size={15} className="text-amber-400" />
                 <span>Summon x10 ({summonBanner === 'mythic_focus' ? '6,000' : '4,000'} AD)</span>
-                <span className="px-1.5 py-0.2 bg-amber-400 text-black text-[9px] font-bold">10th 4★+ Guaranteed</span>
+                <span className="px-1.5 py-0.2 bg-amber-400 text-black text-[9px] font-bold">10th Epic+ Guaranteed</span>
               </button>
             </div>
 
@@ -549,7 +557,7 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
                 {summonResults.map((cmdr, i) => (
                   <div
                     key={`${cmdr.id}_${i}`}
-                    onClick={() => setSelectedCommander(cmdr)}
+                    onClick={() => openCommanderDetails(cmdr)}
                     className="border border-[#dedede] p-3 bg-neutral-50 hover:border-black cursor-pointer space-y-2 text-center transition-transform hover:-translate-y-1"
                   >
                     <div className="text-3xl">{cmdr.avatar}</div>
@@ -704,6 +712,14 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
                       Aura: {selectedCommander.passiveAura}
                     </div>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsDetailsOpen(true)}
+                    className="w-full py-2 border border-[#111111] text-xs font-bold uppercase text-[#111111] hover:bg-neutral-100 flex items-center justify-center gap-2"
+                  >
+                    <Eye size={14} /> Open Full Dossier
+                  </button>
 
                   {/* Action Buttons for selected recruited instance */}
                   {selectedInstance && (
@@ -889,7 +905,7 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
               return (
                 <div
                   key={cmdr.id}
-                  onClick={() => setSelectedCommander(cmdr)}
+                  onClick={() => openCommanderDetails(cmdr)}
                   className={`p-4 border-2 bg-white flex flex-col justify-between space-y-3 cursor-pointer transition-all hover:border-black hover:-translate-y-0.5 ${
                     isRecruited ? 'border-[#111111]' : 'border-[#dedede]'
                   }`}
@@ -922,6 +938,170 @@ export const CommanderGachaStorePanel: React.FC<CommanderGachaStorePanelProps> =
               );
             })}
           </div>
+        </div>
+      )}
+
+      {isDetailsOpen && selectedCommander && (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto bg-black/60 p-3 sm:p-6"
+          onClick={() => setIsDetailsOpen(false)}
+        >
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="commander-dossier-title"
+            onClick={(event) => event.stopPropagation()}
+            className="mx-auto my-2 w-full max-w-5xl border-2 border-[#111111] bg-white shadow-2xl"
+          >
+            <header className="flex items-start justify-between gap-4 border-b-2 border-[#111111] p-4 sm:p-6">
+              <div className="flex items-center gap-4">
+                <div className="grid size-16 shrink-0 place-items-center border border-[#dedede] bg-neutral-50 text-4xl">
+                  {selectedCommander.avatar}
+                </div>
+                <div>
+                  <span className={`inline-block border px-2 py-0.5 text-[9px] uppercase ${getRarityBadge(selectedCommander.rarity)}`}>
+                    {selectedCommander.rarity} · {selectedCommander.role}
+                  </span>
+                  <h3 id="commander-dossier-title" className="mt-1 text-xl font-black text-[#111111]">
+                    {selectedCommander.name}
+                  </h3>
+                  <p className="text-xs text-[#666666]">{selectedCommander.title} · {selectedCommander.faction}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                aria-label="Close champion dossier"
+                title="Close dossier"
+                onClick={() => setIsDetailsOpen(false)}
+                className="grid size-9 shrink-0 place-items-center border border-[#dedede] text-[#333333] hover:bg-neutral-100"
+              >
+                <X size={16} />
+              </button>
+            </header>
+
+            <div className="grid gap-0 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,1fr)]">
+              <div className="space-y-5 p-4 sm:p-6">
+                <section>
+                  <h4 className="mb-2 text-[10px] font-black uppercase text-[#777777]">Champion Profile</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="border border-[#dedede] bg-neutral-50 p-2"><span className="text-[#777777]">Codename</span><strong className="mt-1 block">{selectedCommander.codename}</strong></div>
+                    <div className="border border-[#dedede] bg-neutral-50 p-2"><span className="text-[#777777]">Rarity</span><strong className="mt-1 block">{selectedCommander.rarity}</strong></div>
+                    <div className="border border-[#dedede] bg-neutral-50 p-2"><span className="text-[#777777]">Role</span><strong className="mt-1 block">{selectedCommander.role}</strong></div>
+                    <div className="border border-[#dedede] bg-neutral-50 p-2"><span className="text-[#777777]">Faction</span><strong className="mt-1 block">{selectedCommander.faction}</strong></div>
+                  </div>
+                  <p className="mt-3 text-xs leading-relaxed text-[#555555]">{selectedCommander.lore}</p>
+                </section>
+
+                <section>
+                  <h4 className="mb-2 text-[10px] font-black uppercase text-[#777777]">Primary Stats</h4>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {([
+                      ['Fleet Attack', selectedCommander.stats.fleetAttack, '%'],
+                      ['Fleet Shield', selectedCommander.stats.fleetShield, '%'],
+                      ['Fleet Hull', selectedCommander.stats.fleetHull, '%'],
+                      ['Metal Production', selectedCommander.stats.productionMetal, '%'],
+                      ['Crystal Production', selectedCommander.stats.productionCrystal, '%'],
+                      ['Deuterium Production', selectedCommander.stats.productionDeuterium, '%'],
+                      ['Research Speed', selectedCommander.stats.researchSpeed, '%'],
+                      ['Shipyard Speed', selectedCommander.stats.shipyardSpeed, '%'],
+                      ['Espionage Power', selectedCommander.stats.espionagePower, '%'],
+                      ['Expedition Bonus', selectedCommander.stats.expeditionBonus, '%'],
+                    ] as const).map(([label, value, unit]) => (
+                      <div key={label} className="border border-[#dedede] p-2 text-[10px]">
+                        <span className="block text-[#777777]">{label}</span>
+                        <strong className="text-sm text-[#111111]">+{value}{unit}</strong>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section>
+                  <h4 className="mb-2 text-[10px] font-black uppercase text-[#777777]">Combat & Field Substats</h4>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 border border-[#dedede] p-3 text-[11px] sm:grid-cols-4">
+                    <div>Crit Chance <strong>{selectedCommander.subStats.critChance}%</strong></div>
+                    <div>Crit Damage <strong>{selectedCommander.subStats.critMultiplier}x</strong></div>
+                    <div>Rapid Fire <strong>+{selectedCommander.subStats.rapidFireBonus}%</strong></div>
+                    <div>Shield Regen <strong>+{selectedCommander.subStats.shieldRegenRate}%</strong></div>
+                    <div>Fuel Reduction <strong>-{selectedCommander.subStats.fuelConsumptionReduction}%</strong></div>
+                    <div>Storage Capacity <strong>+{selectedCommander.subStats.storageCapacityBonus}%</strong></div>
+                    <div>Expedition Reroll <strong>+{selectedCommander.subStats.expeditionRerollLuck}%</strong></div>
+                    <div>Stealth Penetration <strong>+{selectedCommander.subStats.stealthPenetration}%</strong></div>
+                  </div>
+                </section>
+
+                <section className="border-l-2 border-amber-500 bg-neutral-50 p-3">
+                  <h4 className="text-xs font-black text-[#111111]">{selectedCommander.signatureSkill}</h4>
+                  <p className="mt-1 text-xs leading-relaxed text-[#555555]">{selectedCommander.signatureSkillDescription}</p>
+                  <p className="mt-2 text-[11px] font-bold text-emerald-700">Passive Aura: {selectedCommander.passiveAura}</p>
+                </section>
+              </div>
+
+              <aside className="space-y-4 border-t border-[#dedede] bg-neutral-50 p-4 sm:p-6 lg:border-l lg:border-t-0">
+                <section className="border border-[#dedede] bg-white p-3">
+                  <h4 className="text-[10px] font-black uppercase text-[#777777]">Recruitment</h4>
+                  <p className="mt-2 text-xs text-[#333333]">{selectedCommander.rarity} pool · {ALL_72_COMMANDERS.filter((commander) => commander.rarity === selectedCommander.rarity).length} champions</p>
+                  <p className="mt-1 text-sm font-black text-amber-700">
+                    {(summonBanner === 'standard'
+                      ? { Mythic: 1.5, Legendary: 6.5, Epic: 17, Rare: 35, Common: 40 }[selectedCommander.rarity]
+                      : { Mythic: 3.5, Legendary: 8.5, Epic: 20, Rare: 33, Common: 35 }[selectedCommander.rarity]
+                    / ALL_72_COMMANDERS.filter((commander) => commander.rarity === selectedCommander.rarity).length).toFixed(2)}% base chance
+                  </p>
+                  <p className="mt-1 text-[10px] text-[#777777]">Per champion on the {summonBanner === 'standard' ? 'Standard' : 'Mythic Focus'} banner, before pity guarantees.</p>
+                  <div className="mt-3 border-t border-[#eee] pt-2 text-[10px] text-[#555555]">
+                    <div className="flex justify-between"><span>Epic+ guarantee</span><strong>Every 10 pulls</strong></div>
+                    <div className="mt-1 flex justify-between"><span>Mythic guarantee</span><strong>At 50 pulls</strong></div>
+                    <div className="mt-1 flex justify-between"><span>Current pity</span><strong>{pityCounter} / 50</strong></div>
+                  </div>
+                </section>
+
+                <section className="border border-[#dedede] bg-white p-3">
+                  <h4 className="text-[10px] font-black uppercase text-[#777777]">Service Record</h4>
+                  {selectedInstance ? (
+                    <>
+                      <div className="mt-2 flex items-center justify-between text-xs">
+                        <strong>Level {selectedInstance.level}</strong>
+                        <span className="flex items-center gap-0.5 text-amber-600">
+                          {Array.from({ length: selectedInstance.stars }).map((_, starIndex) => <Star key={starIndex} size={12} className="fill-amber-400 text-amber-500" />)}
+                        </span>
+                      </div>
+                      <div className="mt-2 flex justify-between text-[10px] text-[#666666]">
+                        <span>Duplicate XP</span><strong>{selectedInstance.experience.toLocaleString()} / {selectedInstance.nextLevelExp.toLocaleString()}</strong>
+                      </div>
+                      <div className="mt-1 h-1.5 bg-neutral-200">
+                        <div className="h-full bg-emerald-600" style={{ width: `${Math.min(100, (selectedInstance.experience / selectedInstance.nextLevelExp) * 100)}%` }} />
+                      </div>
+                      <p className="mt-2 text-[10px] text-[#555555]">
+                        {selectedInstance.awakened ? 'Awakened' : 'Not awakened'}
+                        {selectedInstance.assignedSlot ? ` · Council: ${selectedInstance.assignedSlot.replace('_', ' ')}` : ' · No council seat'}
+                      </p>
+                      <div className="mt-3 space-y-2 border-t border-[#eee] pt-3">
+                        <button
+                          type="button"
+                          disabled={resources.naquadah < selectedInstance.level * 25000 || resources.deuterium < selectedInstance.level * 5000}
+                          onClick={() => handleTrainCommander(selectedInstance)}
+                          className="w-full border border-[#111111] bg-[#111111] px-3 py-2 text-left text-[10px] font-bold uppercase text-white enabled:hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          Train to level {selectedInstance.level + 1} · {(selectedInstance.level * 25000).toLocaleString()} Naquadah · {(selectedInstance.level * 5000).toLocaleString()} Deuterium
+                        </button>
+                        {!selectedInstance.awakened && (
+                          <button
+                            type="button"
+                            disabled={(resources.darkMatter ?? 0) < 500}
+                            onClick={() => handleAwakenCommander(selectedInstance)}
+                            className="w-full border border-amber-500 bg-amber-400 px-3 py-2 text-left text-[10px] font-bold uppercase text-black enabled:hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            Awaken · 500 Arcane Dust · set rank to 5 stars
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="mt-2 text-xs text-[#555555]">Not yet recruited. Use a summon banner to add this champion to your roster.</p>
+                  )}
+                </section>
+              </aside>
+            </div>
+          </section>
         </div>
       )}
     </div>

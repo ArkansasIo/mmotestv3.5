@@ -1,12 +1,36 @@
 import React, { useState } from 'react';
-import { Award, ChevronRight, Coins, Flame, ScrollText, Skull, Sparkles, Swords, Users } from 'lucide-react';
+import { Award, Check, ChevronRight, Coins, Flame, Lock, RotateCcw, ScrollText, Skull, Sparkles, Star, Swords, Users } from 'lucide-react';
 import { sound } from '../../sound';
 import { DUNGEON_RAID_BOSSES, ELDORIA_WARLORDS, type EldoriaWarlord } from '../../data/eldoriaRaidData';
 import type { BestiaryMonster } from '../../data/monsterBestiaryData';
 import type { PlayerProfile, PlayerResources } from '../../types';
-import { parseRaidHistory, RAID_HISTORY_LIMIT, resolveRaid, type RaidReport } from '../../utils/raidCombat';
+import { parseRaidHistory, RAID_HISTORY_LIMIT, resolveRaid, type RaidReport, type RaidResolution } from '../../utils/raidCombat';
 
 const RAID_HISTORY_KEY = 'uc_state_raid_history';
+const SOLO_PROGRESS_KEY = 'uc_state_solo_trial_progress';
+
+interface SoloLevelRecord {
+  attempts: number;
+  stars: number;
+  bestPowerRatio: number;
+  bestRounds: number | null;
+}
+
+interface SoloProgress {
+  highestCleared: number;
+  totalAttempts: number;
+  totalVictories: number;
+  levels: Record<number, SoloLevelRecord>;
+}
+
+const EMPTY_SOLO_PROGRESS: SoloProgress = {
+  highestCleared: 0,
+  totalAttempts: 0,
+  totalVictories: 0,
+  levels: {},
+};
+
+const soloProgressKey = (profileId: string) => `${SOLO_PROGRESS_KEY}_${profileId}`;
 
 function loadRaidHistory(): RaidReport[] {
   try {
@@ -24,6 +48,59 @@ function saveRaidHistory(history: RaidReport[]) {
   }
 }
 
+function loadSoloProgress(profileId: string): SoloProgress {
+  try {
+    const raw = window.localStorage.getItem(soloProgressKey(profileId));
+    if (raw) {
+      const parsed: unknown = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object') return EMPTY_SOLO_PROGRESS;
+
+      const data = parsed as Partial<SoloProgress>;
+      const levels: Record<number, SoloLevelRecord> = {};
+      if (data.levels && typeof data.levels === 'object') {
+        for (const [key, value] of Object.entries(data.levels)) {
+          const level = Number(key);
+          if (!Number.isInteger(level) || level < 1 || level > DUNGEON_RAID_BOSSES.length || !value) continue;
+          levels[level] = {
+            attempts: Number.isInteger(value.attempts) ? Math.max(0, value.attempts) : 0,
+            stars: Number.isInteger(value.stars) ? Math.min(3, Math.max(0, value.stars)) : 0,
+            bestPowerRatio: Number.isFinite(value.bestPowerRatio) ? Math.max(0, value.bestPowerRatio) : 0,
+            bestRounds: typeof value.bestRounds === 'number' && Number.isInteger(value.bestRounds) && value.bestRounds > 0 ? value.bestRounds : null,
+          };
+        }
+      }
+
+      return {
+        highestCleared: typeof data.highestCleared === 'number' && Number.isInteger(data.highestCleared)
+          ? Math.min(DUNGEON_RAID_BOSSES.length, Math.max(0, data.highestCleared))
+          : 0,
+        totalAttempts: typeof data.totalAttempts === 'number' && Number.isInteger(data.totalAttempts) ? Math.max(0, data.totalAttempts) : 0,
+        totalVictories: typeof data.totalVictories === 'number' && Number.isInteger(data.totalVictories) ? Math.max(0, data.totalVictories) : 0,
+        levels,
+      };
+    }
+
+    const legacyProgress = Number(window.localStorage.getItem(SOLO_PROGRESS_KEY));
+    if (Number.isInteger(legacyProgress) && legacyProgress > 0) {
+      const migrated = { ...EMPTY_SOLO_PROGRESS, highestCleared: Math.min(legacyProgress, DUNGEON_RAID_BOSSES.length) };
+      window.localStorage.setItem(soloProgressKey(profileId), JSON.stringify(migrated));
+      window.localStorage.removeItem(SOLO_PROGRESS_KEY);
+      return migrated;
+    }
+  } catch {
+    return EMPTY_SOLO_PROGRESS;
+  }
+  return EMPTY_SOLO_PROGRESS;
+}
+
+function saveSoloProgress(profileId: string, progress: SoloProgress) {
+  try {
+    window.localStorage.setItem(soloProgressKey(profileId), JSON.stringify(progress));
+  } catch {
+    // Keep level progression available for the current session when storage is unavailable.
+  }
+}
+
 interface WarlordsDungeonRaidsViewProps {
   profile: PlayerProfile;
   resources: PlayerResources;
@@ -31,7 +108,7 @@ interface WarlordsDungeonRaidsViewProps {
   onNavigate?: (route: string) => void;
 }
 
-type RaidTab = 'warlords' | 'dungeons' | 'shrine' | 'rebellion';
+type RaidTab = 'warlords' | 'dungeons' | 'solo' | 'shrine' | 'rebellion';
 
 const formatReward = (amount: number) => amount.toLocaleString();
 
@@ -46,6 +123,8 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
   const [isResolving, setIsResolving] = useState(false);
   const [raidHistory, setRaidHistory] = useState<RaidReport[]>(loadRaidHistory);
   const [report, setReport] = useState<RaidReport | null>(() => loadRaidHistory()[0] || null);
+  const [soloProgress, setSoloProgress] = useState(() => loadSoloProgress(profile.id));
+  const [selectedSoloLevel, setSelectedSoloLevel] = useState(1);
   const [notice, setNotice] = useState<string | null>(null);
   const [shrineCharge, setShrineCharge] = useState(100);
   const [championVigor, setChampionVigor] = useState(65);
@@ -73,6 +152,7 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
     opening: string,
     ability: string,
     useSabotage: boolean,
+    onComplete?: (resolution: RaidResolution) => void,
   ) => {
     if (isResolving) return;
     setIsResolving(true);
@@ -93,6 +173,7 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
       } else {
         sound.play('warning');
       }
+      onComplete?.(resolution);
 
       const nextReport: RaidReport = {
         id: `raid-${Date.now()}`,
@@ -152,6 +233,65 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
     );
   };
 
+  const challengeSoloLevel = (level: number) => {
+    const monster = DUNGEON_RAID_BOSSES[level - 1];
+    if (!monster || level > soloProgress.highestCleared + 1) return;
+
+    const isReplay = level <= soloProgress.highestCleared;
+    const difficultyMultiplier = 1 + (level - 1) * 0.06;
+    const rewardMultiplier = isReplay ? 0.4 : 1;
+    const threatPower = Math.ceil(
+      (monster.stats.health + monster.stats.attack * 120 + monster.stats.ward * 80) * difficultyMultiplier,
+    );
+
+    startEncounter(
+      `Solo ${level}: ${monster.name}`,
+      monster.title,
+      'dungeon',
+      threatPower,
+      {
+        crowns: Math.round(monster.bounty.aether * rewardMultiplier),
+        iron: Math.round(monster.bounty.iron * rewardMultiplier),
+        moonstone: Math.round(monster.bounty.moonstone * rewardMultiplier),
+      },
+      `Solo Trial ${level} begins at ${monster.habitat}. No allied warband will reinforce the champion.`,
+      `${monster.ability.name}: ${monster.ability.description}`,
+      false,
+      (resolution) => {
+        const previous = soloProgress.levels[level] ?? {
+          attempts: 0,
+          stars: 0,
+          bestPowerRatio: 0,
+          bestRounds: null,
+        };
+        const powerRatio = resolution.warbandPower / Math.max(1, resolution.threatPower);
+        const earnedStars = resolution.victory
+          ? powerRatio >= 1.6 ? 3 : powerRatio >= 1.25 ? 2 : 1
+          : 0;
+        const nextProgress: SoloProgress = {
+          highestCleared: resolution.victory
+            ? Math.max(soloProgress.highestCleared, level)
+            : soloProgress.highestCleared,
+          totalAttempts: soloProgress.totalAttempts + 1,
+          totalVictories: soloProgress.totalVictories + (resolution.victory ? 1 : 0),
+          levels: {
+            ...soloProgress.levels,
+            [level]: {
+              attempts: previous.attempts + 1,
+              stars: Math.max(previous.stars, earnedStars),
+              bestPowerRatio: Math.max(previous.bestPowerRatio, resolution.victory ? powerRatio : 0),
+              bestRounds: resolution.victory
+                ? previous.bestRounds === null ? resolution.rounds : Math.min(previous.bestRounds, resolution.rounds)
+                : previous.bestRounds,
+            },
+          },
+        };
+        setSoloProgress(nextProgress);
+        saveSoloProgress(profile.id, nextProgress);
+      },
+    );
+  };
+
   const demandTribute = (warlord: EldoriaWarlord) => {
     if (resources.naquadah < 50000) {
       setNotice(`${warlord.name} refused the demand. The realm’s treasury must stand behind its envoys.`);
@@ -192,6 +332,15 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
     sound.play('confirm');
   };
 
+  const resetSoloProgress = () => {
+    if (!window.confirm('Reset Solo Trials clears and mastery? Earned resources and raid history will remain.')) return;
+    setSoloProgress(EMPTY_SOLO_PROGRESS);
+    saveSoloProgress(profile.id, EMPTY_SOLO_PROGRESS);
+    setSelectedSoloLevel(1);
+    setReport(null);
+    setNotice('Solo Trials progression has been reset. Earned resources and raid history were kept.');
+  };
+
   return (
     <main id="warlords-dungeon-raids-view" className="rival-system warlord-raid-system space-y-5 text-[#26313a]">
       <header className="grid gap-5 border border-[#465240] bg-[#202a22] p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:p-7">
@@ -212,6 +361,7 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
         {([
           ['warlords', 'Warlord Council'],
           ['dungeons', 'Dungeon Lairs'],
+          ['solo', 'Solo Trials'],
           ['shrine', 'Dawnsong Shrine'],
           ['rebellion', 'Free March Cells'],
         ] as const).map(([tab, label]) => (
@@ -271,6 +421,111 @@ export const WarlordsDungeonRaidsView: React.FC<WarlordsDungeonRaidsViewProps> =
               <div className="mt-auto pt-4"><div className="mb-2 flex flex-wrap gap-x-3 text-[9px] font-mono text-[#dbc798]"><span>VIG {monster.stats.health.toLocaleString()}</span><span>MIGHT {monster.stats.attack}</span><span>WARD {monster.stats.ward}</span></div><button type="button" disabled={isResolving} onClick={() => challengeDungeon(monster)} className="w-full border border-[#8e5946] bg-[#683f35] py-2 text-[10px] font-bold uppercase text-white hover:bg-[#805044] disabled:opacity-50">{isResolving ? 'Raid in progress…' : 'Enter the Lair'}</button></div>
             </article>
           ))}
+        </section>
+      )}
+
+      {activeTab === 'solo' && (
+        <section className="space-y-4">
+          <header className="flex flex-wrap items-end justify-between gap-3 border border-[#786342] bg-[#242b23] p-4 sm:p-5">
+            <div>
+              <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#c6a870]">A champion’s road · solo progression</span>
+              <h2 className="mt-1 font-serif text-xl font-bold text-[#fff8e8]">The Emberdeep Trials</h2>
+              <p className="mt-1 max-w-2xl text-xs leading-relaxed text-[#d0c9bb]">Defeat each apex guardian alone to unlock the next level. Threat rises by 6% per level; cleared trials can be replayed for a smaller bounty.</p>
+            </div>
+            <div className="border border-white/15 bg-[#171e18] px-3 py-2 text-right font-mono">
+              <strong className="block text-lg text-white">{soloProgress.highestCleared} / {DUNGEON_RAID_BOSSES.length}</strong>
+              <span className="text-[9px] uppercase text-[#c3c0b3]">Levels cleared</span>
+            </div>
+            <button type="button" onClick={resetSoloProgress} disabled={soloProgress.totalAttempts === 0} className="inline-flex items-center gap-1.5 border border-[#746040] px-3 py-2 text-[9px] font-bold uppercase text-[#e2d2b2] hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40"><RotateCcw size={12} /> Reset progress</button>
+          </header>
+
+          <div className="grid gap-2 border border-white/10 bg-[#1a211b] p-3 text-center sm:grid-cols-3">
+            <div><strong className="block text-sm text-white">{soloProgress.totalAttempts}</strong><span className="text-[9px] uppercase text-[#aaa99d]">Attempts</span></div>
+            <div><strong className="block text-sm text-emerald-200">{soloProgress.totalVictories}</strong><span className="text-[9px] uppercase text-[#aaa99d]">Victories</span></div>
+            <div><strong className="block text-sm text-amber-200">{Object.values(soloProgress.levels).reduce((total, level) => total + level.stars, 0)} / {DUNGEON_RAID_BOSSES.length * 3}</strong><span className="text-[9px] uppercase text-[#aaa99d]">Mastery stars</span></div>
+          </div>
+
+          <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+            {DUNGEON_RAID_BOSSES.map((monster, index) => {
+              const level = index + 1;
+              const isLocked = level > soloProgress.highestCleared + 1;
+              const record = soloProgress.levels[level];
+              const isCleared = level <= soloProgress.highestCleared;
+              return (
+                <button
+                  key={monster.id}
+                  type="button"
+                  disabled={isLocked || isResolving}
+                  aria-pressed={selectedSoloLevel === level}
+                  onClick={() => setSelectedSoloLevel(level)}
+                  className={`flex min-h-20 items-center justify-between gap-2 border p-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
+                    selectedSoloLevel === level
+                      ? 'border-[#c69e5c] bg-[#303b2e]'
+                      : 'border-[#414a40] bg-[#1d251f] hover:border-[#7c826d]'
+                  }`}
+                >
+                  <span className="min-w-0">
+                    <span className="block text-[9px] font-bold uppercase tracking-wider text-[#c6a870]">Level {level}</span>
+                    <strong className="mt-1 block truncate text-xs text-[#faf4e3]">{monster.name}</strong>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-1">
+                    {record && <span className="flex items-center text-amber-300" aria-label={`${record.stars} mastery stars`}>{Array.from({ length: record.stars }).map((_, starIndex) => <Star key={starIndex} size={9} fill="currentColor" />)}</span>}
+                    {isLocked ? <Lock size={14} className="text-[#85877b]" /> : isCleared ? <Check size={15} className="text-emerald-300" /> : <ChevronRight size={15} className="text-[#b9a071]" />}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {DUNGEON_RAID_BOSSES[selectedSoloLevel - 1] && (() => {
+            const monster = DUNGEON_RAID_BOSSES[selectedSoloLevel - 1];
+            const isReplay = selectedSoloLevel <= soloProgress.highestCleared;
+            const record = soloProgress.levels[selectedSoloLevel];
+            const difficultyMultiplier = 1 + (selectedSoloLevel - 1) * 0.06;
+            const threatPower = Math.ceil(
+              (monster.stats.health + monster.stats.attack * 120 + monster.stats.ward * 80) * difficultyMultiplier,
+            );
+            const rewardMultiplier = isReplay ? 0.4 : 1;
+            return (
+              <article className="grid gap-5 border border-[#786342] bg-[#242b23] p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+                <div>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#c6a870]">Level {selectedSoloLevel} · {isReplay ? 'Cleared · Replay' : selectedSoloLevel === soloProgress.highestCleared + 1 ? 'Unlocked' : 'Locked'}</span>
+                  <h3 className="mt-1 font-serif text-xl font-bold text-[#fff8e8]">{monster.name}</h3>
+                  <p className="text-xs italic text-[#c4b8a7]">{monster.title} · {monster.className}</p>
+                  <p className="mt-3 text-xs leading-relaxed text-[#d0c9bb]">{monster.lore}</p>
+                  <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {[
+                      ['Habitat', monster.habitat],
+                      ['Vitality', monster.stats.health.toLocaleString()],
+                      ['Might', monster.stats.attack.toLocaleString()],
+                      ['Ward', monster.stats.ward.toLocaleString()],
+                    ].map(([label, value]) => <div key={label} className="border border-white/10 bg-[#1a211b] p-2"><span className="block text-[9px] uppercase text-[#aaa99d]">{label}</span><strong className="mt-1 block text-[10px] text-[#eee4cc]">{value}</strong></div>)}
+                  </div>
+                  <div className="mt-3 border border-white/10 bg-[#1a211b] p-3"><span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-[#d5b879]"><Sparkles size={12} /> Trial ability: {monster.ability.name}</span><p className="mt-1 text-xs text-[#d6d2c3]">{monster.ability.description}</p></div>
+                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-[#d6d2c3]">
+                    <span>Mastery: <strong className="text-amber-300">{record ? `${record.stars} / 3 stars` : 'Unranked'}</strong></span>
+                    {record && <span>Best clear: <strong>{record.bestRounds ?? '-'} rounds</strong></span>}
+                    {record && <span>Attempts: <strong>{record.attempts}</strong></span>}
+                  </div>
+                  <p className="mt-2 text-[9px] text-[#aaa99d]">Clear with 1.25x power for 2 stars or 1.6x for 3. Mastery stars never decrease.</p>
+                </div>
+                <aside className="flex flex-col border border-white/10 bg-[#171e18] p-4">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#c5ad7d]">Trial conditions</span>
+                  <div className="mt-3 flex justify-between text-xs text-[#d7d1c1]"><span>Required power</span><strong>{threatPower.toLocaleString()}</strong></div>
+                  <div className="mt-1 flex justify-between text-xs text-[#d7d1c1]"><span>Your power</span><strong>{getWarbandPower().toLocaleString()}</strong></div>
+                  <div className="mt-1 flex justify-between text-xs text-[#d7d1c1]"><span>Difficulty</span><strong>+{Math.round((difficultyMultiplier - 1) * 100)}%</strong></div>
+                  <div className="my-3 border-t border-white/10" />
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#c5ad7d]">Victory bounty{isReplay ? ' · replay rate' : ' · first clear'}</span>
+                  <div className="mt-2 flex justify-between text-xs text-[#d7d1c1]"><span>Crowns</span><strong>{Math.round(monster.bounty.aether * rewardMultiplier).toLocaleString()}</strong></div>
+                  <div className="mt-1 flex justify-between text-xs text-[#d7d1c1]"><span>Iron</span><strong>{Math.round(monster.bounty.iron * rewardMultiplier).toLocaleString()}</strong></div>
+                  <div className="mt-1 flex justify-between text-xs text-[#d7d1c1]"><span>Moonstone</span><strong>{Math.round(monster.bounty.moonstone * rewardMultiplier).toLocaleString()}</strong></div>
+                  <button type="button" disabled={isResolving || selectedSoloLevel > soloProgress.highestCleared + 1} onClick={() => challengeSoloLevel(selectedSoloLevel)} className="mt-auto border border-[#bd8d48] bg-[#826038] px-4 py-2.5 text-[10px] font-bold uppercase text-white hover:bg-[#9a7542] disabled:cursor-not-allowed disabled:opacity-50">
+                    <Swords size={14} className="mr-2 inline" />{isResolving ? 'Trial in progress…' : isReplay ? 'Replay Trial' : 'Enter Solo Trial'}
+                  </button>
+                </aside>
+              </article>
+            );
+          })()}
         </section>
       )}
 

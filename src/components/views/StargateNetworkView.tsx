@@ -103,98 +103,110 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
   };
 
   return (
-    <div id="stargate-network-view" className="space-y-6">
-      {/* Strategic Header */}
-      <div className="border border-[#dedede] bg-white p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase mb-1 font-mono">
-            ELDER WAYSTONES & LEYROAD NETWORK
-          </div>
-          <h2 className="text-2xl font-bold text-[#111111] flex items-center gap-3">
-            <span>Waystone & Realm-spanning Jump Gates</span>
-            <span
-              className={`text-xs px-2.5 py-0.5 font-mono uppercase font-bold border ${
-                activeWormhole
-                  ? 'bg-sky-50 text-sky-800 border-sky-300'
-                  : 'bg-neutral-100 text-neutral-600 border-neutral-300'
-              }`}
-            >
-              {activeWormhole ? 'Leyroad Open' : 'Waystone Dormant'}
-            </span>
-          </h2>
-          <p className="text-sm text-[#666666] mt-1 max-w-3xl leading-relaxed">
-            Follow rune-marks to open an old road, send a prepared company into the far marches, and restore paired waystones.
-          </p>
+    <div id="stargate-network-view" className="space-y-5">
+      <header className="relative isolate overflow-hidden border border-[#334155] bg-[#111827] px-5 py-6 text-white shadow-sm sm:px-7 sm:py-8">
+        <div className="absolute -right-10 -top-20 -z-10 h-64 w-64 rounded-full border border-[#94a3b8]/20 sm:right-12 sm:top-1/2 sm:-translate-y-1/2">
+          <div className="absolute inset-5 rounded-full border border-[#94a3b8]/20" />
+          <div className="absolute inset-12 rounded-full border border-[#94a3b8]/20" />
+          <div className="absolute inset-[4.5rem] rounded-full bg-emerald-400/10" />
         </div>
+        <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <div className="max-w-3xl">
+            <div className="mb-3 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300">
+              <Disc size={14} />
+              <span>Network console // Leyroad control</span>
+            </div>
+            <h2 className="font-mono text-2xl font-semibold tracking-tight sm:text-3xl">
+              Waystone & Realm-spanning Jump Gates
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">
+              Read the old road-marks, kindle a safe passage between realms, and guide your company through the veil.
+            </p>
+            <div className="mt-5 inline-flex max-w-full items-center gap-2 border border-white/15 bg-black/15 px-3 py-2 text-xs font-semibold">
+              <span className={`h-2 w-2 shrink-0 rounded-full ${activeWormhole ? 'animate-pulse bg-emerald-300' : 'bg-slate-500'}`} />
+              <span className="shrink-0 font-mono text-emerald-200">{activeWormhole ? 'LEYROAD_OPEN' : 'WAYSTONE_IDLE'}</span>
+              <span className="text-white/40">/</span>
+              <span className="truncate font-mono text-slate-300">{activeGate.name}</span>
+            </div>
+          </div>
 
-        {/* Global Metric Badges */}
-        <div className="flex items-center gap-3 font-mono text-xs">
-          <div className="p-3 bg-[#fafafa] border border-[#dedede] text-right">
-            <span className="text-[9px] text-[#777777] uppercase block font-bold">Leyroad Status</span>
-            <strong className={`text-xs font-bold block ${activeWormhole ? 'text-sky-700' : 'text-neutral-500'}`}>
-              {activeWormhole ? 'OPEN' : 'CLOSED'}
-            </strong>
-          </div>
-          <div className="p-3 bg-[#fafafa] border border-[#dedede] text-right">
-            <span className="text-[9px] text-[#777777] uppercase block font-bold">Ward Barrier</span>
-            <strong className={`text-xs font-bold block ${irisClosed ? 'text-amber-700' : 'text-emerald-700'}`}>
-              {irisClosed ? 'WARD SET' : 'WARD LIFTED'}
-            </strong>
+          <div className="grid grid-cols-2 gap-2 sm:min-w-[19rem]">
+            <div className="border border-slate-700 bg-slate-800/70 p-3">
+              <span className="block font-mono text-[9px] font-bold uppercase tracking-widest text-slate-400">Leyroad status</span>
+              <div className="mt-1 flex items-center gap-2">
+                <Radio size={14} className={activeWormhole ? 'text-emerald-300' : 'text-slate-500'} />
+                <strong className="font-mono text-sm font-semibold">{activeWormhole ? 'OPEN' : 'CLOSED'}</strong>
+              </div>
+            </div>
+            <div className="border border-slate-700 bg-slate-800/70 p-3">
+              <span className="block font-mono text-[9px] font-bold uppercase tracking-widest text-slate-400">Ward status</span>
+              <div className="mt-1 flex items-center gap-2">
+                <Shield size={14} className={irisClosed ? 'text-amber-300' : 'text-emerald-300'} />
+                <strong className="font-mono text-sm font-semibold">{irisClosed ? 'SEALED' : 'LIFTED'}</strong>
+              </div>
+            </div>
+            <div className="col-span-2 flex items-center justify-between border border-slate-700 bg-slate-800/70 px-3 py-2">
+              <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-slate-400">Known waystones</span>
+              <strong className="font-mono text-sm text-emerald-300">{gates.length.toString().padStart(2, '0')}</strong>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Live Feedback & Alert Notification */}
       {feedback && (
         <div
           id="stargate-feedback-banner"
-          className="p-3.5 bg-white border border-[#111111] border-l-4 text-xs font-mono font-semibold flex justify-between items-center shadow-sm"
+          role="status"
+          aria-live="polite"
+          className="flex items-center justify-between gap-3 border border-[#cfdbc9] border-l-4 border-l-[#55704e] bg-[#f3f6ef] p-3.5 text-xs font-semibold text-[#304331] shadow-sm"
         >
-          <div className="flex items-center gap-2 text-[#111111]">
-            <Radio size={14} className="text-sky-600 animate-pulse shrink-0" />
+          <div className="flex items-center gap-2">
+            <Radio size={14} className="shrink-0 animate-pulse text-[#55704e]" />
             <span>{feedback}</span>
           </div>
           <button
             type="button"
             onClick={() => setFeedback(null)}
-            className="text-xs text-[#777777] hover:text-[#111111] font-bold cursor-pointer ml-3"
+            aria-label="Dismiss network notice"
+            className="ml-3 cursor-pointer p-1 text-[#71806d] hover:text-[#243b2d]"
           >
-            ✕
+            ×
           </button>
         </div>
       )}
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-[#dedede] pb-3">
+      <nav aria-label="Waystone network sections" className="flex gap-2 overflow-x-auto border-b border-[#d9dfd5] pb-3">
         {[
           {
             id: 'stargate-dhd',
-            label: '1. Waystone Dial & Ward',
+            label: 'Waystone',
             icon: Disc,
           },
           {
             id: 'address-directory',
-            label: '2. March Directory & Orders',
+            label: 'Realm directory',
             icon: Compass,
           },
           {
             id: 'jump-gates',
-            label: '3. Paired Leyroads',
+            label: 'Paired roads',
             icon: Rocket,
           },
           {
             id: 'supergate-crystals',
-            label: '4. Crownstones & Relic Shards',
+            label: 'Crownstones',
             icon: Atom,
           },
           {
             id: 'alien-races',
-            label: '5. 24 Peoples & Powers',
+            label: 'Peoples',
             icon: Globe,
           },
           {
             id: 'gate-tokens',
-            label: '6. Road Charms & Trials',
+            label: 'Road charms',
             icon: Sparkles,
           },
         ].map((tab) => {
@@ -205,22 +217,23 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
               key={tab.id}
               id={`tab-${tab.id}`}
               type="button"
+              aria-current={isActive ? 'page' : undefined}
               onClick={() => {
                 sound.play('click');
                 setActiveTab(tab.id as TabType);
               }}
-              className={`py-2 px-3.5 text-xs font-bold uppercase tracking-wider font-mono border transition-all cursor-pointer flex items-center gap-2 ${
+              className={`flex shrink-0 cursor-pointer items-center gap-2 border px-3.5 py-2 text-xs font-bold transition-all ${
                 isActive
-                  ? 'bg-[#111111] text-white border-[#111111] shadow-sm'
-                  : 'bg-white text-[#555555] border-[#dedede] hover:border-[#111111] hover:text-[#111111]'
+                  ? 'border-[#294333] bg-[#294333] text-white shadow-sm'
+                  : 'border-[#e0e5dc] bg-white text-[#536252] hover:border-[#8d9d85] hover:bg-[#f6f8f3] hover:text-[#294333]'
               }`}
             >
-              <Icon size={14} className={isActive ? 'text-amber-400' : 'text-[#777777]'} />
+              <Icon size={14} className={isActive ? 'text-[#dfc47c]' : 'text-[#7d8d77]'} />
               <span>{tab.label}</span>
             </button>
           );
         })}
-      </div>
+      </nav>
 
       {/* Tab 1: Waystone dialer */}
       {activeTab === 'stargate-dhd' && (
@@ -310,22 +323,22 @@ export const StargateNetworkView: React.FC<StargateNetworkViewProps> = ({
       )}
 
       {/* Bottom Subspace Telemetry Transit Logs */}
-      <div className="border border-[#dedede] bg-white p-5 space-y-2">
-        <div className="flex items-center justify-between border-b border-[#eeeeee] pb-2">
+      <div className="space-y-3 border border-[#d9dfd5] bg-white p-4 sm:p-5">
+        <div className="flex items-center justify-between border-b border-[#e8ece5] pb-3">
           <div className="flex items-center gap-2">
-            <History size={14} className="text-[#555555]" />
-            <h4 className="text-xs font-bold text-[#111111] uppercase tracking-wider font-mono">
-              Realm-wide Gate Network Transit seer-sight Logs
+            <History size={15} className="text-[#587253]" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#304331]">
+              Leyroad journal
             </h4>
           </div>
-          <span className="text-[10px] text-[#777777] font-mono">Real-time Leyroad Feed</span>
+          <span className="text-[10px] text-[#71806d]">Recent crossings & signals</span>
         </div>
 
-        <div className="space-y-1 font-mono text-xs text-[#555555]">
+        <div className="space-y-2 text-xs text-[#536252]">
           {logs.map((log, index) => (
-            <div key={index} className="flex items-start gap-2 py-0.5">
-              <span className="text-[10px] text-[#999999] shrink-0">[{new Date().toLocaleTimeString()}]</span>
-              <span className="text-[#333333]">{log}</span>
+            <div key={index} className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#a98543]" />
+              <span>{log}</span>
             </div>
           ))}
         </div>

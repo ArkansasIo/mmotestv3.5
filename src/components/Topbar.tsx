@@ -45,6 +45,7 @@ import {
 import { sound } from '../sound';
 import { PlayerProfile, PlayerResources, PlanetColony } from '../types';
 import { getAdminAuthSession } from '../config/adminAuthConfig';
+import { getActiveThemeId, setActiveThemeId, THEMES } from '../config/themeConfig';
 import { GalacticCreditsModal } from './modals/GalacticCreditsModal';
 import { ConscriptRecruitsModal } from './modals/ConscriptRecruitsModal';
 
@@ -103,11 +104,11 @@ const ROUTE_LABELS: Record<string, { section: string; title: string }> = {
   'super-units': { section: 'HEROES & TRAINING', title: 'Elite Super Units' },
   'unit-production': { section: 'HEROES & TRAINING', title: 'Population Generation' },
   'unit-roster-90': { section: 'HEROES & TRAINING', title: '90-Class Unit Roster' },
-  'workforce-academy': { section: 'GUILDS & ACADEMIES', title: 'Workforce Recruitment & Specialized Academy' },
-  'academy-enlistment': { section: 'GUILDS & ACADEMIES', title: 'Royal Enlistment & Academy Specialization' },
-  'workforce-roster': { section: 'GUILDS & ACADEMIES', title: '90-Role Royal Workforce Roster' },
-  'academy-wings': { section: 'GUILDS & ACADEMIES', title: '6 Specialized Academy Wings' },
-  'academy-drills': { section: 'GUILDS & ACADEMIES', title: 'Academy Drills, Readiness & Auto-Draft' },
+  'workforce-academy': { section: 'ROYAL MUSTERHALL', title: 'Royal Musterhall & Adventurer Academy' },
+  'academy-enlistment': { section: 'ROYAL MUSTERHALL', title: 'Call the Muster · Company Paths' },
+  'workforce-roster': { section: 'ROYAL MUSTERHALL', title: 'Muster Roll · 90 Adventurer Callings' },
+  'academy-wings': { section: 'ROYAL MUSTERHALL', title: 'Six Orders of the Crown' },
+  'academy-drills': { section: 'ROYAL MUSTERHALL', title: 'Trial Grounds · Readiness & Muster' },
   'tech-tree': { section: 'LORE & RUNEWORK', title: 'Great Tome of Lore & Craft' },
   'tech-library': { section: 'LORE & RUNEWORK', title: 'Arcanist Scriptorium' },
   'arcane-spellcraft': { section: 'ARCANE ARTS', title: 'The Living Grimoire & Spellcraft' },
@@ -207,12 +208,15 @@ export const Topbar: React.FC<TopbarProps> = ({
   const [turnExecuting, setTurnExecuting] = useState<boolean>(false);
   const [isPlanetMenuOpen, setIsPlanetMenuOpen] = useState<boolean>(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState<boolean>(false);
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState<boolean>(false);
+  const [activeThemeId, setActiveThemeIdState] = useState<string>(() => getActiveThemeId());
   const [showTurnGainDetails, setShowTurnGainDetails] = useState<boolean>(false);
   const [isCreditsSystemModalOpen, setIsCreditsSystemModalOpen] = useState<boolean>(false);
   const [isConscriptRecruitsModalOpen, setIsConscriptRecruitsModalOpen] = useState<boolean>(false);
   const [conscriptModalTab, setConscriptModalTab] = useState<'conscripts' | 'food-water' | 'fields' | 'colonize'>('conscripts');
   const planetDropdownRef = useRef<HTMLDivElement>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
+  const themeDropdownRef = useRef<HTMLDivElement>(null);
   const turnGainRef = useRef<HTMLDivElement>(null);
 
   // Active Planet resolution
@@ -242,12 +246,18 @@ export const Topbar: React.FC<TopbarProps> = ({
       if (accountMenuRef.current && !accountMenuRef.current.contains(event.target as Node)) {
         setIsAccountMenuOpen(false);
       }
+      if (themeDropdownRef.current && !themeDropdownRef.current.contains(event.target as Node)) {
+        setIsThemeMenuOpen(false);
+      }
       if (turnGainRef.current && !turnGainRef.current.contains(event.target as Node)) {
         setShowTurnGainDetails(false);
       }
     };
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsAccountMenuOpen(false);
+        if (event.key === 'Escape') {
+          setIsAccountMenuOpen(false);
+          setIsThemeMenuOpen(false);
+        }
     };
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
@@ -527,6 +537,54 @@ export const Topbar: React.FC<TopbarProps> = ({
 
         {/* Right: Live Server Time, DefCon, Commander Profile & Reset */}
         <div className="flex items-center gap-3">
+          <div className="relative" ref={themeDropdownRef}>
+            <button
+              type="button"
+              id="theme-picker-trigger"
+              aria-haspopup="menu"
+              aria-expanded={isThemeMenuOpen}
+              onClick={() => setIsThemeMenuOpen((open) => !open)}
+              title="Choose an app theme"
+              className="flex items-center gap-1.5 border border-[#dedede] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#444444] transition-colors hover:border-[#111111]"
+            >
+              <Palette size={14} />
+              <span className="hidden sm:inline">{THEMES.find((theme) => theme.id === activeThemeId)?.name || 'Classic'}</span>
+            </button>
+            {isThemeMenuOpen && (
+              <div role="menu" aria-labelledby="theme-picker-trigger" className="absolute right-0 top-full z-50 mt-2 w-72 border border-[#c9d0c2] bg-white p-1.5 shadow-xl">
+                <div className="border-b border-[#e3e5df] px-3 py-2">
+                  <span className="block text-[10px] font-bold uppercase tracking-widest text-[#697266]">Choose a theme</span>
+                </div>
+                {THEMES.map((theme) => (
+                  <button
+                    key={theme.id}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={activeThemeId === theme.id}
+                    onClick={() => {
+                      sound.play('click');
+                      setActiveThemeId(theme.id);
+                      setActiveThemeIdState(theme.id);
+                      setIsThemeMenuOpen(false);
+                    }}
+                    className="flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-[#f1f3f5]"
+                  >
+                    <span className="flex h-7 w-7 shrink-0 overflow-hidden border border-black/10">
+                      {[theme.previewColors.background, theme.previewColors.surface, theme.previewColors.accent].map((color) => (
+                        <span key={color} className="flex-1" style={{ backgroundColor: color }} />
+                      ))}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-xs font-bold text-[#252a25]" style={{ fontFamily: theme.displayFont }}>{theme.name}</span>
+                      <span className="block truncate text-[10px] text-[#697266]" style={{ fontFamily: theme.bodyFont }}>{theme.description}</span>
+                    </span>
+                    {activeThemeId === theme.id && <Check size={15} className="shrink-0 text-emerald-700" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Live Galaxy Server Clock */}
           <div
             className="flex items-center gap-1.5 font-mono text-xs text-[#555555] bg-white border border-[#dedede] px-2.5 py-1"
@@ -576,6 +634,10 @@ export const Topbar: React.FC<TopbarProps> = ({
                   <span className="block truncate text-xs font-bold text-[#25251f]">{profile.username}</span>
                   <span className="text-[9px] font-mono uppercase text-[#777367]">Account & realm options</span>
                 </div>
+                <button type="button" role="menuitem" onClick={() => navigateFromAccountMenu('account-info')} className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-[#34342e] hover:bg-[#f4f1e9]">
+                  <User size={14} className="text-[#72664e]" />
+                  <span>Account Overview</span>
+                </button>
                 <button type="button" role="menuitem" onClick={() => navigateFromAccountMenu('player-profile')} className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-[#34342e] hover:bg-[#f4f1e9]">
                   <User size={14} className="text-[#72664e]" />
                   <span>Champion Profile</span>
@@ -676,7 +738,7 @@ export const Topbar: React.FC<TopbarProps> = ({
       {/* ========================================================================= */}
       <div className="px-3 sm:px-6 py-2 bg-white flex items-center border-b border-[#dedede] overflow-hidden">
         {/* Resource Ribbon - Horizontally scrollable on iPhone/iPad with swipe gesture, grid on large desktop */}
-        <div className="flex xl:grid xl:grid-cols-9 gap-2 flex-1 overflow-x-auto no-scrollbar py-0.5 scroll-smooth">
+        <div className="flex xl:grid xl:grid-cols-[repeat(auto-fit,minmax(145px,1fr))] gap-2 flex-1 overflow-x-auto no-scrollbar py-0.5 scroll-smooth">
           {/* 0. GALACTIC CREDITS (GC) */}
           <div
             id="galactic-credits-topbar-card"

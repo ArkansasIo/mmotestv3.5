@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <title>The Oath Hall of Elderglen Keep</title>
+  <desc>A torchlit stone hall beneath timber rafters, with gathered banners and a long council table.</desc>
+  <defs>
+    <linearGradient id="stone" x1="800" y1="0" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#293a32"/><stop offset=".58" stop-color="#59604c"/><stop offset="1" stop-color="#171d19"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="800" y1="515" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6b6046"/><stop offset="1" stop-color="#211f19"/>
+    </linearGradient>
+    <radialGradient id="fire" cx="0" cy="0" r="1" gradientTransform="matrix(0 390 -650 0 800 620)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d99548" stop-opacity=".55"/><stop offset="1" stop-color="#bd7137" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="banner" x1="0" y1="0" x2="130" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6e3f32"/><stop offset="1" stop-color="#302722"/>
+    </linearGradient>
+    <pattern id="blocks" width="210" height="112" patternUnits="userSpaceOnUse">
+      <path d="M0 1h210M0 56h210M0 111h210M105 1v55M28 56v55" stroke="#d7c69c" stroke-opacity=".09" stroke-width="3"/>
+    </pattern>
+  </defs>
+  <path fill="url(#stone)" d="M0 0h1600v900H0z"/>
+  <path fill="url(#blocks)" d="M0 0h1600v900H0z"/>
+  <path d="M0 0h1600v110H0z" fill="#171c19"/>
+  <path d="m0 0 800 380L1600 0v74L800 440 0 74z" fill="#392e23"/>
+  <path d="M0 92 800 447 1600 92M120 0l680 318L1480 0M325 0l475 220L1275 0M520 0l280 130L1080 0" stroke="#9b8054" stroke-opacity=".52" stroke-width="18"/>
+  <path d="M118 112v484m136-425v409m109-350v322m875-322v322m109-381v405m136-464v480" stroke="#202924" stroke-width="42"/>
+  <path d="M96 596h174m-42-454v452m-172 0 42-56h262l42 56M1326 596h174m-42-454v452m-172 0 42-56h262l42 56" fill="#343b31" stroke="#b09a68" stroke-width="8"/>
+  <path d="M420 357c0-138 170-226 380-226s380 88 380 226v148H420z" fill="#1c2823" stroke="#9b865e" stroke-opacity=".5" stroke-width="14"/>
+  <path d="M462 498V366c0-114 151-188 338-188s338 74 338 188v132" stroke="#a8966d" stroke-opacity=".38" stroke-width="10"/>
+  <path d="M593 368c0-77 89-136 207-136s207 59 207 136v139H593z" fill="#1a2521"/>
+  <path d="M704 354c0-51 43-92 96-92s96 41 96 92v154H704z" fill="#26362d"/>
+  <path d="M769 348h62v160h-62z" fill="#dbc07c" fill-opacity=".75"/>
+  <path d="M800 283v221m-31-161h62" stroke="#f2d994" stroke-opacity=".7" stroke-width="7"/>
+  <path d="M0 565h1600v335H0z" fill="url(#floor)"/>
+  <path d="M0 565h1600" stroke="#c0a56b" stroke-opacity=".38" stroke-width="8"/>
+  <path d="m0 900 500 0 170-335H0zM1600 900h-500L930 565h670z" fill="#29271f" fill-opacity=".72"/>
+  <path d="M800 566v334M510 566l-94 334m674-334 94 334M235 566 0 847m1130-281 235 281" stroke="#c9ad72" stroke-opacity=".2" stroke-width="5"/>
+  <path d="M0 0h1600v900H0z" fill="url(#fire)"/>
+  <path d="M184 314h72l-8 235-28 53-28-53zM1344 314h72l-8 235-28 53-28-53z" fill="url(#banner)" stroke="#c4a15d" stroke-width="5"/>
+  <path d="m220 370 17 33 36 5-26 25 6 36-33-17-32 17 6-36-27-25 37-5zM1380 370l17 33 36 5-26 25 6 36-33-17-32 17 6-36-27-25 37-5z" fill="#d2b66e"/>
+  <path d="M220 292v42m1160-42v42" stroke="#d0b373" stroke-width="9"/>
+  <path d="M95 430h26v22H95zm1384 0h26v22h-26z" fill="#f0b55e"/>
+  <path d="M104 443c-12-34 20-59 9-91 34 28 18 55 29 69 8 11 7 30-7 39h-21c-8-4-12-10-10-17zm1384 0c-12-34 20-59 9-91 34 28 18 55 29 69 8 11 7 30-7 39h-21c-8-4-12-10-10-17z" fill="#e29a4e"/>
+  <path d="M560 666h480l88 56v34H472v-34z" fill="#302a20" stroke="#bd9c5f" stroke-width="8"/>
+  <path d="M612 755v108m376-108v108" stroke="#28241d" stroke-width="28"/>
+  <path d="M480 716h640" stroke="#dbc07c" stroke-opacity=".65" stroke-width="5"/>
+  <path d="M640 651h320l-45-46H685z" fill="#c3a764" fill-opacity=".75"/>
+  <path d="M800 620v51m-25-27h50" stroke="#f0db9d" stroke-width="7"/>
+  <path d="M0 0h1600v900H0z" stroke="#dfc98e" stroke-opacity=".2" stroke-width="4"/>
+</svg>

@@ -85,6 +85,14 @@ const RARITIES: CommanderRarity[] = [
   'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', 'Common', // 18 Common
 ];
 
+const FANTASY_COMMANDER_NAMES = [
+  'Aurelion Starforged', 'Seraphina Dawnweaver', 'Vaelthor Umbral King', 'Elarion Timebender', 'Nyxara Voidborn', 'Thalorien Stormforge',
+  'Kaelric Ironmantle', 'Zalara Moonfang', 'Jorveth Skywarden', 'Mirelle Runeveil', 'Eryndor Oathkeeper', 'Varkesh Emberlord', 'Ithilwen Veilstep', 'Aevra Nightveil', 'Tharok Titanborn', 'Rhaegon Redhand', 'Vaelis Fleshshaper', 'Caldris Gearwright',
+  'Eldrin Farwatch', 'Cassian Stormrider', 'Malgor Cinderheart', 'Wulfric Bellkeeper', 'Torren Gearhand', 'Skaelin Duneheart', 'Selene Mosswhisper', 'Aldric Warbrand', 'Caerwyn Stonewall', 'Amara Solstice', 'Lysandra Roseveil', 'Thane Blackthorn', 'Hadrien Skyreaver', 'Balthael Gemcrown', 'Daven Ironseal', 'Lucan Ashwalker', 'Elowen Phasewright', 'Rhydian Freeblade',
+  'Garrick Forgehand', 'Elira Swiftstar', 'Mavren Duskshade', 'Kiyana Emberbrook', 'Jorren Deepdelve', 'Veska Frostmere', 'Torrin Scalehunter', 'Kaelen Ashwing', 'Maelis Brightmend', 'Zarin Shadowmere', 'Drogan Bullhelm', 'Ramius Goldvein', 'Rakhar Stormtalon', 'Merek Bastion', 'Elyra Silverleaf', 'Vala Quickcoin', 'Orren Flintward', 'Ysilde Dawncrest',
+  'Brom Gateward', 'Lysander Skyrunner', 'Soren Glasswire', 'Darius Stonewise', 'Kestrel Farwind', 'Rurik Flint', 'Perrin Frostfield', 'Eiran Windrider', 'Tamsin Wayfinder', 'Haldor Deepstone', 'Matthias Cloudstep', 'Tariq Dawnshield', 'Liora Leafspark', 'Garron Ironmark', 'Sarina Starling', 'Mira Kindhands', 'Gavren Longhaul', 'Thoren Mapmaker',
+] as const;
+
 const NAMES_AND_LORE: { name: string; codename: string; avatar: string; title: string; skill: string; desc: string; aura: string }[] = [
   // 1-6 Mythics
   { name: 'Supreme Commander Thor', codename: 'ASGARD-01', avatar: '👽', title: 'Grand Fleet Supreme Admiral', skill: 'Bifrost Disintegrator Wave', desc: 'Overcharges all Asgard ion cannons by 85% and disintegrates 30% of incoming kinetic ordinance.', aura: '+45% Fleet Armor & +50% Research Speed' },
@@ -203,7 +211,7 @@ export const ALL_72_COMMANDERS: CommanderData[] = NAMES_AND_LORE.map((item, inde
 
   return {
     id: `cmdr_${index + 1}`,
-    name: item.name,
+    name: FANTASY_COMMANDER_NAMES[index],
     codename: item.codename,
     avatar: item.avatar,
     rarity,

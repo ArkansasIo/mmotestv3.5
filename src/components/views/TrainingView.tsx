@@ -116,18 +116,18 @@ export const TrainingView: React.FC<TrainingViewProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="text-[9px] font-bold text-[#777777] tracking-[1.5px] uppercase mb-1 font-mono">
-              PERSONNEL ACADEMY & WORKFORCE CYBERNETICS · BARRACKS & DRILL GROUNDS
+              ROYAL MUSTERHALL · COMPANY TRAINING & TRIAL GROUNDS
             </div>
             <h2 className="text-2xl font-bold text-[#111111] tracking-tight">
-              Workforce Recruitment & Specialized Academy
+              Royal Musterhall & Adventurer Academy
             </h2>
             <p className="text-sm text-[#666666] mt-1 max-w-2xl leading-relaxed">
-              Enlist raw citizen population into frontline combat divisions, borderland ward garrisons, deep-mantle Crowns miners, or covert espionage operatives.
+              Call citizens into shield companies, border wardens, deep-mantle miners, and quiet-foot scouts. Train the retinue for the trials ahead.
             </p>
           </div>
 
           <div className="p-3 bg-[#fafafa] border border-[#dedede] font-mono text-right shrink-0">
-            <span className="text-[10px] text-[#777777] uppercase block font-semibold">UNTRAINED RECRUITS</span>
+            <span className="text-[10px] text-[#777777] uppercase block font-semibold">UNSWORN RECRUITS</span>
             <strong className="text-2xl font-bold text-blue-700">
               {(resources.untrainedUnits ?? 0).toLocaleString()}
             </strong>

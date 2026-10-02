@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <title>The Marches Founding Map</title>
+  <desc>An illuminated map of the Marches, marked with mountain passes, rivers, forests, keeps, and a compass rose.</desc>
+  <defs>
+    <linearGradient id="parchment" x1="800" y1="0" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d7c69d"/><stop offset=".5" stop-color="#b9a77c"/><stop offset="1" stop-color="#837658"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#302a1e" stop-opacity=".82"/><stop offset=".5" stop-color="#302a1e" stop-opacity="0"/><stop offset="1" stop-color="#302a1e" stop-opacity=".72"/>
+    </linearGradient>
+    <pattern id="grain" width="44" height="44" patternUnits="userSpaceOnUse">
+      <circle cx="9" cy="11" r="1.5" fill="#443a27" fill-opacity=".2"/><circle cx="33" cy="28" r="1" fill="#f0dfb5" fill-opacity=".42"/>
+      <path d="M17 39h8" stroke="#51432c" stroke-opacity=".12" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <path fill="url(#parchment)" d="M0 0h1600v900H0z"/>
+  <path d="M44 42h1512v816H44z" stroke="#504832" stroke-opacity=".65" stroke-width="8"/>
+  <path d="M61 59h1478v782H61z" stroke="#efe0b5" stroke-opacity=".62" stroke-width="3"/>
+  <path d="M84 80c151 55 222-12 355 26 125 36 204 3 334-19 145-25 255 23 389 3 99-15 187-3 354 39v686c-139-32-252 20-382 18-133-3-211-43-350-12-164 36-220 63-373 26-119-28-214 16-327-10z" fill="#b8ac82" fill-opacity=".56"/>
+  <path d="M95 274c126-97 226-33 304-114 89-92 199-39 263 18 58 51 111 33 188-30 88-72 193-42 240 24 59 83 159 94 260 51 74-31 152-20 229 15M101 670c116-47 226-48 324 19 108 74 231 67 320 13 112-68 190-46 282 27 84 66 207 74 332 11 52-26 113-27 164-10" stroke="#6e664d" stroke-opacity=".42" stroke-width="5"/>
+  <path d="M182 121 310 94l73 58-66 72-111-8zm198 64 72-95 95 39 23 84-108 44zm758-92 108 32 47 84-66 61-133-20-41-71zm232 278 122-42 82 65-37 113-111 24-83-67zM249 617l105-55 107 47 17 91-89 61-141-38zm591 99 112-63 91 24 39 81-104 55-113-23z" fill="#8b8d6b" fill-opacity=".58" stroke="#5e604b" stroke-opacity=".52" stroke-width="5"/>
+  <path d="m180 139 37-20 16 39-30 27m13-37 47-8 8 35-40 24m13-62 40-8 20 31-31 31m73-37 35-64 29 52-28 42m-15-65 55 3 20 53-54 22m-23-59 49-27 39 45-35 48m575-89 42-20 34 44-20 36m-29-43 49 3 24 45-39 16m-2-45 52-9 22 48-38 30m91 262 38-23 34 47-29 41m-10-55 48-15 29 47-38 35m-10-61 52-5 25 52-39 31M274 629l42-19 25 40-25 42m-4-53 51 4 18 44-38 30m-3-63 49-7 27 47-39 38" stroke="#4e5445" stroke-opacity=".65" stroke-width="8"/>
+  <path d="M199 545c99-74 155-148 201-232 57-104 137-110 221-53 74 50 118 119 208 125 102 6 177-86 255-89 90-3 141 76 188 139 52 70 129 102 223 107" stroke="#477477" stroke-width="28" stroke-linecap="round"/>
+  <path d="M199 545c99-74 155-148 201-232 57-104 137-110 221-53 74 50 118 119 208 125 102 6 177-86 255-89 90-3 141 76 188 139 52 70 129 102 223 107" stroke="#b5c2a1" stroke-opacity=".72" stroke-width="7" stroke-linecap="round"/>
+  <path d="M701 383c-33 95-20 163 39 226 46 50 54 99 18 166m272-447c-22 74 1 123 56 160 51 35 73 71 63 118" stroke="#577e78" stroke-width="17" stroke-linecap="round"/>
+  <g fill="#435a42" stroke="#394735" stroke-width="3">
+    <path d="m117 407 31-77 32 77zM141 373l26-64 25 64zM164 407l31-77 31 77zM1128 684l35-84 35 84zM1156 648l28-66 27 66zM1181 684l35-84 34 84z"/>
+    <path d="m391 747 28-70 30 70zM413 715l22-58 24 58zM1370 231l31-74 33 74zM1394 197l25-61 27 61z"/>
+  </g>
+  <g stroke="#3c3526" stroke-width="8" fill="#d9c38a">
+    <path d="M478 329h45v-43h28v43h41v45H478z"/><path d="M1066 529h46v-38h27v38h44v45h-117z"/>
+    <path d="M725 588h37v-34h24v34h37v39h-98z"/><path d="M284 646h39v-37h26v37h39v40H284z"/>
+  </g>
+  <g fill="#8e493b" stroke="#e0c67c" stroke-width="4">
+    <path d="M515 264h62v40h-62z"/><path d="M1100 452h62v40h-62z"/><path d="M752 515h57v38h-57z"/><path d="M306 572h57v37h-57z"/>
+  </g>
+  <g stroke="#554832" stroke-width="5" stroke-dasharray="12 13" opacity=".85">
+    <path d="m548 382 91 53 89-16m254-28 69 50 102 4M355 627l89-49 86 32m420 47 71-43 108 35"/>
+  </g>
+  <g transform="translate(1334 591)">
+    <circle r="101" fill="#c8b78b" fill-opacity=".72" stroke="#584d37" stroke-width="6"/>
+    <circle r="78" stroke="#6c6043" stroke-width="3"/>
+    <path d="M0-83 18-12 0 0l-18-12z" fill="#7e4335" stroke="#4a382a" stroke-width="4"/>
+    <path d="M0 83-18 12 0 0l18 12z" fill="#34483c" stroke="#4a382a" stroke-width="4"/>
+    <path d="M-83 0-12-18 0 0l-12 18zM83 0 12 18 0 0l12-18z" fill="#d7c594" stroke="#4a382a" stroke-width="4"/>
+    <circle r="11" fill="#e1c77f" stroke="#4a382a" stroke-width="4"/>
+  </g>
+  <path d="M810 112c36 23 53 53 47 90-5 34-37 54-45 87-8-33-40-53-45-87-6-37 11-67 43-90z" fill="#9f513d" stroke="#603b2b" stroke-width="6"/>
+  <path d="M810 132c5 28 13 45 32 59-20 2-30 14-32 38-4-24-14-36-33-38 19-14 27-31 33-59z" fill="#e0c47b"/>
+  <path d="M0 0h1600v900H0z" fill="url(#grain)"/>
+  <path d="M0 0h1600v900H0z" fill="url(#edge)"/>
+  <path d="M0 0h1600v900H0z" stroke="#e1d0a4" stroke-opacity=".19" stroke-width="4"/>
+</svg>

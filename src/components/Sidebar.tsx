@@ -32,8 +32,7 @@ import {
   Menu,
 } from 'lucide-react';
 import { sound } from '../sound';
-import { PlayerProfile, Race } from '../types';
-import { RACES } from '../gameData';
+import { PlayerProfile } from '../types';
 import { getAdminAuthSession } from '../config/adminAuthConfig';
 import { auth, loginWithGoogle } from '../firebase';
 
@@ -120,6 +119,7 @@ export const OGAME_NAV_SECTIONS: OGameNavSection[] = [
     defaultRoute: 'master-upgrades',
     items: [
       { id: 'master-upgrades', label: 'Keep & Holding Upgrades' },
+      { id: 'tempering', label: 'Temper & Hone Gear' },
       { id: 'aic-system', label: 'Crownworks & Leylines' },
       { id: 'factories', label: 'Mines & Forgeworks' },
       { id: 'shipyard', label: 'Royal Warforge' },
@@ -167,17 +167,17 @@ export const OGAME_NAV_SECTIONS: OGameNavSection[] = [
   },
   {
     id: 'workforce',
-    label: 'Workforce & Academy',
+    label: 'Musterhall & Orders',
     category: 'Forces & War',
     ogameName: 'WORKFORCE',
     icon: GraduationCap,
     defaultRoute: 'workforce-academy',
     items: [
-      { id: 'workforce-academy', label: 'Guild Academy' },
-      { id: 'academy-enlistment', label: 'Recruiting Hall' },
-      { id: 'workforce-roster', label: '90 Adventurer Roles' },
-      { id: 'academy-wings', label: 'Six Adventuring Orders' },
-      { id: 'academy-drills', label: 'Training & Muster' },
+      { id: 'workforce-academy', label: 'Royal Musterhall' },
+      { id: 'academy-enlistment', label: 'Call the Muster' },
+      { id: 'workforce-roster', label: 'Muster Roll · 90 Callings' },
+      { id: 'academy-wings', label: 'Orders of the Crown' },
+      { id: 'academy-drills', label: 'Trial Grounds' },
     ],
   },
   {
@@ -298,7 +298,7 @@ export const OGAME_NAV_SECTIONS: OGameNavSection[] = [
   },
   {
     id: 'officers',
-    label: 'Champion & Account',
+    label: 'Champions',
     category: 'Champion',
     ogameName: 'OFFICERS',
     icon: Award,
@@ -306,12 +306,9 @@ export const OGAME_NAV_SECTIONS: OGameNavSection[] = [
     items: [
       { id: 'commander-hq', label: 'War Council & Companions' },
       { id: 'commander-gacha', label: '👑 72 Champions' },
-      { id: 'player-profile', label: 'Hero’s Chronicle' },
       { id: 'race', label: 'People & Crown' },
       { id: 'vacation', label: 'Sanctuary' },
       { id: 'ascension', label: 'Hall of Legends' },
-      { id: 'account-settings', label: '⚙️ Account Settings' },
-      { id: 'account-profiles', label: 'Character Sagas' },
     ],
   },
   {
@@ -378,7 +375,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   mobileOpen = false,
   onCloseMobile,
 }) => {
-  const currentRace: Race | undefined = RACES.find((r) => r.id === profile.race);
   const [authUser, setAuthUser] = useState(auth.currentUser);
 
   // Collapsed rail mode state with localStorage persistence
@@ -424,15 +420,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         return next;
       });
     }
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((w) => w[0])
-      .join('')
-      .substring(0, 2)
-      .toUpperCase();
   };
 
   const handleFlyoutMouseEnter = (secId: string, event: React.MouseEvent<HTMLElement>) => {
@@ -548,36 +535,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {isCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
             </button>
           </div>
-        </div>
-
-        {/* Commander Profile Chip */}
-        <div
-          id="sidebar-profile-box"
-          className={`m-2 p-2 border border-[#dedede] bg-[#fafafa] flex items-center gap-2.5 cursor-pointer hover:border-[#111111] transition-colors ${
-            isCollapsed ? 'justify-center p-1.5' : ''
-          }`}
-          onClick={() => handleItemClick('account-info')}
-          title={`Champion ${profile.displayName || profile.username || 'Stephen'} (${currentRace?.name || "Valewyn"})`}
-        >
-          <div className="w-8 h-8 bg-[#111111] text-white flex items-center justify-center text-xs font-bold shrink-0 border border-neutral-800">
-            {getInitials(profile.displayName || profile.username || 'Aria Vale')}
-          </div>
-          {!isCollapsed && (
-            <div className="overflow-hidden min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-mono uppercase tracking-wider text-[#888888] font-bold">
-                  CHAMPION
-                </span>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="Online" />
-              </div>
-              <strong className="block text-xs font-bold text-[#111111] truncate tracking-wide font-mono hover:text-amber-600 transition-colors">
-                {profile.displayName || profile.username || 'Champion Aria Vale'}
-              </strong>
-              <span className="block text-[10px] text-[#666666] truncate font-mono">
-                {currentRace?.name || "Valewyn"} · Rank {profile.rankLevel || 1}
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Accordion Quick Expand / Collapse All (Expanded mode only) */}

@@ -15,12 +15,15 @@ import {
   type ProfessionRecipe,
   type ProfessionSkillBook,
 } from '../../data/professionData';
+import { getTemperedEquipmentStats, type TemperingLevels } from '../../data/temperingData';
+import { getProfessionRarityLevel, getRarityDetails } from '../../data/raritySystem';
 
 interface ProfessionWorkshopViewProps {
   resources: PlayerResources;
   skills: ProfessionSkillBook;
   inventory: ProfessionInventory;
   equipment: ProfessionEquipment;
+  temperingLevels?: TemperingLevels;
   onGather: (professionId: ProfessionId, materialId?: string) => void;
   onCraft: (recipeId: string) => void;
   onEquip: (itemId: string) => void;
@@ -58,14 +61,6 @@ const PROFESSION_ICONS: Record<ProfessionId, React.ElementType> = {
   fishing: Package,
 };
 
-const RARITY_STYLES = {
-  Common: 'text-stone-700 border-stone-300 bg-stone-50',
-  Fine: 'text-emerald-800 border-emerald-300 bg-emerald-50',
-  Rare: 'text-sky-800 border-sky-300 bg-sky-50',
-  Epic: 'text-violet-900 border-violet-300 bg-violet-50',
-  Masterwork: 'text-amber-950 border-amber-400 bg-amber-100',
-} as const;
-
 function findOutput(itemId: string) {
   return PROFESSION_RECIPES.find((recipe) => recipe.output.id === itemId)?.output;
 }
@@ -75,6 +70,7 @@ export const ProfessionWorkshopView: React.FC<ProfessionWorkshopViewProps> = ({
   skills,
   inventory,
   equipment,
+  temperingLevels = {},
   onGather,
   onCraft,
   onEquip,
@@ -92,10 +88,11 @@ export const ProfessionWorkshopView: React.FC<ProfessionWorkshopViewProps> = ({
   const equippedStats = equipmentEntries.reduce((total, [, itemId]) => {
     const item = findOutput(itemId);
     if (!item) return total;
+    const tempered = getTemperedEquipmentStats(itemId, temperingLevels);
     return {
-      attack: total.attack + item.stats.attack,
-      ward: total.ward + item.stats.ward,
-      vitality: total.vitality + item.stats.vitality,
+      attack: total.attack + item.stats.attack + tempered.attack,
+      ward: total.ward + item.stats.ward + tempered.ward,
+      vitality: total.vitality + item.stats.vitality + tempered.vitality,
     };
   }, { attack: 0, ward: 0, vitality: 0 });
   const xpTarget = professionXpToNextLevel(activeSkill.level);
@@ -222,7 +219,10 @@ export const ProfessionWorkshopView: React.FC<ProfessionWorkshopViewProps> = ({
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
                             <h4 className="font-serif text-sm font-bold text-[#292b24]">{recipe.name}</h4>
-                            <span className={`border px-1.5 py-0.5 text-[9px] font-bold uppercase ${RARITY_STYLES[recipe.output.rarity]}`}>{recipe.output.rarity}</span>
+                            {(() => {
+                              const rarity = getRarityDetails(getProfessionRarityLevel(recipe.output.rarity));
+                              return <span className={`border px-1.5 py-0.5 text-[9px] font-bold uppercase ${rarity.className}`}>R{rarity.level} · {recipe.output.rarity}</span>;
+                            })()}
                             {!unlocked && <span className="font-mono text-[9px] text-[#777164]">Unlocks at {recipe.requiredLevel}</span>}
                           </div>
                           <p className="mt-1 text-[11px] text-[#6a665c]">{recipe.description}</p>
@@ -264,7 +264,7 @@ export const ProfessionWorkshopView: React.FC<ProfessionWorkshopViewProps> = ({
                         <p><span className="text-[#898478]">Ore type</span><strong className="ml-1 text-[#45483e]">{vein.oreType}</strong></p>
                         <p><span className="text-[#898478]">Subtype</span><strong className="ml-1 text-[#45483e]">{vein.oreSubtype}</strong></p>
                         <p><span className="text-[#898478]">Depth</span><strong className="ml-1 text-[#45483e]">{vein.depth}</strong></p>
-                        <p><span className="text-[#898478]">Grade</span><strong className="ml-1 text-[#45483e]">{vein.rarity}</strong></p>
+                        <p><span className="text-[#898478]">Grade</span><strong className="ml-1 text-[#45483e]">R{getRarityDetails(getProfessionRarityLevel(vein.rarity)).level} · {vein.rarity}</strong></p>
                       </div>
                       <p className="mt-2 text-[10px] leading-relaxed text-[#625f55]">{vein.details}</p>
                       <p className="mt-1 text-[9px] text-[#777164]">Known in {vein.region}. Used for: {vein.uses}</p>
@@ -288,7 +288,7 @@ export const ProfessionWorkshopView: React.FC<ProfessionWorkshopViewProps> = ({
                   <div key={itemId} className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e9e3d7] py-2">
                     <div>
                       <strong className="block text-xs text-[#34352e]">{output?.name || material?.name || itemId}</strong>
-                      <span className="text-[10px] text-[#7a7468]">{output ? `${output.rarity}${output.slot ? ` · ${SLOT_LABELS[output.slot]}` : ''}` : `${material?.rarity || 'Common'} · ${material?.region || 'Satchel'}`}</span>
+                      <span className="text-[10px] text-[#7a7468]">{output ? `R${getRarityDetails(getProfessionRarityLevel(output.rarity)).level} · ${output.rarity}${output.slot ? ` · ${SLOT_LABELS[output.slot]}` : ''}` : `R${getRarityDetails(getProfessionRarityLevel(material?.rarity || 'Common')).level} · ${material?.rarity || 'Common'} · ${material?.region || 'Satchel'}`}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-mono text-xs text-[#535148]">×{quantity}</span>
